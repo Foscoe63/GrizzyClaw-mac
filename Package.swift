@@ -7,18 +7,24 @@ let package = Package(
         .macOS(.v13),
     ],
     products: [
-        .executable(name: "GrizzyClaw", targets: ["GrizzyClaw"]),
+        .executable(name: "GrizzyClaw", targets: ["RunGrizzy"]),
         .library(name: "GrizzyClawCore", targets: ["GrizzyClawCore"]),
+        .library(name: "GrizzyClawUI", targets: ["GrizzyClawUI"]),
     ],
     targets: [
         .target(
             name: "GrizzyClawCore",
             path: "Sources/GrizzyClawCore"
         ),
-        .executableTarget(
-            name: "GrizzyClaw",
+        .target(
+            name: "GrizzyClawUI",
             dependencies: ["GrizzyClawCore"],
-            path: "Sources/GrizzyClaw"
+            path: "Sources/GrizzyClawUI"
+        ),
+        .executableTarget(
+            name: "RunGrizzy",
+            dependencies: ["GrizzyClawUI"],
+            path: "Sources/RunGrizzy"
         ),
     ]
 )

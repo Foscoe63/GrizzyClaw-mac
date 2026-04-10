@@ -1,17 +1,21 @@
 import GrizzyClawCore
 import SwiftUI
 
-@main
-struct GrizzyClawApp: App {
-    var body: some Scene {
+/// Shared SwiftUI app chrome for `swift run` and the Xcode `.app` host.
+public struct GrizzyClawRootApp: App {
+    public init() {}
+
+    public var body: some Scene {
         WindowGroup {
             ContentView()
         }
     }
 }
 
-struct ContentView: View {
-    var body: some View {
+public struct ContentView: View {
+    public init() {}
+
+    public var body: some View {
         VStack(spacing: 16) {
             Text("GrizzyClaw")
                 .font(.largeTitle.weight(.semibold))

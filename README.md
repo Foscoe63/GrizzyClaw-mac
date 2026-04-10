@@ -6,17 +6,20 @@ Native macOS rebuild of [GrizzyClaw](../GrizzyClaw) using Swift. This repository
 
 | Path | Role |
 |------|------|
-| `Sources/GrizzyClawCore/` | Shared models, services, persistence (no UI). |
-| `Sources/GrizzyClaw/` | SwiftUI app entry (`swift run` executable). |
+| `Sources/GrizzyClawCore/` | Models, metadata, future services (no UI). |
+| `Sources/GrizzyClawUI/` | Shared SwiftUI (`GrizzyClawRootApp`, `ContentView`) for SPM + Xcode. |
+| `Sources/RunGrizzy/` | Thin `swift run` / CLI entry (`GrizzyClaw` executable product). |
+| `App/MacHost/` | Thin `@main` host for the **Xcode** `.app` target only. |
+| `GrizzyClawMac.xcodeproj/` | Committed Xcode project (scheme **GrizzyClawMac**), local SPM at `.` → **GrizzyClawUI**. |
 | `docs/parity-checklist.md` | Feature parity vs the Python app (living checklist). |
-| `docs/xcode-app-target.md` | How to add a real `.app` bundle in Xcode. |
+| `docs/xcode-app-target.md` | More detail on the Xcode + SPM setup. |
 
 ## Requirements
 
 - macOS 13+
-- Swift 5.9+ (Xcode 15+)
+- Swift 5.9+ (**Xcode 15+** for the checked-in `.xcodeproj`; CLI `swift` alone is enough for SPM)
 
-## Build and run
+## Build and run (SwiftPM)
 
 ```bash
 cd GrizzyClaw-mac
@@ -24,12 +27,23 @@ swift build
 swift run GrizzyClaw
 ```
 
+## Build the `.app` (Xcode)
+
+1. Open **`GrizzyClawMac.xcodeproj`** in Xcode (double-click or **File → Open**).
+2. Select the **GrizzyClawMac** scheme and **Product → Run** (⌘R).
+
+Command line (full Xcode installed, not only Command Line Tools):
+
+```bash
+cd GrizzyClaw-mac
+xcodebuild -project GrizzyClawMac.xcodeproj -scheme GrizzyClawMac -configuration Debug build
+```
+
 ## Next steps
 
-- Follow **[docs/xcode-app-target.md](docs/xcode-app-target.md)** to add a macOS App target (`.app`, signing).
 - Track **[docs/parity-checklist.md](docs/parity-checklist.md)** while porting features from `../GrizzyClaw`.
 
 ## Relationship to the Python app
 
-- **Bundle ID placeholder**: `com.grizzyclaw.macos` — change before App Store or notarization.
+- **Bundle ID** (Xcode target): `com.grizzyclaw.macos` — change before App Store or notarization.
 - No shared git history required; keep releases independent until you intentionally align versions.
