@@ -8,6 +8,8 @@ Native macOS rebuild of [GrizzyClaw](../GrizzyClaw) using Swift. This repository
 |------|------|
 | `Sources/GrizzyClawCore/` | Shared models, services, persistence (no UI). |
 | `Sources/GrizzyClaw/` | SwiftUI app entry (`swift run` executable). |
+| `docs/parity-checklist.md` | Feature parity vs the Python app (living checklist). |
+| `docs/xcode-app-target.md` | How to add a real `.app` bundle in Xcode. |
 
 ## Requirements
 
@@ -24,8 +26,8 @@ swift run GrizzyClaw
 
 ## Next steps
 
-- Add an **Xcode** macOS App target (`.app` bundle, icons, signing) that depends on `GrizzyClawCore` via local SPM, or open this folder in Xcode (**File → Open** `Package.swift`).
-- Define **parity** with the Python app (workspaces, agent, watchers) in issues or `docs/` as you implement.
+- Follow **[docs/xcode-app-target.md](docs/xcode-app-target.md)** to add a macOS App target (`.app`, signing).
+- Track **[docs/parity-checklist.md](docs/parity-checklist.md)** while porting features from `../GrizzyClaw`.
 
 ## Relationship to the Python app
 
