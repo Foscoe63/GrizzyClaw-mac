@@ -7,7 +7,7 @@ Native macOS rebuild of [GrizzyClaw](../GrizzyClaw) using Swift. This repository
 | Path | Role |
 |------|------|
 | `Sources/GrizzyClawCore/` | `AppInfo`, **`GrizzyClawPaths`** (`~/.grizzyclaw` parity with Python). |
-| `Sources/GrizzyClawUI/` | Shared SwiftUI (`GrizzyClawRootApp`, `ContentView`) for SPM + Xcode. |
+| `Sources/GrizzyClawUI/` | SwiftUI shell, **`WorkspaceStore`** (read `workspaces.json`), Finder actions. |
 | `Sources/RunGrizzy/` | Thin `swift run` / CLI entry (`GrizzyClaw` executable product). |
 | `App/MacHost/` | Thin `@main` host for the **Xcode** `.app` target only. |
 | `GrizzyClawMac.xcodeproj/` | Committed Xcode project (scheme **GrizzyClawMac**), local SPM at `.` → **GrizzyClawUI**. |

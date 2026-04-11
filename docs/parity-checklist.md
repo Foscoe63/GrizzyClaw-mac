@@ -12,11 +12,11 @@ This checklist tracks feature parity between the **legacy Python / PyQt** app (`
 
 ## Workspaces
 
-- [ ] Multiple named workspaces; active workspace selection
+- [~] Multiple named workspaces; active workspace selection — **read-only** list from `workspaces.json`; selection is UI-only (not persisted)
 - [ ] Baseline workspace + “return to baseline” shortcut (`Ctrl+Shift+B` equivalent)
 - [ ] Workspace dialog: create, edit, delete, templates (if any)
 - [ ] Per-workspace agent creation / LLM routing (match `WorkspaceManager` behavior)
-- [ ] Sidebar or equivalent: quick switch between workspaces
+- [~] Sidebar or equivalent: **NavigationSplitView** lists workspaces with Active / Baseline badges; reload toolbar button
 
 ## Chat & agent
 
