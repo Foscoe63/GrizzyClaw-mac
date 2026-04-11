@@ -6,7 +6,7 @@ Native macOS rebuild of [GrizzyClaw](../GrizzyClaw) using Swift. This repository
 
 | Path | Role |
 |------|------|
-| `Sources/GrizzyClawCore/` | Models, metadata, future services (no UI). |
+| `Sources/GrizzyClawCore/` | `AppInfo`, **`GrizzyClawPaths`** (`~/.grizzyclaw` parity with Python). |
 | `Sources/GrizzyClawUI/` | Shared SwiftUI (`GrizzyClawRootApp`, `ContentView`) for SPM + Xcode. |
 | `Sources/RunGrizzy/` | Thin `swift run` / CLI entry (`GrizzyClaw` executable product). |
 | `App/MacHost/` | Thin `@main` host for the **Xcode** `.app` target only. |
@@ -26,6 +26,8 @@ cd GrizzyClaw-mac
 swift build
 swift run GrizzyClaw
 ```
+
+Add XCTest targets later if you want `swift test` from CI; use **Xcode**’s test runner with the full macOS SDK for unit tests.
 
 ## Build the `.app` (Xcode)
 

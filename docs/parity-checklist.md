@@ -4,10 +4,10 @@ This checklist tracks feature parity between the **legacy Python / PyQt** app (`
 
 ## Shell & platform
 
-- [ ] macOS 13+ app bundle (`.app`), menu bar, window lifecycle, quit handling
+- [~] macOS 13+ app bundle (`.app`), menu bar, window lifecycle, quit handling — Xcode project + **GrizzyClaw** menu command “Open ~/.grizzyclaw in Finder” (⌘⇧J)
 - [ ] Single-instance behavior (optional; match Python if applicable)
 - [ ] Dock / tray icon and “hide to tray” (if product requires it)
-- [ ] Config path parity: `~/.grizzyclaw/` (read legacy formats or document migration)
+- [x] Config path parity: `GrizzyClawPaths` mirrors `~/.grizzyclaw/` (`config.yaml`, `workspaces.json`, `watchers/`); YAML/JSON **reading** not implemented yet
 - [ ] Dark / light appearance (match themes or system)
 
 ## Workspaces
