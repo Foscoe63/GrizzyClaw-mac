@@ -1,0 +1,30 @@
+{
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLLM/Models/PhiMoE.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/PhiMoE.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/PhiMoE.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/PhiMoE.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/PhiMoE.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/PhiMoE.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLLM/Models/Qwen2.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen2.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen2.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen2.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen2.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen2.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLLM/Models/Qwen3.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen3.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen3.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen3.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen3.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen3.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLLM/Models/Qwen35.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen35.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen35.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen35.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen35.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Qwen35.swiftdeps"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "" : {
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub-primary.dia",
+    "emit-module-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub-primary-emit-module.dia",
+    "pch" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub-primary.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/DerivedSources/resource_bundle_accessor.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/resource_bundle_accessor.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/resource_bundle_accessor.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/resource_bundle_accessor.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/resource_bundle_accessor.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/resource_bundle_accessor.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/resource_bundle_accessor.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/resource_bundle_accessor.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/resource_bundle_accessor~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Hub/BinaryDistinct.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/BinaryDistinct.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/BinaryDistinct.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/BinaryDistinct.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/BinaryDistinct.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/BinaryDistinct.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/BinaryDistinct.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/BinaryDistinct.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/BinaryDistinct~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Hub/Config.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Config.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Config.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Config.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Config.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Config.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Config.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Config.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Config~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Hub/Hub.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/Hub~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Hub/HubApi.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/HubApi.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/HubApi.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/HubApi.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/HubApi.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/HubApi.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/HubApi.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/HubApi.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/HubApi~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Hub/YYJSONParser.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/YYJSONParser.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/YYJSONParser.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/YYJSONParser.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/YYJSONParser.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/YYJSONParser.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/YYJSONParser.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/YYJSONParser.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Hub.build/Objects-normal/arm64/YYJSONParser~partial.swiftmodule"
+  }
+}

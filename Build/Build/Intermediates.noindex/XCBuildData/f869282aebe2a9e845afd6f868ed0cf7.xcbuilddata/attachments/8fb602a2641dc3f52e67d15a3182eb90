@@ -1,0 +1,19 @@
+{
+  "" : {
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/MLXOptimizers-primary.dia",
+    "emit-module-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/MLXOptimizers-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/MLXOptimizers-primary-emit-module.dia",
+    "pch" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/MLXOptimizers-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/MLXOptimizers-primary.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/MLXOptimizers/Optimizers.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/Optimizers.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/Optimizers.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/Optimizers.dia",
+    "index-unit-output-path" : "/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/Optimizers.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/Optimizers.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/Optimizers.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/Optimizers.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLXOptimizers.build/Objects-normal/arm64/Optimizers~partial.swiftmodule"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawCore/MCPBonjourDiscovery.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPBonjourDiscovery.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPBonjourDiscovery.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPBonjourDiscovery.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPBonjourDiscovery.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPBonjourDiscovery.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawCore/MCPEnablementFromStoredPairs.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPEnablementFromStoredPairs.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPEnablementFromStoredPairs.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPEnablementFromStoredPairs.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPEnablementFromStoredPairs.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPEnablementFromStoredPairs.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawCore/MCPIdentityResolution.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPIdentityResolution.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPIdentityResolution.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPIdentityResolution.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPIdentityResolution.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPIdentityResolution.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawCore/MCPLocalMCPProcessController.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPLocalMCPProcessController.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPLocalMCPProcessController.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPLocalMCPProcessController.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPLocalMCPProcessController.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/MCPLocalMCPProcessController.swiftdeps"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLMCommon/JSONDecodingTypes.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/JSONDecodingTypes.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/JSONDecodingTypes.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/JSONDecodingTypes.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/JSONDecodingTypes.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/JSONDecodingTypes.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLMCommon/KVCache.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/KVCache.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/KVCache.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/KVCache.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/KVCache.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/KVCache.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLMCommon/LanguageModel.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/LanguageModel.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/LanguageModel.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/LanguageModel.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/LanguageModel.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/LanguageModel.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLMCommon/Load.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/Load.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/Load.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/Load.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/Load.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLMCommon.build/Objects-normal/arm64/Load.swiftdeps"
+  }
+}

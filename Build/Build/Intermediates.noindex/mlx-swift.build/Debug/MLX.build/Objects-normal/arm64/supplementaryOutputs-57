@@ -1,0 +1,23 @@
+{
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/MLX/MLXArray+Bytes.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Bytes.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Bytes.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Bytes.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Bytes.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Bytes.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/MLX/MLXArray+Indexing.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Indexing.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Indexing.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Indexing.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Indexing.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Indexing.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/MLX/MLXArray+Init.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Init.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Init.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Init.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Init.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift.build/Debug/MLX.build/Objects-normal/arm64/MLXArray+Init.swiftdeps"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-system/Sources/System/Errno.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/Errno.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/Errno.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/Errno.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/Errno.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/Errno.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-system/Sources/System/ErrnoWindows.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/ErrnoWindows.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/ErrnoWindows.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/ErrnoWindows.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/ErrnoWindows.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/ErrnoWindows.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-system/Sources/System/FileDescriptor.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/FileDescriptor.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/FileDescriptor.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/FileDescriptor.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/FileDescriptor.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-system.build/Debug/SystemPackage.build/Objects-normal/arm64/FileDescriptor.swiftdeps"
+  }
+}

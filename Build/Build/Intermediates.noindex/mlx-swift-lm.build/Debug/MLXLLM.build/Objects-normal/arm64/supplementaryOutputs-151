@@ -1,0 +1,30 @@
+{
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLLM/Models/GLM4MOELite.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GLM4MOELite.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GLM4MOELite.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GLM4MOELite.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GLM4MOELite.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GLM4MOELite.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLLM/Models/GPTOSS.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GPTOSS.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GPTOSS.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GPTOSS.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GPTOSS.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GPTOSS.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLLM/Models/GatedDelta.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GatedDelta.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GatedDelta.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GatedDelta.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GatedDelta.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/GatedDelta.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift-lm/Libraries/MLXLLM/Models/Gemma.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Gemma.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Gemma.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Gemma.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Gemma.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/mlx-swift-lm.build/Debug/MLXLLM.build/Objects-normal/arm64/Gemma.swiftdeps"
+  }
+}

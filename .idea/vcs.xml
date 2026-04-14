@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/SwifCron" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/Yams" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/eventsource" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/mlx-swift" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/mlx-swift-lm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx-c" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-asn1" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-atomics" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-collections" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-crypto" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-huggingface" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-jinja" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-log" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-nio" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-numerics" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-sdk" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-system" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/swift-transformers" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Build/SourcePackages/checkouts/yyjson" vcs="Git" />
+  </component>
+</project>

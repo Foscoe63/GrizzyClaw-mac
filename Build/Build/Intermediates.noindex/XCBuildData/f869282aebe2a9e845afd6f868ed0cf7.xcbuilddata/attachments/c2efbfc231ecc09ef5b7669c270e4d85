@@ -1,0 +1,49 @@
+{
+  "" : {
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource-primary.dia",
+    "emit-module-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource-primary-emit-module.dia",
+    "pch" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource-primary.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/eventsource/Sources/EventSource/AsyncEventsSequence.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncEventsSequence.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncEventsSequence.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncEventsSequence.dia",
+    "index-unit-output-path" : "/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncEventsSequence.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncEventsSequence.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncEventsSequence.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncEventsSequence.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncEventsSequence~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/eventsource/Sources/EventSource/AsyncSequence+Events.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncSequence+Events.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncSequence+Events.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncSequence+Events.dia",
+    "index-unit-output-path" : "/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncSequence+Events.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncSequence+Events.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncSequence+Events.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncSequence+Events.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/AsyncSequence+Events~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/eventsource/Sources/EventSource/EventSource+AsyncHTTPClient.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource+AsyncHTTPClient.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource+AsyncHTTPClient.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource+AsyncHTTPClient.dia",
+    "index-unit-output-path" : "/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource+AsyncHTTPClient.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource+AsyncHTTPClient.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource+AsyncHTTPClient.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource+AsyncHTTPClient.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource+AsyncHTTPClient~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/eventsource/Sources/EventSource/EventSource.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource.dia",
+    "index-unit-output-path" : "/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/EventSource.build/Debug/EventSource.build/Objects-normal/arm64/EventSource~partial.swiftmodule"
+  }
+}

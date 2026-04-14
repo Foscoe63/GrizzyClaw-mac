@@ -1,0 +1,179 @@
+{
+  "" : {
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTP1-primary.dia",
+    "emit-module-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTP1-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTP1-primary-emit-module.dia",
+    "pch" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTP1-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTP1-primary.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/ByteCollectionUtils.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/ByteCollectionUtils.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/ByteCollectionUtils.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/ByteCollectionUtils.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/ByteCollectionUtils.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/ByteCollectionUtils.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/ByteCollectionUtils.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/ByteCollectionUtils.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/ByteCollectionUtils~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPDecoder.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPDecoder.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPDecoder.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPDecoder.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPDecoder.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPDecoder.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPDecoder.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPDecoder.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPDecoder~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPEncoder.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPEncoder.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPEncoder.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPEncoder.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPEncoder.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPEncoder.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPEncoder.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPEncoder.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPEncoder~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPHeaderValidator.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaderValidator.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaderValidator.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaderValidator.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaderValidator.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaderValidator.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaderValidator.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaderValidator.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaderValidator~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPHeaders+Validation.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaders+Validation.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaders+Validation.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaders+Validation.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaders+Validation.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaders+Validation.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaders+Validation.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaders+Validation.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPHeaders+Validation~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPPipelineSetup.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPPipelineSetup.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPPipelineSetup.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPPipelineSetup.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPPipelineSetup.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPPipelineSetup.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPPipelineSetup.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPPipelineSetup.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPPipelineSetup~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPServerPipelineHandler.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerPipelineHandler.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerPipelineHandler.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerPipelineHandler.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerPipelineHandler.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerPipelineHandler.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerPipelineHandler.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerPipelineHandler.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerPipelineHandler~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPServerProtocolErrorHandler.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerProtocolErrorHandler.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerProtocolErrorHandler.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerProtocolErrorHandler.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerProtocolErrorHandler.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerProtocolErrorHandler.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerProtocolErrorHandler.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerProtocolErrorHandler.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerProtocolErrorHandler~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPServerUpgradeHandler.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerUpgradeHandler.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerUpgradeHandler.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerUpgradeHandler.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerUpgradeHandler.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerUpgradeHandler.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerUpgradeHandler.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerUpgradeHandler.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPServerUpgradeHandler~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPTypedPipelineSetup.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypedPipelineSetup.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypedPipelineSetup.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypedPipelineSetup.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypedPipelineSetup.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypedPipelineSetup.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypedPipelineSetup.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypedPipelineSetup.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypedPipelineSetup~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/HTTPTypes.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypes.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypes.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypes.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypes.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypes.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypes.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypes.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/HTTPTypes~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/NIOHTTPClientUpgradeHandler.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPClientUpgradeHandler.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPClientUpgradeHandler.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPClientUpgradeHandler.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPClientUpgradeHandler.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPClientUpgradeHandler.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPClientUpgradeHandler.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPClientUpgradeHandler.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPClientUpgradeHandler~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/NIOHTTPObjectAggregator.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPObjectAggregator.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPObjectAggregator.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPObjectAggregator.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPObjectAggregator.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPObjectAggregator.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPObjectAggregator.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPObjectAggregator.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOHTTPObjectAggregator~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/NIOTypedHTTPClientUpgradeHandler.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgradeHandler.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgradeHandler.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgradeHandler.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgradeHandler.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgradeHandler.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgradeHandler.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgradeHandler.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgradeHandler~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/NIOTypedHTTPClientUpgraderStateMachine.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgraderStateMachine.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgraderStateMachine.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgraderStateMachine.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgraderStateMachine.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgraderStateMachine.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgraderStateMachine.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgraderStateMachine.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPClientUpgraderStateMachine~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/NIOTypedHTTPServerUpgradeHandler.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgradeHandler.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgradeHandler.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgradeHandler.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgradeHandler.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgradeHandler.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgradeHandler.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgradeHandler.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgradeHandler~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/NIOHTTP1/NIOTypedHTTPServerUpgraderStateMachine.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgraderStateMachine.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgraderStateMachine.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgraderStateMachine.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgraderStateMachine.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgraderStateMachine.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgraderStateMachine.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgraderStateMachine.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-nio.build/Debug/NIOHTTP1.build/Objects-normal/arm64/NIOTypedHTTPServerUpgraderStateMachine~partial.swiftmodule"
+  }
+}

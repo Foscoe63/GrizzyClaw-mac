@@ -1,0 +1,129 @@
+{
+  "" : {
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizers-primary.dia",
+    "emit-module-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizers-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizers-primary-emit-module.dia",
+    "pch" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizers-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizers-primary.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/BPETokenizer.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BPETokenizer.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BPETokenizer.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BPETokenizer.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BPETokenizer.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BPETokenizer.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BPETokenizer.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BPETokenizer.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BPETokenizer~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/BertTokenizer.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BertTokenizer.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BertTokenizer.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BertTokenizer.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BertTokenizer.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BertTokenizer.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BertTokenizer.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BertTokenizer.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/BertTokenizer~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/ByteEncoder.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/ByteEncoder.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/ByteEncoder.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/ByteEncoder.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/ByteEncoder.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/ByteEncoder.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/ByteEncoder.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/ByteEncoder.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/ByteEncoder~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/Decoder.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Decoder.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Decoder.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Decoder.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Decoder.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Decoder.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Decoder.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Decoder.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Decoder~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/Normalizer.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Normalizer.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Normalizer.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Normalizer.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Normalizer.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Normalizer.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Normalizer.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Normalizer.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Normalizer~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/PostProcessor.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PostProcessor.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PostProcessor.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PostProcessor.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PostProcessor.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PostProcessor.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PostProcessor.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PostProcessor.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PostProcessor~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/PreTokenizer.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PreTokenizer.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PreTokenizer.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PreTokenizer.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PreTokenizer.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PreTokenizer.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PreTokenizer.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PreTokenizer.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/PreTokenizer~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/String+PreTokenization.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/String+PreTokenization.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/String+PreTokenization.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/String+PreTokenization.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/String+PreTokenization.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/String+PreTokenization.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/String+PreTokenization.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/String+PreTokenization.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/String+PreTokenization~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/TokenLattice.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/TokenLattice.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/TokenLattice.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/TokenLattice.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/TokenLattice.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/TokenLattice.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/TokenLattice.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/TokenLattice.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/TokenLattice~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/Tokenizer.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizer.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizer.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizer.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizer.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizer.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizer.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizer.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Tokenizer~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/Trie.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Trie.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Trie.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Trie.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Trie.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Trie.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Trie.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Trie.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/Trie~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-transformers/Sources/Tokenizers/UnigramTokenizer.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/UnigramTokenizer.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/UnigramTokenizer.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/UnigramTokenizer.dia",
+    "index-unit-output-path" : "/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/UnigramTokenizer.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/UnigramTokenizer.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/UnigramTokenizer.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/UnigramTokenizer.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-transformers.build/Debug/Tokenizers.build/Objects-normal/arm64/UnigramTokenizer~partial.swiftmodule"
+  }
+}

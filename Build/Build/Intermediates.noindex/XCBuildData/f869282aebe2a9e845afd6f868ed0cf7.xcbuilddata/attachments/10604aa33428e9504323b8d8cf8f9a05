@@ -1,0 +1,219 @@
+{
+  "" : {
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Yams-primary.dia",
+    "emit-module-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Yams-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Yams-primary-emit-module.dia",
+    "pch" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Yams-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Yams-primary.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/AliasDereferencingStrategy.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/AliasDereferencingStrategy.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/AliasDereferencingStrategy.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/AliasDereferencingStrategy.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/AliasDereferencingStrategy.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/AliasDereferencingStrategy.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/AliasDereferencingStrategy.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/AliasDereferencingStrategy.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/AliasDereferencingStrategy~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Anchor.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Anchor.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Anchor.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Anchor.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Anchor.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Anchor.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Anchor.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Anchor.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Anchor~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Constructor.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Constructor.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Constructor.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Constructor.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Constructor.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Constructor.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Constructor.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Constructor.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Constructor~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Decoder.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Decoder.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Decoder.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Decoder.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Decoder.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Decoder.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Decoder.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Decoder.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Decoder~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Emitter.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Emitter.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Emitter.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Emitter.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Emitter.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Emitter.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Emitter.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Emitter.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Emitter~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Encoder.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Encoder.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Encoder.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Encoder.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Encoder.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Encoder.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Encoder.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Encoder.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Encoder~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Mark.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Mark.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Mark.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Mark.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Mark.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Mark.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Mark.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Mark.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Mark~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Node.Alias.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Alias.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Alias.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Alias.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Alias.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Alias.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Alias.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Alias.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Alias~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Node.Mapping.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Mapping.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Mapping.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Mapping.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Mapping.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Mapping.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Mapping.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Mapping.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Mapping~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Node.Scalar.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Scalar.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Scalar.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Scalar.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Scalar.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Scalar.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Scalar.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Scalar.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Scalar~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Node.Sequence.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Sequence.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Sequence.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Sequence.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Sequence.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Sequence.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Sequence.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Sequence.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.Sequence~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Node.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Node~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Parser.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Parser.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Parser.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Parser.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Parser.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Parser.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Parser.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Parser.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Parser~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/RedundancyAliasingStrategy.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/RedundancyAliasingStrategy.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/RedundancyAliasingStrategy.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/RedundancyAliasingStrategy.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/RedundancyAliasingStrategy.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/RedundancyAliasingStrategy.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/RedundancyAliasingStrategy.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/RedundancyAliasingStrategy.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/RedundancyAliasingStrategy~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Representer.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Representer.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Representer.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Representer.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Representer.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Representer.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Representer.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Representer.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Representer~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Resolver.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Resolver.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Resolver.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Resolver.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Resolver.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Resolver.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Resolver.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Resolver.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Resolver~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/String+Yams.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/String+Yams.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/String+Yams.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/String+Yams.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/String+Yams.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/String+Yams.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/String+Yams.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/String+Yams.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/String+Yams~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/Tag.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Tag.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Tag.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Tag.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/Tag.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Tag.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Tag.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Tag.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/Tag~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/YamlAnchorProviding.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlAnchorProviding.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlAnchorProviding.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlAnchorProviding.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlAnchorProviding.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlAnchorProviding.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlAnchorProviding.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlAnchorProviding.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlAnchorProviding~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/YamlError.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlError.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlError.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlError.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlError.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlError.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlError.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlError.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlError~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/Yams/Sources/Yams/YamlTagProviding.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlTagProviding.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlTagProviding.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlTagProviding.dia",
+    "index-unit-output-path" : "/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlTagProviding.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlTagProviding.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlTagProviding.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlTagProviding.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Yams.build/Debug/Yams.build/Objects-normal/arm64/YamlTagProviding~partial.swiftmodule"
+  }
+}

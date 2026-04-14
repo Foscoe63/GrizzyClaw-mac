@@ -1,0 +1,35 @@
+dependencies: \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/quantized.cpp \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/common/quantized.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/common/unary.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/allocator.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/api.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/common/utils.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/array.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/dtype.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/types/complex.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/types/half_types.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/types/bf16.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/event.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/stream.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/device.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/small_vector.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/copy.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/common/copy.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/encoder.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/scheduler.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/gpu/eval.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/simd/simd.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/simd/math.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/simd/type.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/simd/base_simd.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/simd/accelerate_simd.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/simd/accelerate_fp16_simd.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/simd/neon_fp16_simd.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/unary.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/utils.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/cpu/unary_ops.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/fast_primitives.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/primitives.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/io/load.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/threadpool.h

@@ -1,0 +1,59 @@
+{
+  "" : {
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging-primary.dia",
+    "emit-module-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging-primary-emit-module.dia",
+    "pch" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging-primary.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-log/Sources/Logging/Locks.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Locks.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Locks.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Locks.dia",
+    "index-unit-output-path" : "/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Locks.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Locks.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Locks.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Locks.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Locks~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-log/Sources/Logging/LogEvent.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogEvent.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogEvent.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogEvent.dia",
+    "index-unit-output-path" : "/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogEvent.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogEvent.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogEvent.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogEvent.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogEvent~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-log/Sources/Logging/LogHandler.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogHandler.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogHandler.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogHandler.dia",
+    "index-unit-output-path" : "/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogHandler.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogHandler.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogHandler.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogHandler.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/LogHandler~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-log/Sources/Logging/Logging.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging.dia",
+    "index-unit-output-path" : "/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/Logging~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-log/Sources/Logging/MetadataProvider.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/MetadataProvider.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/MetadataProvider.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/MetadataProvider.dia",
+    "index-unit-output-path" : "/swift-log.build/Debug/Logging.build/Objects-normal/arm64/MetadataProvider.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/MetadataProvider.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/MetadataProvider.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/MetadataProvider.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/swift-log.build/Debug/Logging.build/Objects-normal/arm64/MetadataProvider~partial.swiftmodule"
+  }
+}

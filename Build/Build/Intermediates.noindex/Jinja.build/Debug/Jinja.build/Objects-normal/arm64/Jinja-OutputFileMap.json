@@ -1,0 +1,149 @@
+{
+  "" : {
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Jinja-primary.dia",
+    "emit-module-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Jinja-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Jinja-primary-emit-module.dia",
+    "pch" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Jinja-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Jinja-primary.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/AST.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/AST.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/AST.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/AST.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/AST.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/AST.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/AST.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/AST.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/AST~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Error.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Error.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Error.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Error.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Error.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Error.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Error.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Error.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Error~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Filters.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Filters.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Filters.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Filters.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Filters.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Filters.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Filters.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Filters.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Filters~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Globals.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Globals.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Globals.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Globals.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Globals.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Globals.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Globals.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Globals.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Globals~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Interpreter.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Interpreter.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Interpreter.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Interpreter.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Interpreter.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Interpreter.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Interpreter.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Interpreter.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Interpreter~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Lexer.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Lexer.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Lexer.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Lexer.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Lexer.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Lexer.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Lexer.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Lexer.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Lexer~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Macro.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Macro.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Macro.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Macro.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Macro.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Macro.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Macro.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Macro.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Macro~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Parser.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Parser.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Parser.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Parser.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Parser.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Parser.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Parser.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Parser.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Parser~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/PropertyMembers.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/PropertyMembers.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/PropertyMembers.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/PropertyMembers.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/PropertyMembers.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/PropertyMembers.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/PropertyMembers.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/PropertyMembers.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/PropertyMembers~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Template.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Template.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Template.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Template.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Template.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Template.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Template.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Template.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Template~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Tests.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Tests.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Tests.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Tests.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Tests.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Tests.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Tests.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Tests.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Tests~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Token.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Token.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Token.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Token.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Token.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Token.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Token.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Token.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Token~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Utilities.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Utilities.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Utilities.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Utilities.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Utilities.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Utilities.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Utilities.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Utilities.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Utilities~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-jinja/Sources/Jinja/Value.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Value.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Value.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Value.dia",
+    "index-unit-output-path" : "/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Value.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Value.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Value.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Value.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/Jinja.build/Debug/Jinja.build/Objects-normal/arm64/Value~partial.swiftmodule"
+  }
+}

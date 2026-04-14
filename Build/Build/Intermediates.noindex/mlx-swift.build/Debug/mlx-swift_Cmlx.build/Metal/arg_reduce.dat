@@ -1,0 +1,9 @@
+dependencies: \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/arg_reduce.metal \
+  /private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.5.188.0.xAwwio/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.883/include/metal/module.modulemap \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/bf16.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/bf16_math.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/defines.h \
+  /Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/logging.h

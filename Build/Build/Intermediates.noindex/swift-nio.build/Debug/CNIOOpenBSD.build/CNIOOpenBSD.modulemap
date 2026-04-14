@@ -1,0 +1,4 @@
+module CNIOOpenBSD {
+umbrella header "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/swift-nio/Sources/CNIOOpenBSD/include/CNIOOpenBSD.h"
+export *
+}

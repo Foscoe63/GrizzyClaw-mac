@@ -3,16 +3,25 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C2C2C2C2C2C2C2C2C2C2C2C2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C1C1C1C1C1C1C1C1C1C1C1 /* main.swift */; };
+		B1B1B1B1B1B1B1B1B1B1B1B1 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json in Resources */ = {isa = PBXBuildFile; fileRef = B2B2B2B2B2B2B2B2B2B2B2B2 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json */; };
+		C2C2C2C2C2C2C2C2C2C2C2C2 /* GrizzyClawMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C1C1C1C1C1C1C1C1C1C1C1 /* GrizzyClawMacApp.swift */; };
+		DEEA9AB52F8BBBCC00769B95 /* GrizzyClawUI in Frameworks */ = {isa = PBXBuildFile; productRef = E6E6E6E6E6E6E6E6E6E6E6E6 /* GrizzyClawUI */; };
+		L2L2L2L2L2L2L2L2L2L2L2L2 /* launch_trace.c in Sources */ = {isa = PBXBuildFile; fileRef = L1L1L1L1L1L1L1L1L1L1L1L1 /* launch_trace.c */; };
+		M1M1M1M1M1M1M1M1M1M1M1M1 /* Sources/GrizzyClawCore/Resources/mcp_discover.py in Resources */ = {isa = PBXBuildFile; fileRef = M2M2M2M2M2M2M2M2M2M2M2M2 /* Sources/GrizzyClawCore/Resources/mcp_discover.py */; };
+		M3M3M3M3M3M3M3M3M3M3M3M3 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py in Resources */ = {isa = PBXBuildFile; fileRef = M4M4M4M4M4M4M4M4M4M4M4M4 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B0B0B0B0B0B0B0B0B0B0B0B0 /* GrizzyClawMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrizzyClawMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1C1C1C1C1C1C1C1C1C1C1C1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		B2B2B2B2B2B2B2B2B2B2B2B2 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json; sourceTree = SOURCE_ROOT; };
+		C1C1C1C1C1C1C1C1C1C1C1C1 /* GrizzyClawMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrizzyClawMacApp.swift; sourceTree = "<group>"; usesTabs = 0; };
+		L1L1L1L1L1L1L1L1L1L1L1L1 /* launch_trace.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = launch_trace.c; sourceTree = "<group>"; };
+		M2M2M2M2M2M2M2M2M2M2M2M2 /* Sources/GrizzyClawCore/Resources/mcp_discover.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = Sources/GrizzyClawCore/Resources/mcp_discover.py; sourceTree = SOURCE_ROOT; };
+		M4M4M4M4M4M4M4M4M4M4M4M4 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = Sources/GrizzyClawCore/Resources/mcp_call_tool.py; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -20,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEEA9AB52F8BBBCC00769B95 /* GrizzyClawUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,16 +48,11 @@
 			isa = PBXGroup;
 			children = (
 				A5A5A5A5A5A5A5A5A5A5A5A5 /* MacHost */,
+				M2M2M2M2M2M2M2M2M2M2M2M2 /* Sources/GrizzyClawCore/Resources/mcp_discover.py */,
+				M4M4M4M4M4M4M4M4M4M4M4M4 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py */,
+				B2B2B2B2B2B2B2B2B2B2B2B2 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json */,
 			);
 			path = App;
-			sourceTree = "<group>";
-		};
-		A5A5A5A5A5A5A5A5A5A5A5A5 /* MacHost */ = {
-			isa = PBXGroup;
-			children = (
-				C1C1C1C1C1C1C1C1C1C1C1C1 /* main.swift */,
-			);
-			path = MacHost;
 			sourceTree = "<group>";
 		};
 		A4A4A4A4A4A4A4A4A4A4A4A4 /* Products */ = {
@@ -56,6 +61,15 @@
 				B0B0B0B0B0B0B0B0B0B0B0B0 /* GrizzyClawMac.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A5A5A5A5A5A5A5A5A5A5A5A5 /* MacHost */ = {
+			isa = PBXGroup;
+			children = (
+				L1L1L1L1L1L1L1L1L1L1L1L1 /* launch_trace.c */,
+				C1C1C1C1C1C1C1C1C1C1C1C1 /* GrizzyClawMacApp.swift */,
+			);
+			path = MacHost;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -122,6 +136,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				M1M1M1M1M1M1M1M1M1M1M1M1 /* Sources/GrizzyClawCore/Resources/mcp_discover.py in Resources */,
+				M3M3M3M3M3M3M3M3M3M3M3M3 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py in Resources */,
+				B1B1B1B1B1B1B1B1B1B1B1B1 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,7 +149,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2C2C2C2C2C2C2C2C2C2C2C2 /* main.swift in Sources */,
+				L2L2L2L2L2L2L2L2L2L2L2L2 /* launch_trace.c in Sources */,
+				C2C2C2C2C2C2C2C2C2C2C2C2 /* GrizzyClawMacApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,11 +285,16 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = GrizzyClaw;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "GrizzyClaw connects to LLM and tool servers on your network (for example LM Studio, Ollama, or MCP on another computer).";
+				INFOPLIST_KEY_NSSupportsAutomaticTermination = NO;
+				INFOPLIST_KEY_NSSupportsSuddenTermination = NO;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grizzyclaw.macos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -290,11 +313,16 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = GrizzyClaw;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "GrizzyClaw connects to LLM and tool servers on your network (for example LM Studio, Ollama, or MCP on another computer).";
+				INFOPLIST_KEY_NSSupportsAutomaticTermination = NO;
+				INFOPLIST_KEY_NSSupportsSuddenTermination = NO;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grizzyclaw.macos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -340,7 +368,6 @@
 			productName = GrizzyClawUI;
 		};
 /* End XCSwiftPackageProductDependency section */
-
 	};
 	rootObject = F0F0F0F0F0F0F0F0F0F0F0F0 /* Project object */;
 }

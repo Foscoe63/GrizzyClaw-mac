@@ -6,8 +6,8 @@ Native macOS rebuild of [GrizzyClaw](../GrizzyClaw) using Swift. This repository
 
 | Path | Role |
 |------|------|
-| `Sources/GrizzyClawCore/` | `AppInfo`, **`GrizzyClawPaths`** (`~/.grizzyclaw` parity with Python). |
-| `Sources/GrizzyClawUI/` | SwiftUI shell, **`WorkspaceStore`** (read `workspaces.json`), Finder actions. |
+| `Sources/GrizzyClawCore/` | `AppInfo`, **`GrizzyClawPaths`**, **`WorkspaceActivePersistence`**, **`UserConfigLoader`** (YAML subset via **Yams**). |
+| `Sources/GrizzyClawUI/` | Tabbed shell (Workspaces / Chat / Config), **`WorkspaceStore`**, **`ConfigStore`**, Finder actions. |
 | `Sources/RunGrizzy/` | Thin `swift run` / CLI entry (`GrizzyClaw` executable product). |
 | `App/MacHost/` | Thin `@main` host for the **Xcode** `.app` target only. |
 | `GrizzyClawMac.xcodeproj/` | Committed Xcode project (scheme **GrizzyClawMac**), local SPM at `.` → **GrizzyClawUI**. |
@@ -27,7 +27,27 @@ swift build
 swift run GrizzyClaw
 ```
 
-Add XCTest targets later if you want `swift test` from CI; use **Xcode**’s test runner with the full macOS SDK for unit tests.
+### Control plane & diagnostics (Osaurus-style)
+
+GrizzyClaw includes a **localhost HTTP server** (SwiftNIO) and a **doctor** report describing paths, inference mode, and sandbox expectations — aligned with the “infrastructure & runtime” surface from apps like Osaurus. **On Apple silicon**, you can also use **on-device MLX** (`llm_provider: mlx` in workspace config, Hugging Face model id in `llm_model` / `mlx_model`); weights cache under `~/.grizzyclaw/mlx_models/` by default, or set **`mlx_models_directory`** in `~/.grizzyclaw/config.yaml` (or workspace) to use another folder. A **Linux VM sandbox** is not part of this app.
+
+- **Print health JSON** (no server):
+
+  ```bash
+  swift run GrizzyClawCLI doctor
+  swift run GrizzyClawCLI doctor --pretty
+  ```
+
+- **Serve** `GET /health` and `GET /doctor` on loopback (default port **18765**):
+
+  ```bash
+  swift run GrizzyClawCLI serve
+  swift run GrizzyClawCLI serve --port 18765 --bind 127.0.0.1
+  ```
+
+  Stop with **Enter**. Inference is via your configured providers (remote HTTP APIs, or **mlx** on Apple silicon).
+
+`swift test` runs the package’s XCTest targets from the command line when using a full Swift toolchain with the macOS SDK.
 
 ## Build the `.app` (Xcode)
 

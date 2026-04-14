@@ -1,0 +1,59 @@
+{
+  "" : {
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron-primary.dia",
+    "emit-module-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron-primary-emit-module.dia",
+    "pch" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron-primary.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/SwifCron/Sources/SwifCron/Array+Each.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Array+Each.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Array+Each.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Array+Each.dia",
+    "index-unit-output-path" : "/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Array+Each.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Array+Each.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Array+Each.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Array+Each.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Array+Each~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/SwifCron/Sources/SwifCron/ExpressionParser.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/ExpressionParser.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/ExpressionParser.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/ExpressionParser.dia",
+    "index-unit-output-path" : "/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/ExpressionParser.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/ExpressionParser.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/ExpressionParser.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/ExpressionParser.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/ExpressionParser~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/SwifCron/Sources/SwifCron/Helper.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Helper.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Helper.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Helper.dia",
+    "index-unit-output-path" : "/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Helper.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Helper.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Helper.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Helper.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/Helper~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/SwifCron/Sources/SwifCron/SwifCron.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron.dia",
+    "index-unit-output-path" : "/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCron~partial.swiftmodule"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/SwifCron/Sources/SwifCron/SwifCronError.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCronError.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCronError.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCronError.dia",
+    "index-unit-output-path" : "/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCronError.o",
+    "llvm-bc" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCronError.bc",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCronError.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCronError.swiftdeps",
+    "swiftmodule" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/Build/Intermediates.noindex/SwifCron.build/Debug/SwifCron.build/Objects-normal/arm64/SwifCronError~partial.swiftmodule"
+  }
+}

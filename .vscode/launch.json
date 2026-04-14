@@ -1,0 +1,44 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:GrizzyClaw-mac}",
+            "name": "Debug GrizzyClaw",
+            "target": "GrizzyClaw",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug GrizzyClaw"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:GrizzyClaw-mac}",
+            "name": "Release GrizzyClaw",
+            "target": "GrizzyClaw",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release GrizzyClaw"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:GrizzyClaw-mac}",
+            "name": "Debug GrizzyClawCLI",
+            "target": "GrizzyClawCLI",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug GrizzyClawCLI"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:GrizzyClaw-mac}",
+            "name": "Release GrizzyClawCLI",
+            "target": "GrizzyClawCLI",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release GrizzyClawCLI"
+        }
+    ]
+}

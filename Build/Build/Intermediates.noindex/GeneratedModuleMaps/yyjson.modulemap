@@ -1,0 +1,4 @@
+module yyjson {
+umbrella header "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/SourcePackages/checkouts/yyjson/src/yyjson.h"
+export *
+}

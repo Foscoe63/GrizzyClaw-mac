@@ -1,0 +1,16 @@
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/AnthropicStreamClient.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/ChatConnectionTest.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/ChatMessage.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/ChatTranscriptFilter.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/GrizzyClawInternalToolStubs.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/LLMErrorHints.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/LLMStreamHTTPError.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/LLMStreamSession.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/LMStudioV1StreamClient.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/MCPSystemPromptAugmentor.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/ModelListFetch.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/ModelPickerModels.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/OpenAICompatibleStreamClient.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/ResolvedChatParameters.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/SessionTrim.swift
+/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawAgent/ToolCallCommandParsing.swift
