@@ -97,5 +97,10 @@ let package = Package(
             dependencies: ["GrizzyClawAgent"],
             path: "Tests/GrizzyClawAgentTests"
         ),
+        .testTarget(
+            name: "GrizzyClawUITests",
+            dependencies: ["GrizzyClawUI"],
+            path: "Tests/GrizzyClawUITests"
+        ),
     ]
 )

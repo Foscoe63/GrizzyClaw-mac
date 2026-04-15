@@ -121,6 +121,8 @@ public enum LLMErrorHints {
             line += "\n\nHint: Is the LLM server running? For Ollama/LM Studio, start the app and confirm the port."
         case .timedOut:
             line += "\n\nHint: Server may be slow or unreachable — confirm URL and firewall settings."
+        case .appTransportSecurityRequiresSecureConnection:
+            line += "\n\nHint: This app build blocked plain HTTP. Use HTTPS, or allow ATS exceptions for local/LAN LLM servers."
         case .secureConnectionFailed:
             line += "\n\nHint: TLS/HTTPS issue — check URL scheme (http vs https) and certificates."
         default:
@@ -147,6 +149,11 @@ public enum LLMErrorHints {
 
     private static func genericHint(for error: Error) -> String? {
         let s = String(describing: error).lowercased()
+        if s.contains("full disk access required") {
+            return """
+            Hint: This action needs macOS Full Disk Access for the automation helper. Open System Settings → Privacy & Security → Full Disk Access, enable the helper app, then restart it and retry.
+            """
+        }
         if s.contains("templateexception")
             || s.contains("jinja.")
             || s.contains("jinjaerror")
