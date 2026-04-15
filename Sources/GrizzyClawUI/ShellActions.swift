@@ -28,6 +28,7 @@ public enum GrizzyClawShell {
     }
 
     /// Zips essential `~/.grizzyclaw` files (config, workspaces, sessions, watchers, templates) after a save panel.
+    @MainActor
     public static func presentBackupSavePanel() {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.zip]

@@ -20,6 +20,14 @@ public enum MCPLocalMCPError: LocalizedError {
 public final class MCPLocalMCPProcessController: ObservableObject, @unchecked Sendable {
     public static let shared = MCPLocalMCPProcessController()
 
+    private final class ServerDataBox: @unchecked Sendable {
+        let value: [String: Any]
+
+        init(_ value: [String: Any]) {
+            self.value = value
+        }
+    }
+
     private struct Entry {
         var process: Process
         /// Keep stdin write handle open so the child does not get EOF (Python `stdin=subprocess.PIPE`).
@@ -86,10 +94,11 @@ public final class MCPLocalMCPProcessController: ObservableObject, @unchecked Se
     /// Important: **`cont.resume()` must not be scheduled only with `DispatchQueue.main.async`** when the caller
     /// awaits on the MainActor — the main queue cannot drain that block until the await finishes (deadlock).
     public func start(serverData: [String: Any]) async throws {
+        let serverDataBox = ServerDataBox(serverData)
         try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, Error>) in
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
-                    try self.performStart(serverData: serverData)
+                    try self.performStart(serverData: serverDataBox.value)
                     cont.resume()
                     DispatchQueue.main.async {
                         self.objectWillChange.send()
@@ -152,16 +161,18 @@ public final class MCPLocalMCPProcessController: ObservableObject, @unchecked Se
         stateLock.unlock()
         GrizzyClawLog.debug("MCP entries after start: count=\(trackedNames.count) names=[\(trackedNames.joined(separator: ", "))]")
 
+        let serverDataBox = ServerDataBox(serverData)
         DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2) { [weak self] in
-            self?.checkStartedProcessStillRunning(name: name, serverData: serverData)
+            self?.checkStartedProcessStillRunning(name: name, serverData: serverDataBox.value)
         }
     }
 
     /// Stops on a background queue (terminate wait and `pgrep` never block the UI).
     public func stop(serverData: [String: Any]) {
+        let serverDataBox = ServerDataBox(serverData)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self else { return }
-            self.performStop(serverData: serverData)
+            self.performStop(serverData: serverDataBox.value)
             DispatchQueue.main.async {
                 self.objectWillChange.send()
             }
@@ -171,13 +182,14 @@ public final class MCPLocalMCPProcessController: ObservableObject, @unchecked Se
     /// Same as ``stop`` but waits until terminate / `kill` work finishes. Use when updating UI (`runningMap`)
     /// so `ps`-based status does not stay stale while tracking has already cleared.
     public func stopAwaitingCompletion(serverData: [String: Any]) async {
+        let serverDataBox = ServerDataBox(serverData)
         await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 guard let self else {
                     cont.resume()
                     return
                 }
-                self.performStop(serverData: serverData)
+                self.performStop(serverData: serverDataBox.value)
                 DispatchQueue.main.async {
                     self.objectWillChange.send()
                     cont.resume()

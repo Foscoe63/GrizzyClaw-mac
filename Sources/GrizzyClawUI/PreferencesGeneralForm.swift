@@ -76,7 +76,7 @@ struct PreferencesGeneralForm: View {
             .groupBoxStyle(GrizzyClawGroupBoxStyle())
             .padding(.horizontal, 40) // Match container_layout.setContentsMargins(40, 24, 40, 24)
             .padding(.vertical, 24)
-            .onChange(of: doc.root.keys.count) { _ in
+            .onChange(of: doc.root.keys.count) {
                 statusBarStore.showMessage("Settings saved", timeoutMs: 3000)
             }
         }

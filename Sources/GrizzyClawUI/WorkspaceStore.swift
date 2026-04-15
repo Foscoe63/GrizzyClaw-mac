@@ -106,6 +106,24 @@ public final class WorkspaceStore: ObservableObject {
     @discardableResult
     public func importWorkspaceFromLink(_ link: String) throws -> String {
         let payload = try WorkspaceShareLink.decodeImportPayload(link)
+        return try appendImportedWorkspacePayload(payload)
+    }
+
+    @discardableResult
+    public func importWorkspaceFromJSONData(_ data: Data) throws -> String {
+        let payload = try WorkspaceTransferIO.decodeWorkspacePayload(from: data)
+        return try appendImportedWorkspacePayload(payload)
+    }
+
+    public func exportWorkspaceToJSONData(id: String) throws -> Data {
+        guard let ws = index?.workspaces.first(where: { $0.id == id }) else {
+            throw WorkspaceMutationError.workspaceNotFound(id)
+        }
+        return try WorkspaceTransferIO.exportJSON(ws)
+    }
+
+    @discardableResult
+    private func appendImportedWorkspacePayload(_ payload: [String: Any]) throws -> String {
         try GrizzyClawPaths.ensureUserDataDirectoryExists()
         let url = GrizzyClawPaths.workspacesJSON
         if !FileManager.default.fileExists(atPath: url.path) {

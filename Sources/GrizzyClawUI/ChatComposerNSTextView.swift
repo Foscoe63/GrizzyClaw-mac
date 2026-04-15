@@ -73,6 +73,7 @@ struct ChatComposerNSTextView: NSViewRepresentable {
         }
     }
 
+    @MainActor
     final class Coordinator: NSObject, NSTextViewDelegate {
         var text: Binding<String>
         var onSend: () -> Void

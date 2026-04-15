@@ -26,7 +26,21 @@ public struct GatewaySessionRow: Identifiable, Sendable, Equatable {
 
 /// WebSocket client for the multi-session gateway (`GATEWAY_WS` in `sessions_dialog.py`: `ws://127.0.0.1:18789`).
 public enum GatewaySessionsClient {
-    nonisolated(unsafe) public static var gatewayWebSocketURL: URL = URL(string: "ws://127.0.0.1:18789")!
+    private static let gatewayURLLock = NSLock()
+    nonisolated(unsafe) private static var _gatewayWebSocketURL: URL = URL(string: "ws://127.0.0.1:18789")!
+
+    public static var gatewayWebSocketURL: URL {
+        get {
+            gatewayURLLock.lock()
+            defer { gatewayURLLock.unlock() }
+            return _gatewayWebSocketURL
+        }
+        set {
+            gatewayURLLock.lock()
+            _gatewayWebSocketURL = newValue
+            gatewayURLLock.unlock()
+        }
+    }
 
     /// List active sessions, or an error (daemon unreachable, timeout, etc.).
     public static func fetchSessions(url: URL = gatewayWebSocketURL) async -> Result<[GatewaySessionRow], GatewayClientFailure> {

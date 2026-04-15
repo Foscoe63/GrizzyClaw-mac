@@ -21,9 +21,15 @@ public final class ConfigStore: ObservableObject {
         } catch {
             loadError = error.localizedDescription
             GrizzyClawLog.error("config load failed: \(error.localizedDescription)")
-            snapshot = UserConfigSnapshot.missingFile(at: GrizzyClawPaths.configYAML)
+            var fallback = snapshot
+            fallback.configPathDisplay = GrizzyClawPaths.configYAML.path
+            fallback.fileMissing = false
+            snapshot = fallback
         }
         GrizzyClawLog.setDebugEnabled(snapshot.debug)
+        if snapshot.debug {
+            GrizzyClawLog.info("config reload: debug enabled via \(GrizzyClawPaths.configYAML.path)")
+        }
         do {
             routingExtras = try UserConfigLoader.loadRoutingExtras()
         } catch {

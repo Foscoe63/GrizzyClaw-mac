@@ -283,13 +283,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = GrizzyClaw;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "GrizzyClaw connects to LLM and tool servers on your network (for example LM Studio, Ollama, or MCP on another computer).";
-				INFOPLIST_KEY_NSSupportsAutomaticTermination = NO;
-				INFOPLIST_KEY_NSSupportsSuddenTermination = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = GrizzyClawMac-Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -311,13 +306,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = GrizzyClaw;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "GrizzyClaw connects to LLM and tool servers on your network (for example LM Studio, Ollama, or MCP on another computer).";
-				INFOPLIST_KEY_NSSupportsAutomaticTermination = NO;
-				INFOPLIST_KEY_NSSupportsSuddenTermination = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = GrizzyClawMac-Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

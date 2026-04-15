@@ -111,13 +111,13 @@ struct MemoryMainView: View {
         .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(palette.bg)
-        .onChange(of: selectedCategoryTag) { _ in
+        .onChange(of: selectedCategoryTag) {
             refreshListOnly()
         }
         .onAppear {
             refresh()
         }
-        .onChange(of: selectedWorkspaceId) { _ in
+        .onChange(of: selectedWorkspaceId) {
             refresh()
         }
         .alert("Confirm Delete", isPresented: $showDeleteConfirm) {

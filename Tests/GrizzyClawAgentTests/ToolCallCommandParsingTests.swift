@@ -82,4 +82,13 @@ final class ToolCallCommandParsingTests: XCTestCase {
         let stripped = ToolCallCommandParsing.stripToolCallBlocks(raw)
         XCTAssertTrue(stripped.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
     }
+
+    func testDuplicateBlocksAreDeduplicated() {
+        let raw = """
+        TOOL_CALL = {"mcp":"ddg-search","tool":"search","arguments":{"query":"iran"}}
+        TOOL_CALL = {"mcp":"ddg-search","tool":"search","arguments":{"query":"iran"}}
+        """
+        let objs = ToolCallCommandParsing.findToolCallJsonObjects(in: raw)
+        XCTAssertEqual(objs.count, 1)
+    }
 }

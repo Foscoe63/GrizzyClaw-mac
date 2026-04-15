@@ -34,8 +34,11 @@ public struct UserConfigSnapshot: Sendable, Equatable {
     public var openaiModel: String
     public var anthropicModel: String
     public var mcpServersFile: String
+    public var mcpPromptSchemasEnabled: Bool
     /// Optional path to `skill_marketplace.json`; empty = use `~/.grizzyclaw/skill_marketplace.json` or built-in defaults (Python `skill_marketplace_path`).
     public var skillMarketplacePath: String
+    /// Global ClawHub defaults used when a workspace/agent does not override `enabled_skills`.
+    public var enabledSkills: [String]
 
     /// Whether non-empty API key strings appear in YAML (never expose raw secrets in UI).
     public var hasOpenaiApiKey: Bool
@@ -76,7 +79,9 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         openaiModel: "gpt-4o",
         anthropicModel: "claude-sonnet-4-5-20250929",
         mcpServersFile: "~/.grizzyclaw/grizzyclaw.json",
+        mcpPromptSchemasEnabled: true,
         skillMarketplacePath: "",
+        enabledSkills: [],
         hasOpenaiApiKey: false,
         hasAnthropicApiKey: false,
         hasOpenrouterApiKey: false,
@@ -113,7 +118,9 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             openaiModel: e.openaiModel,
             anthropicModel: e.anthropicModel,
             mcpServersFile: e.mcpServersFile,
+            mcpPromptSchemasEnabled: e.mcpPromptSchemasEnabled,
             skillMarketplacePath: e.skillMarketplacePath,
+            enabledSkills: e.enabledSkills,
             hasOpenaiApiKey: false,
             hasAnthropicApiKey: false,
             hasOpenrouterApiKey: false,
@@ -148,7 +155,9 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         openaiModel: String,
         anthropicModel: String,
         mcpServersFile: String,
+        mcpPromptSchemasEnabled: Bool,
         skillMarketplacePath: String,
+        enabledSkills: [String],
         hasOpenaiApiKey: Bool,
         hasAnthropicApiKey: Bool,
         hasOpenrouterApiKey: Bool,
@@ -180,7 +189,9 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         self.openaiModel = openaiModel
         self.anthropicModel = anthropicModel
         self.mcpServersFile = mcpServersFile
+        self.mcpPromptSchemasEnabled = mcpPromptSchemasEnabled
         self.skillMarketplacePath = skillMarketplacePath
+        self.enabledSkills = enabledSkills
         self.hasOpenaiApiKey = hasOpenaiApiKey
         self.hasAnthropicApiKey = hasAnthropicApiKey
         self.hasOpenrouterApiKey = hasOpenrouterApiKey
@@ -242,7 +253,9 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             openaiModel: str("openai_model", "gpt-4o"),
             anthropicModel: str("anthropic_model", "claude-sonnet-4-5-20250929"),
             mcpServersFile: str("mcp_servers_file", "~/.grizzyclaw/grizzyclaw.json"),
+            mcpPromptSchemasEnabled: bool("mcp_prompt_schemas_enabled", true),
             skillMarketplacePath: str("skill_marketplace_path", ""),
+            enabledSkills: Self.coerceStringArray(dict["enabled_skills"]),
             hasOpenaiApiKey: hasSecret("openai_api_key"),
             hasAnthropicApiKey: hasSecret("anthropic_api_key"),
             hasOpenrouterApiKey: hasSecret("openrouter_api_key"),
@@ -256,6 +269,10 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         guard let v else { return d }
         if v is NSNull { return d }
         if let s = v as? String { return s }
+        if let n = v as? NSNumber {
+            if CFGetTypeID(n) == CFBooleanGetTypeID() { return n.boolValue ? "true" : "false" }
+            return n.stringValue
+        }
         if let n = v as? Int { return String(n) }
         if let n = v as? Double { return String(n) }
         if let b = v as? Bool { return b ? "true" : "false" }
@@ -264,6 +281,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
 
     internal static func coerceInt(_ v: Any?, default d: Int) -> Int {
         guard let v else { return d }
+        if let n = v as? NSNumber { return n.intValue }
         if let i = v as? Int { return i }
         if let dbl = v as? Double { return Int(dbl) }
         if let s = v as? String, let i = Int(s) { return i }
@@ -272,6 +290,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
 
     internal static func coerceBool(_ v: Any?, default d: Bool) -> Bool {
         guard let v else { return d }
+        if let n = v as? NSNumber, CFGetTypeID(n) == CFBooleanGetTypeID() { return n.boolValue }
         if let b = v as? Bool { return b }
         if let i = v as? Int { return i != 0 }
         if let s = v as? String {
@@ -285,9 +304,21 @@ public struct UserConfigSnapshot: Sendable, Equatable {
     internal static func coerceDouble(_ v: Any?, default d: Double) -> Double {
         guard let v else { return d }
         if v is NSNull { return d }
+        if let x = v as? NSNumber { return x.doubleValue }
         if let x = v as? Double { return x }
         if let x = v as? Int { return Double(x) }
         if let s = v as? String, let x = Double(s) { return x }
         return d
+    }
+
+    internal static func coerceStringArray(_ v: Any?) -> [String] {
+        if let items = v as? [Any] {
+            return items.compactMap {
+                let s = Self.coerceString($0, default: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                return s.isEmpty ? nil : s
+            }
+        }
+        let single = Self.coerceString(v, default: "").trimmingCharacters(in: .whitespacesAndNewlines)
+        return single.isEmpty ? [] : [single]
     }
 }

@@ -14,6 +14,7 @@ struct ClawHubPreferencesView: View {
     @State private var checkUpdatesBusy = false
     @State private var hfShowToken = false
     @State private var showAddSkillSheet = false
+    @State private var showGitHubImportSheet = false
     @State private var addSkillByIdText = ""
     @State private var alertInfo: String?
 
@@ -55,6 +56,13 @@ struct ClawHubPreferencesView: View {
         .background(bg)
         .sheet(isPresented: $showAddSkillSheet) {
             addSkillSheet
+        }
+        .sheet(isPresented: $showGitHubImportSheet) {
+            GitHubSkillImportSheet(isPresented: $showGitHubImportSheet) { importedIDs in
+                appendSkills(importedIDs)
+                alertInfo =
+                    "Imported \(importedIDs.count) skill(s) from GitHub and added them to the global defaults."
+            }
         }
         .alert("GrizzyClaw", isPresented: Binding(
             get: { alertInfo != nil },
@@ -115,10 +123,14 @@ struct ClawHubPreferencesView: View {
             Text("⚡ Skills Registry")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(fg)
-            Text("Discover and install AI capabilities from the built-in registry")
+            Text("Set global skill defaults and install AI capabilities")
                 .font(.system(size: 12))
                 .foregroundStyle(secondary)
-            Text("Skills: web_search, filesystem, documentation, browser, memory, scheduler, calendar, gmail, github, mcp_marketplace")
+            Text("These `enabled_skills` are the global defaults used by agents/workspaces that do not set their own override.")
+                .font(.system(size: 12))
+                .foregroundStyle(secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("Built-ins: web_search, filesystem, documentation, browser, memory, scheduler, calendar, gmail, github, mcp_marketplace")
                 .font(.system(size: 12))
                 .foregroundStyle(secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -140,6 +152,17 @@ struct ClawHubPreferencesView: View {
                 .disabled(installBusy || skillInstallURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 .help("Clone repo and install as reference skill (SKILL.md). Requires git and pip install grizzyclaw.")
             }
+
+            HStack(spacing: 8) {
+                Button("Import GitHub…") {
+                    showGitHubImportSheet = true
+                }
+                Button("Import Local…") {
+                    importLocalSkill()
+                }
+                Spacer()
+            }
+            .controlSize(.regular)
 
             List(selection: $selectedSkill) {
                 ForEach(doc.stringArray("enabled_skills"), id: \.self) { name in
@@ -164,7 +187,7 @@ struct ClawHubPreferencesView: View {
                 }
                 Button("Refresh") {
                     doc.reloadValue(forKey: "enabled_skills")
-                    alertInfo = "Skills list reloaded from saved config.yaml on disk."
+                    alertInfo = "Global skill defaults reloaded from saved config.yaml on disk."
                 }
                 Button("Check for updates") {
                     Task { await runCheckUpdates() }
@@ -236,6 +259,12 @@ struct ClawHubPreferencesView: View {
         enabledSkillsBinding.wrappedValue = cur
     }
 
+    private func appendSkills(_ ids: [String]) {
+        for id in ids {
+            appendSkill(id)
+        }
+    }
+
     private func removeSelectedSkill() {
         guard let sel = selectedSkill else {
             alertInfo = "Select a skill in the list first."
@@ -261,6 +290,27 @@ struct ClawHubPreferencesView: View {
         alertInfo =
             "Per-skill options are stored in ~/.grizzyclaw/skills.json (same as the Python app). "
             + "The file was revealed in Finder — open it in an editor to configure web_search, documentation, etc."
+    }
+
+    private func importLocalSkill() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = true
+        panel.canCreateDirectories = false
+        panel.prompt = "Import Skill"
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            Task { @MainActor in
+                do {
+                    let skillID = try InstalledSkillStore.importSkill(from: url)
+                    appendSkill(skillID)
+                    alertInfo = "Imported local skill `\(skillID)` and added it to the global defaults."
+                } catch {
+                    alertInfo = error.localizedDescription
+                }
+            }
+        }
     }
 
     private func runInstallFromURL() async {

@@ -71,7 +71,7 @@ public struct SessionsMainView: View {
         .onAppear {
             refreshSessions()
         }
-        .onChange(of: selectedSessionId) { _ in
+        .onChange(of: selectedSessionId) {
             loadHistoryForSelection()
         }
         .alert(alertTitle, isPresented: $showAlert) {

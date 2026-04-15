@@ -2,7 +2,7 @@ import Foundation
 
 /// Python `WorkspaceManager.export_workspace_to_link` / `import_workspace_from_link`: URL-safe base64 JSON (workspace dict without `id` on export; new id on import).
 public enum WorkspaceShareLink {
-    public static func exportBase64URL(_ record: WorkspaceRecord) throws -> String {
+    public static func exportJSONObject(_ record: WorkspaceRecord) throws -> [String: Any] {
         var o: [String: Any] = [:]
         o["name"] = record.name
         o["description"] = record.description ?? ""
@@ -28,8 +28,11 @@ public enum WorkspaceShareLink {
         o["total_output_tokens"] = record.totalOutputTokens ?? 0
         o["feedback_up"] = record.feedbackUp ?? 0
         o["feedback_down"] = record.feedbackDown ?? 0
+        return o
+    }
 
-        let data = try JSONSerialization.data(withJSONObject: o, options: [])
+    public static func exportBase64URL(_ record: WorkspaceRecord) throws -> String {
+        let data = try JSONSerialization.data(withJSONObject: exportJSONObject(record), options: [])
         return data.base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")

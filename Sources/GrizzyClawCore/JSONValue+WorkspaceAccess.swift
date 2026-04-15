@@ -1,6 +1,11 @@
 import Foundation
 
 extension JSONValue {
+    public func contains(key: String) -> Bool {
+        guard case .object(let d) = self else { return false }
+        return d[key] != nil
+    }
+
     /// Returns keys when `.object`, else empty.
     public var objectKeys: [String] {
         if case .object(let d) = self { return Array(d.keys) }
@@ -56,6 +61,17 @@ extension JSONValue {
     public func stringArray(forKey key: String) -> [String] {
         guard case .object(let d) = self, let v = d[key] else { return [] }
         guard case .array(let arr) = v else { return [] }
+        return arr.compactMap { item in
+            if case .string(let s) = item { return s }
+            return nil
+        }
+    }
+
+    /// `enabled_skills` with override detection support: missing/`null` means inherit, array means explicit override.
+    public func stringArrayIfPresent(forKey key: String) -> [String]? {
+        guard case .object(let d) = self, let v = d[key] else { return nil }
+        if case .null = v { return nil }
+        guard case .array(let arr) = v else { return nil }
         return arr.compactMap { item in
             if case .string(let s) = item { return s }
             return nil

@@ -52,29 +52,18 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
     // MARK: - Discovery (list tools for all enabled servers)
 
     public func discoverTools(servers: [MCPServerRow]) async throws -> MCPToolsDiscoveryResult {
-        var serversMap: [String: [(name: String, description: String)]] = [:]
+        var serversMap: [String: [MCPToolDescriptor]] = [:]
         var errs: [String] = []
 
-        await withTaskGroup(of: (String, Result<[(String, String)], Error>).self) { group in
-            for row in servers where row.enabled {
-                group.addTask {
-                    do {
-                        let pairs = try await Self.discoverToolsForRow(row)
-                        return (row.name, .success(pairs))
-                    } catch {
-                        return (row.name, .failure(error))
-                    }
-                }
-            }
-
-            for await (name, result) in group {
-                switch result {
-                case .success(let pairs):
-                    serversMap[name] = pairs
-                case .failure(let error):
-                    GrizzyClawLog.error("MCP discovery [\(name)]: \(error.localizedDescription)")
-                    errs.append("\(name): \(error.localizedDescription)")
-                }
+        for row in servers where row.enabled {
+            do {
+                let pairs = try await Self.discoverToolsForRow(row)
+                serversMap[row.name] = pairs
+            } catch {
+                GrizzyClawLog.error("MCP discovery [\(row.name)]: \(error.localizedDescription)")
+                errs.append("\(row.name): \(error.localizedDescription)")
+                // Keep going so one broken server does not erase working ones.
+                continue
             }
         }
 
@@ -87,7 +76,7 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
         return MCPToolsDiscoveryResult(servers: serversMap, errorMessage: errMsg)
     }
 
-    private nonisolated static func discoverToolsForRow(_ row: MCPServerRow) async throws -> [(String, String)] {
+    private nonisolated static func discoverToolsForRow(_ row: MCPServerRow) async throws -> [MCPToolDescriptor] {
         let discT = discoveryTimeout(from: row)
         let tools: [Tool]
         if row.dictionary["url"] != nil {
@@ -100,7 +89,21 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
             tools = try await discoverLocalTools(row: row, timeout: discT)
         }
         return tools.map { t in
-            (t.name, String((t.description ?? "").prefix(400)))
+            MCPToolDescriptor(
+                name: t.name,
+                description: String((t.description ?? "").prefix(400)),
+                inputSchema: mcpSchemaJSONValue(t.inputSchema)
+            )
+        }
+    }
+
+    private nonisolated static func mcpSchemaJSONValue(_ schema: Value) -> JSONValue? {
+        do {
+            let data = try JSONEncoder().encode(schema)
+            return try JSONDecoder().decode(JSONValue.self, from: data)
+        } catch {
+            GrizzyClawLog.error("MCP schema conversion failed: \(error.localizedDescription)")
+            return nil
         }
     }
 

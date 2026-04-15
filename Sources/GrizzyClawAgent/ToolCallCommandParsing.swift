@@ -28,14 +28,20 @@ public enum ToolCallCommandParsing {
 
     /// Returns JSON object bodies for each `TOOL_CALL = {…}` **plus** any standalone `{"mcp":…,"tool":…}` objects (common with small local models, including MLX).
     public static func findToolCallJsonObjects(in text: String) -> [String] {
-        var blocks = findExplicitToolCallJsonObjects(in: text)
+        var blocks: [String] = []
+        var seen = Set<String>()
+        for explicit in findExplicitToolCallJsonObjects(in: text) {
+            if seen.insert(explicit).inserted {
+                blocks.append(explicit)
+            }
+        }
         for loose in findLooseMcpToolJsonObjects(in: text) {
-            if !blocks.contains(loose) {
+            if seen.insert(loose).inserted {
                 blocks.append(loose)
             }
         }
         for syn in findCommentaryRoutedSyntheticJsonObjects(in: text) {
-            if !blocks.contains(syn) {
+            if seen.insert(syn).inserted {
                 blocks.append(syn)
             }
         }

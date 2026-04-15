@@ -42,6 +42,11 @@ public enum MCPToolCaller {
         let expanded = (mcpServersFile.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             ? "~/.grizzyclaw/grizzyclaw.json" : mcpServersFile) as NSString
         let path = expanded.expandingTildeInPath
+        let normalizedArguments = normalizedArgumentsForLowContextMetaTool(
+            server: mcpServer,
+            tool: tool,
+            arguments: arguments
+        )
 
         let forcePython = ProcessInfo.processInfo.environment[Self.forcePythonCallKey] == "1"
         if !forcePython {
@@ -50,7 +55,7 @@ public enum MCPToolCaller {
                     mcpServersFile: path,
                     server: mcpServer,
                     tool: tool,
-                    arguments: arguments
+                    arguments: normalizedArguments
                 )
             } catch {
                 GrizzyClawLog.error("MCP native tool call failed, falling back to Python: \(error.localizedDescription)")
@@ -61,8 +66,35 @@ public enum MCPToolCaller {
             mcpFilePath: path,
             mcpServer: mcpServer,
             tool: tool,
-            arguments: arguments
+            arguments: normalizedArguments
         )
+    }
+
+    static func normalizedArgumentsForLowContextMetaTool(
+        server: String,
+        tool: String,
+        arguments: [String: Any]
+    ) -> [String: Any] {
+        guard tool == "get_tool_definitions" else { return arguments }
+        guard let names = arguments["names"] as? [Any] else { return arguments }
+
+        let normalizedNames = names.compactMap { item -> String? in
+            let text = String(describing: item).trimmingCharacters(in: .whitespacesAndNewlines)
+            return text.isEmpty ? nil : text
+        }
+        let lowercased = normalizedNames.map { $0.lowercased() }
+        let obviousPlaceholders = Set(["item", "items", "tool", "tools", "function", "functions", "name", "names"])
+        let shouldPatch =
+            normalizedNames.isEmpty
+            || (normalizedNames.count == 1 && obviousPlaceholders.contains(lowercased[0]))
+        guard shouldPatch else { return arguments }
+
+        var patched = arguments
+        patched["names"] = ["*"]
+        let trimmedServer = server.trimmingCharacters(in: .whitespacesAndNewlines)
+        let originalSummary = normalizedNames.isEmpty ? "empty names" : "placeholder names \(normalizedNames)"
+        GrizzyClawLog.info("MCP normalized \(trimmedServer).get_tool_definitions \(originalSummary) -> [\"*\"]")
+        return patched
     }
 
     @MainActor
@@ -237,7 +269,15 @@ public enum MCPToolCaller {
     }
 
     private static func resolvePython3Executable() -> String {
-        for p in ["/usr/bin/python3", "/opt/homebrew/bin/python3", "/usr/local/bin/python3"] where FileManager.default.isExecutableFile(atPath: p) {
+        let pipxCandidates = [
+            "~/.local/pipx/venvs/mcp/bin/python",
+            "~/.local/pipx/venvs/mcp/bin/python3",
+        ].map { ($0 as NSString).expandingTildeInPath }
+        for p in pipxCandidates where FileManager.default.isExecutableFile(atPath: p) {
+            return p
+        }
+        for p in ["/usr/bin/python3", "/opt/homebrew/bin/python3", "/usr/local/bin/python3"]
+        where FileManager.default.isExecutableFile(atPath: p) {
             return p
         }
         return "/usr/bin/python3"

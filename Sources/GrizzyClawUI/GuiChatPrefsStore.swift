@@ -81,6 +81,17 @@ public final class GuiChatPrefsStore: ObservableObject {
         }
     }
 
+    public var mcpAutoFollowActions: Bool {
+        preferences.mcpAutoFollowActions ?? true
+    }
+
+    public func setMcpAutoFollowActions(_ enabled: Bool) {
+        var p = preferences
+        p.mcpAutoFollowActions = enabled
+        preferences = p
+        persist()
+    }
+
     public func resolverLlmOverride() -> GuiChatPreferences.LLM? {
         guard let p = preferences.llm?.provider?.trimmingCharacters(in: .whitespacesAndNewlines), !p.isEmpty else {
             return nil
@@ -212,6 +223,45 @@ public final class GuiChatPrefsStore: ObservableObject {
         toolSwitch = next
         persistToolPairsOnly()
         objectWillChange.send()
+    }
+
+    /// Used for one-server probes so a successful test does not wipe tools from other servers.
+    public func mergeDiscovery(_ result: MCPToolsDiscoveryResult) {
+        guard let previous = lastDiscovery else {
+            applyDiscovery(result)
+            return
+        }
+        var combinedServers = previous.servers
+        for (server, tools) in result.servers {
+            combinedServers[server] = tools
+        }
+        let combined = MCPToolsDiscoveryResult(
+            servers: combinedServers,
+            errorMessage: result.errorMessage ?? previous.errorMessage
+        )
+        applyDiscovery(combined)
+    }
+
+    /// Full refreshes can fail transiently; keep the last good discovery instead of blanking the UI.
+    public func applyDiscoveryPreservingPreviousOnFailure(_ result: MCPToolsDiscoveryResult) {
+        if result.servers.isEmpty, result.errorMessage != nil, lastDiscovery != nil {
+            objectWillChange.send()
+            return
+        }
+        applyDiscovery(result)
+    }
+
+    public func cachedMcpToolCounts(jsonPath: String) -> [String: Int] {
+        preferences.mcpToolCountsByJSONPath?[jsonPath] ?? [:]
+    }
+
+    public func setCachedMcpToolCounts(_ counts: [String: Int], jsonPath: String) {
+        var snap = preferences
+        var cache = snap.mcpToolCountsByJSONPath ?? [:]
+        cache[jsonPath] = counts
+        snap.mcpToolCountsByJSONPath = cache
+        preferences = snap
+        persist()
     }
 
     private func rebuildToolSwitchFromPreferences() {

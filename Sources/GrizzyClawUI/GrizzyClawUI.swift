@@ -38,7 +38,7 @@ public struct GrizzyClawRootScene: Scene {
     public init() {}
 
     public var body: some Scene {
-        WindowGroup {
+        Window("GrizzyClaw", id: "main") {
             GrizzyClawRootContentView(session: session)
         }
         .defaultSize(width: 1300, height: 850)

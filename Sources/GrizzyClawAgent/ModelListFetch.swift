@@ -3,6 +3,21 @@ import GrizzyClawCore
 
 /// Fetches model id lists from local and remote providers (parity with Python `settings_dialog` + `grizzyclaw/llm/*`).
 public enum ModelListFetch: Sendable {
+    public struct FetchResult: Sendable {
+        public var ids: [String]
+        public var diagnostic: String?
+
+        public init(ids: [String], diagnostic: String? = nil) {
+            self.ids = ids
+            self.diagnostic = diagnostic
+        }
+    }
+
+    private struct LMStudioAttemptResult: Sendable {
+        var ids: [String]
+        var diagnostic: String?
+    }
+
     /// Parses LM Studio native `GET /api/v1/models` body. Uses per-element iteration so a mixed or oddly-bridged
     /// `models` array does not cause a failed `as? [[String: Any]]` cast (which would yield **no** ids despite HTTP 200).
     static func parseLmStudioNativeModelsJSON(_ data: Data) -> [String] {
@@ -69,43 +84,6 @@ public enum ModelListFetch: Sendable {
         return resolved
     }
 
-    private static func lmStudioFetchNativeModelIds(baseCandidates: [String], apiKey: String?) async -> [String] {
-        for base in baseCandidates {
-            let path = base.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/api/v1/models"
-            guard let url = URL(string: path) else { continue }
-            var req = URLRequest(url: url)
-            req.timeoutInterval = 15
-            if let k = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines), !k.isEmpty {
-                req.setValue("Bearer \(k)", forHTTPHeaderField: "Authorization")
-            }
-            let ids = await lmStudioGETModelsParsingIds(request: req)
-            if !ids.isEmpty { return ids }
-        }
-        return []
-    }
-
-    /// Ephemeral `URLSession` first; on loopback some setups return HTTP 200 with an **empty** body from that pool while LAN works — retry once with `URLSession.shared`.
-    private static func lmStudioGETModelsParsingIds(request: URLRequest) async -> [String] {
-        do {
-            let (data, resp) = try await LocalHTTPSession.modelProbe.data(for: request)
-            guard let http = resp as? HTTPURLResponse, http.statusCode == 200 else { return [] }
-            var ids = parseLmStudioNativeModelsJSON(data)
-            if ids.isEmpty, data.isEmpty {
-                let (d2, r2) = try await URLSession.shared.data(for: request)
-                if let h2 = r2 as? HTTPURLResponse, h2.statusCode == 200 {
-                    ids = parseLmStudioNativeModelsJSON(d2)
-                }
-            }
-            return ids
-        } catch {
-            if let (d2, r2) = try? await URLSession.shared.data(for: request),
-               let h2 = r2 as? HTTPURLResponse, h2.statusCode == 200 {
-                return parseLmStudioNativeModelsJSON(d2)
-            }
-            return []
-        }
-    }
-
     private static func idFromLmStudioModelEntry(_ item: Any) -> String? {
         if let s = item as? String {
             let t = s.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -164,17 +142,25 @@ public enum ModelListFetch: Sendable {
 
     /// LM Studio **OpenAI-compat** URL (e.g. `http://localhost:1234/v1`) → native `GET {host}/api/v1/models` (`models` array). See `LMStudioProvider._native_api_base` in Python.
     public static func lmStudioOpenAINativeModelIds(lmstudioOpenAICompatURL: String, apiKey: String?) async -> [String] {
+        await lmStudioOpenAINativeModelFetch(lmstudioOpenAICompatURL: lmstudioOpenAICompatURL, apiKey: apiKey).ids
+    }
+
+    public static func lmStudioOpenAINativeModelFetch(lmstudioOpenAICompatURL: String, apiKey: String?) async -> FetchResult {
         let stripped = lmStudioNativeApiBaseFromOpenAICompatURL(lmstudioOpenAICompatURL)
         let candidates = lmStudioNativeModelListBaseCandidates(stripped)
-        return await lmStudioFetchNativeModelIds(baseCandidates: candidates, apiKey: apiKey)
+        return await lmStudioFetchNativeModelResult(baseCandidates: candidates, apiKey: apiKey)
     }
 
     /// `base` is normalized LM Studio base without `/v1` suffix (see `ChatParameterResolver.normalizeLmStudioV1Base`).
     /// Parses native `{ "models": [...] }` or OpenAI-style `{ "data": [...] }` (parity with `LMStudioV1Provider.list_models`).
     public static func lmStudioV1ModelIds(base: String, apiKey: String? = nil) async -> [String] {
+        await lmStudioV1ModelFetch(base: base, apiKey: apiKey).ids
+    }
+
+    public static func lmStudioV1ModelFetch(base: String, apiKey: String? = nil) async -> FetchResult {
         let normalized = ChatParameterResolver.normalizeLmStudioV1Base(base)
         let candidates = lmStudioNativeModelListBaseCandidates(normalized)
-        return await lmStudioFetchNativeModelIds(baseCandidates: candidates, apiKey: apiKey)
+        return await lmStudioFetchNativeModelResult(baseCandidates: candidates, apiKey: apiKey)
     }
 
     /// Curated ids from `AnthropicProvider.list_models()` (Python).
@@ -231,4 +217,107 @@ public enum ModelListFetch: Sendable {
     }
 
     private static let OpenRouterBaseURL = "https://openrouter.ai/api/v1"
+}
+
+private extension ModelListFetch {
+    static func lmStudioFetchNativeModelResult(baseCandidates: [String], apiKey: String?) async -> FetchResult {
+        var lastDiagnostic: String?
+        for base in baseCandidates {
+            let path = base.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/api/v1/models"
+            guard let url = URL(string: path) else {
+                lastDiagnostic = "Invalid LM Studio model list URL: \(path)"
+                continue
+            }
+            var req = URLRequest(url: url)
+            req.timeoutInterval = 15
+            if let k = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines), !k.isEmpty {
+                req.setValue("Bearer \(k)", forHTTPHeaderField: "Authorization")
+            }
+            GrizzyClawLog.debug("LM Studio model refresh: GET \(url.absoluteString)")
+            let result = await lmStudioGETModelsResult(request: req)
+            if !result.ids.isEmpty {
+                GrizzyClawLog.debug("LM Studio model refresh: \(result.ids.count) model(s) from \(url.absoluteString)")
+                return FetchResult(ids: result.ids)
+            }
+            if let diagnostic = result.diagnostic, !diagnostic.isEmpty {
+                lastDiagnostic = diagnostic
+                GrizzyClawLog.debug("LM Studio model refresh failed: \(singleLine(diagnostic))")
+            }
+        }
+        return FetchResult(
+            ids: [],
+            diagnostic: lastDiagnostic ?? "LM Studio did not return any model ids from /api/v1/models."
+        )
+    }
+
+    private static func lmStudioGETModelsResult(request: URLRequest) async -> LMStudioAttemptResult {
+        do {
+            let (data, resp) = try await LocalHTTPSession.modelProbe.data(for: request)
+            let initial = lmStudioParseResult(data: data, response: resp, url: request.url)
+            if !initial.ids.isEmpty {
+                return initial
+            }
+            if data.isEmpty {
+                let (d2, r2) = try await URLSession.shared.data(for: request)
+                let retry = lmStudioParseResult(data: d2, response: r2, url: request.url)
+                if !retry.ids.isEmpty || retry.diagnostic != nil {
+                    return retry
+                }
+            }
+            return initial
+        } catch {
+            if let (d2, r2) = try? await URLSession.shared.data(for: request) {
+                let retry = lmStudioParseResult(data: d2, response: r2, url: request.url)
+                if !retry.ids.isEmpty || retry.diagnostic != nil {
+                    return retry
+                }
+            }
+            let formatted = LLMErrorHints.formattedMessage(for: error)
+            return LMStudioAttemptResult(
+                ids: [],
+                diagnostic: "LM Studio request failed at \(request.url?.absoluteString ?? "<unknown>").\n\n\(formatted)"
+            )
+        }
+    }
+
+    private static func lmStudioParseResult(data: Data, response: URLResponse, url: URL?) -> LMStudioAttemptResult {
+        let urlString = url?.absoluteString ?? "<unknown>"
+        guard let http = response as? HTTPURLResponse else {
+            return LMStudioAttemptResult(
+                ids: [],
+                diagnostic: "LM Studio returned a non-HTTP response at \(urlString)."
+            )
+        }
+        guard http.statusCode == 200 else {
+            let body = String(data: data, encoding: .utf8) ?? ""
+            let formatted = LLMErrorHints.formattedMessage(for: LLMStreamHTTPError.httpStatus(http.statusCode, body))
+            return LMStudioAttemptResult(
+                ids: [],
+                diagnostic: "LM Studio responded at \(urlString).\n\n\(formatted)"
+            )
+        }
+        let ids = parseLmStudioNativeModelsJSON(data)
+        if !ids.isEmpty {
+            return LMStudioAttemptResult(ids: ids, diagnostic: nil)
+        }
+        if data.isEmpty {
+            return LMStudioAttemptResult(
+                ids: [],
+                diagnostic: "LM Studio responded with HTTP 200 at \(urlString), but the response body was empty."
+            )
+        }
+        let bodyPreview = String(data: data.prefix(400), encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        var message = "LM Studio responded with HTTP 200 at \(urlString), but no model ids were found in the JSON body."
+        if !bodyPreview.isEmpty {
+            message += "\n\nResponse preview:\n\(bodyPreview)"
+        }
+        return LMStudioAttemptResult(ids: [], diagnostic: message)
+    }
+
+    static func singleLine(_ text: String) -> String {
+        text
+            .replacingOccurrences(of: "\r", with: " ")
+            .replacingOccurrences(of: "\n", with: " ")
+    }
 }

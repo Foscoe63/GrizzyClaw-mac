@@ -2,7 +2,7 @@ import Foundation
 
 /// Owns a dedicated `URLSession` for one streaming request so `invalidateAndCancel()` tears down in-flight loads promptly when the user stops generation.
 public final class LLMStreamSessionBox: @unchecked Sendable {
-    private var session: URLSession?
+    private let session: URLSession
 
     public init() {
         let c = URLSessionConfiguration.ephemeral
@@ -12,12 +12,11 @@ public final class LLMStreamSessionBox: @unchecked Sendable {
     }
 
     public func urlSession() -> URLSession {
-        session!
+        session
     }
 
     /// Idempotent: safe to call from stream termination and from `defer` after the load completes.
     public func invalidate() {
-        session?.invalidateAndCancel()
-        session = nil
+        session.invalidateAndCancel()
     }
 }

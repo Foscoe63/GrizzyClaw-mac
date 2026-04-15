@@ -121,9 +121,11 @@ struct ChatComposerToolbar: View {
         .frame(height: 36)
         .onAppear {
             refreshModelsList()
-            refreshTools()
+            if guiPrefs.lastDiscovery == nil {
+                refreshTools()
+            }
         }
-        .onChange(of: configStore.snapshot.mcpServersFile) { _ in
+        .onChange(of: configStore.snapshot.mcpServersFile) {
             refreshTools()
         }
     }
@@ -539,9 +541,9 @@ struct ChatComposerToolbar: View {
             defer { failsafe.cancel() }
             do {
                 try await GrizzyAsyncTimeout.run(seconds: 20, timeoutError: GrizzyMCPNativeError.timeout) {
-                    let r = try await MCPToolsDiscovery.discover(mcpServersFile: path)
+                    let r = try await MCPToolsDiscovery.discover(mcpServersFile: path, forceRefresh: true)
                     await MainActor.run {
-                        guiPrefs.applyDiscovery(r)
+                        guiPrefs.applyDiscoveryPreservingPreviousOnFailure(r)
                     }
                 }
             } catch {
@@ -630,7 +632,7 @@ struct ChatComposerToolbar: View {
         .buttonStyle(.borderless)
     }
 
-    private func toolServerSection(server: String, tools: [(name: String, description: String)]) -> some View {
+    private func toolServerSection(server: String, tools: [MCPToolDescriptor]) -> some View {
         let expanded = expandedToolServers.contains(server)
         let bgHead = isDark ? Color(red: 0.17, green: 0.17, blue: 0.18) : Color(red: 0.95, green: 0.95, blue: 0.97)
         return VStack(alignment: .leading, spacing: 0) {

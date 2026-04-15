@@ -14,7 +14,7 @@ public enum SkillPromptAugmentor {
         var lines: [String] = []
         lines.append("## Enabled ClawHub skills")
         lines.append(
-            "These are workspace-level capabilities and preferences. Use them as guidance for tool choice, planning, and behavior."
+            "These are the resolved ClawHub skills for the current agent/workspace. Use them as guidance for tool choice, planning, and behavior."
         )
 
         for id in normalized {

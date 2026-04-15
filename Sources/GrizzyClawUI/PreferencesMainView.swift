@@ -248,14 +248,16 @@ public struct PreferencesMainView: View {
                         fetched: $llmFetchLmStudio,
                         isRefreshing: $llmRefreshBusy
                     ) {
-                        let r = await ModelListFetch.lmStudioOpenAINativeModelIds(
+                        let result = await ModelListFetch.lmStudioOpenAINativeModelFetch(
                             lmstudioOpenAICompatURL: doc.string("lmstudio_url", default: "http://localhost:1234/v1"),
                             apiKey: doc.optionalString("lmstudio_api_key")
                         )
-                        if r.isEmpty {
-                            await MainActor.run { llmModelFetchAlert = "No models found for this provider." }
+                        if result.ids.isEmpty {
+                            await MainActor.run {
+                                llmModelFetchAlert = result.diagnostic ?? "No models found for this provider."
+                            }
                         }
-                        return r
+                        return result.ids
                     }
                     SecureField("API Key:", text: doc.bindingOptionalStringNull("lmstudio_api_key"))
                         .textContentType(.password)
@@ -286,14 +288,16 @@ public struct PreferencesMainView: View {
                         fetched: $llmFetchLmV1,
                         isRefreshing: $llmRefreshBusy
                     ) {
-                        let r = await ModelListFetch.lmStudioV1ModelIds(
+                        let result = await ModelListFetch.lmStudioV1ModelFetch(
                             base: doc.string("lmstudio_v1_url", default: "http://localhost:1234"),
                             apiKey: doc.optionalString("lmstudio_v1_api_key")
                         )
-                        if r.isEmpty {
-                            await MainActor.run { llmModelFetchAlert = "No models found for this provider." }
+                        if result.ids.isEmpty {
+                            await MainActor.run {
+                                llmModelFetchAlert = result.diagnostic ?? "No models found for this provider."
+                            }
                         }
-                        return r
+                        return result.ids
                     }
                     SecureField("API Key:", text: doc.bindingOptionalStringNull("lmstudio_v1_api_key"))
                         .textContentType(.password)
@@ -501,7 +505,7 @@ public struct PreferencesMainView: View {
                         fetched: $llmFetchMLX,
                         isRefreshing: $llmRefreshBusy
                     ) {
-                        let path = doc.optionalString("mlx_models_directory") ?? ""
+                        let path = doc.optionalString("mlx_models_directory")
                         let root: URL
                         do {
                             root = try GrizzyClawPaths.mlxDownloadRoot(userConfiguredPath: path.isEmpty ? nil : path)
@@ -581,7 +585,7 @@ public struct PreferencesMainView: View {
             Task { @MainActor in mlxPrefetchBusy = false }
         }
         do {
-            let path = await MainActor.run { doc.optionalString("mlx_models_directory") ?? "" }
+            let path = await MainActor.run { doc.optionalString("mlx_models_directory") }
             let rev = await MainActor.run { doc.string("mlx_revision", default: "main") }
             let root = try GrizzyClawPaths.mlxDownloadRoot(userConfiguredPath: path.isEmpty ? nil : path)
             try await MLXModelPrefetch.prefetch(downloadBase: root, modelId: repo, revision: rev) { _ in }

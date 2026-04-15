@@ -24,23 +24,39 @@ public struct GuiChatPreferences: Codable, Equatable, Sendable {
     public var mcpEnabledPairs: [[String]]?
     /// When `nil`, defaults to `.assistant` (assistant bubbles only; tool turns hidden).
     public var mcpTranscriptMode: McpTranscriptMode?
+    /// When `nil`, defaults to `true` so returned MCP follow-up actions keep working.
+    public var mcpAutoFollowActions: Bool?
+    /// Cache of MCP tool counts shown in Preferences, keyed by resolved MCP JSON path.
+    public var mcpToolCountsByJSONPath: [String: [String: Int]]?
 
-    public init(llm: LLM? = nil, mcpEnabledPairs: [[String]]? = nil, mcpTranscriptMode: McpTranscriptMode? = nil) {
+    public init(
+        llm: LLM? = nil,
+        mcpEnabledPairs: [[String]]? = nil,
+        mcpTranscriptMode: McpTranscriptMode? = nil,
+        mcpAutoFollowActions: Bool? = nil,
+        mcpToolCountsByJSONPath: [String: [String: Int]]? = nil
+    ) {
         self.llm = llm
         self.mcpEnabledPairs = mcpEnabledPairs
         self.mcpTranscriptMode = mcpTranscriptMode
+        self.mcpAutoFollowActions = mcpAutoFollowActions
+        self.mcpToolCountsByJSONPath = mcpToolCountsByJSONPath
     }
 
     private enum CodingKeys: String, CodingKey {
         case llm
         case mcpEnabledPairs
         case mcpTranscriptMode
+        case mcpAutoFollowActions
+        case mcpToolCountsByJSONPath
     }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         llm = try c.decodeIfPresent(LLM.self, forKey: .llm)
         mcpEnabledPairs = try c.decodeIfPresent([[String]].self, forKey: .mcpEnabledPairs)
+        mcpAutoFollowActions = try c.decodeIfPresent(Bool.self, forKey: .mcpAutoFollowActions)
+        mcpToolCountsByJSONPath = try c.decodeIfPresent([String: [String: Int]].self, forKey: .mcpToolCountsByJSONPath)
         if let raw = try c.decodeIfPresent(String.self, forKey: .mcpTranscriptMode) {
             mcpTranscriptMode = McpTranscriptMode(rawValue: raw)
         } else {
@@ -53,6 +69,8 @@ public struct GuiChatPreferences: Codable, Equatable, Sendable {
         try c.encodeIfPresent(llm, forKey: .llm)
         try c.encodeIfPresent(mcpEnabledPairs, forKey: .mcpEnabledPairs)
         try c.encodeIfPresent(mcpTranscriptMode, forKey: .mcpTranscriptMode)
+        try c.encodeIfPresent(mcpAutoFollowActions, forKey: .mcpAutoFollowActions)
+        try c.encodeIfPresent(mcpToolCountsByJSONPath, forKey: .mcpToolCountsByJSONPath)
     }
 
     public static let fileName = "gui_chat_prefs.json"

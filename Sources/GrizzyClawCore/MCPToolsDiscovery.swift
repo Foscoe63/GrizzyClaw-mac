@@ -1,11 +1,23 @@
 import Foundation
 
+public struct MCPToolDescriptor: Sendable, Equatable {
+    public var name: String
+    public var description: String
+    public var inputSchema: JSONValue?
+
+    public init(name: String, description: String, inputSchema: JSONValue? = nil) {
+        self.name = name
+        self.description = description
+        self.inputSchema = inputSchema
+    }
+}
+
 public struct MCPToolsDiscoveryResult: Sendable {
-    /// Server name → (tool name, description).
-    public var servers: [String: [(name: String, description: String)]]
+    /// Server name → discovered MCP tools (name, description, optional input schema).
+    public var servers: [String: [MCPToolDescriptor]]
     public var errorMessage: String?
 
-    public init(servers: [String: [(name: String, description: String)]], errorMessage: String?) {
+    public init(servers: [String: [MCPToolDescriptor]], errorMessage: String?) {
         self.servers = servers
         self.errorMessage = errorMessage
     }
@@ -61,10 +73,18 @@ public enum MCPToolsDiscovery {
         func put(_ value: MCPToolsDiscoveryResult, for key: CacheKey) {
             store[key] = value
         }
+
+        func removeAll(path: String) {
+            store = store.filter { $0.key.path != path }
+        }
     }
 
     /// - Parameter onlyServerNames: If non-empty, native discovery only connects to these rows (e.g. **Test** for one server). Avoids hanging on unrelated broken servers.
-    public static func discover(mcpServersFile: String, onlyServerNames: Set<String>? = nil) async throws -> MCPToolsDiscoveryResult {
+    public static func discover(
+        mcpServersFile: String,
+        onlyServerNames: Set<String>? = nil,
+        forceRefresh: Bool = false
+    ) async throws -> MCPToolsDiscoveryResult {
         let expanded = (mcpServersFile.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             ? "~/.grizzyclaw/grizzyclaw.json" : mcpServersFile) as NSString
         let path = expanded.expandingTildeInPath
@@ -74,7 +94,9 @@ public enum MCPToolsDiscovery {
             onlyServerNames: onlyServerNames?.sorted()
         )
 
-        if let cached = await DiscoveryCache.shared.get(cacheKey) {
+        if forceRefresh {
+            await DiscoveryCache.shared.removeAll(path: path)
+        } else if let cached = await DiscoveryCache.shared.get(cacheKey) {
             return cached
         }
 
@@ -83,16 +105,13 @@ public enum MCPToolsDiscovery {
             do {
                 let url = URL(fileURLWithPath: path)
                 let rows = try MCPServersFileIO.load(url: url)
-                let rowsToProbe: [MCPServerRow]
-                if let filter = onlyServerNames, !filter.isEmpty {
-                    rowsToProbe = rows
-                        .filter { filter.contains($0.name) }
-                        .map { MCPServerRow(name: $0.name, enabled: true, dictionary: $0.dictionary) }
-                    if rowsToProbe.isEmpty {
+                let rowsToProbe = probeRows(rows: rows, onlyServerNames: onlyServerNames)
+                if rowsToProbe.isEmpty {
+                    if let filter = onlyServerNames, !filter.isEmpty {
                         return MCPToolsDiscoveryResult(servers: [:], errorMessage: "No MCP server in the JSON file matches the requested name(s).")
                     }
-                } else {
-                    rowsToProbe = rows
+                    await DiscoveryCache.shared.put(MCPToolsDiscoveryResult(servers: [:], errorMessage: nil), for: cacheKey)
+                    return MCPToolsDiscoveryResult(servers: [:], errorMessage: nil)
                 }
                 let native = try await GrizzyMCPNativeRuntime.shared.discoverTools(servers: rowsToProbe)
                 let merged = native.mergingPythonInternalTools()
@@ -158,17 +177,17 @@ public enum MCPToolsDiscovery {
                 err = obj["error"] as? String
             }
 
-            var servers: [String: [(name: String, description: String)]] = [:]
+            var servers: [String: [MCPToolDescriptor]] = [:]
             if let srv = obj["servers"] as? [String: Any] {
                 for (name, val) in srv {
                     guard let rows = val as? [[Any]] else { continue }
-                    var pairs: [(String, String)] = []
+                    var pairs: [MCPToolDescriptor] = []
                     for row in rows {
                         guard row.count >= 1 else { continue }
                         let tool = String(describing: row[0])
                         let desc = row.count >= 2 ? String(describing: row[1]) : ""
                         if !tool.isEmpty {
-                            pairs.append((tool, desc))
+                            pairs.append(MCPToolDescriptor(name: tool, description: desc))
                         }
                     }
                     if !pairs.isEmpty {
@@ -181,6 +200,16 @@ public enum MCPToolsDiscovery {
         }.value
         await DiscoveryCache.shared.put(result, for: cacheKey)
         return result
+    }
+
+    static func probeRows(rows: [MCPServerRow], onlyServerNames: Set<String>? = nil) -> [MCPServerRow] {
+        let enabledRows = rows.filter(\.enabled)
+        guard let filter = onlyServerNames, !filter.isEmpty else {
+            return enabledRows
+        }
+        return enabledRows
+            .filter { filter.contains($0.name) }
+            .map { MCPServerRow(name: $0.name, enabled: true, dictionary: $0.dictionary) }
     }
 
     /// Validates a local stdio server by writing a temporary `grizzyclaw.json` and running `mcp_discover.py` (same path as **Test** in the list; approximates Python `validate_server_config` + `ValidateConfigWorker`).
@@ -314,6 +343,13 @@ public enum MCPToolsDiscovery {
     }
 
     private static func resolvePython3Executable() -> String {
+        let pipxCandidates = [
+            "~/.local/pipx/venvs/mcp/bin/python",
+            "~/.local/pipx/venvs/mcp/bin/python3",
+        ].map { ($0 as NSString).expandingTildeInPath }
+        for p in pipxCandidates where FileManager.default.isExecutableFile(atPath: p) {
+            return p
+        }
         let candidates = [
             "/usr/bin/python3",
             "/opt/homebrew/bin/python3",
@@ -376,13 +412,13 @@ extension MCPToolsDiscoveryResult {
     /// Flat merge: internal pairs first, then discovered (stable), deduped by (server, tool).
     public func mergingPythonInternalTools() -> MCPToolsDiscoveryResult {
         var seen = Set<String>()
-        var flat: [(String, String, String)] = []
+        var flat: [(String, MCPToolDescriptor)] = []
         func pairKey(_ s: String, _ n: String) -> String { s + "\u{1E}" + n }
         for t in Self.pythonInternalTools {
             let k = pairKey(t.server, t.name)
             guard !seen.contains(k) else { continue }
             seen.insert(k)
-            flat.append((t.server, t.name, t.description))
+            flat.append((t.server, MCPToolDescriptor(name: t.name, description: t.description)))
         }
         for srv in servers.keys.sorted() {
             guard let tools = servers[srv] else { continue }
@@ -390,12 +426,12 @@ extension MCPToolsDiscoveryResult {
                 let k = pairKey(srv, t.name)
                 guard !seen.contains(k) else { continue }
                 seen.insert(k)
-                flat.append((srv, t.name, t.description))
+                flat.append((srv, t))
             }
         }
-        var by: [String: [(name: String, description: String)]] = [:]
-        for (srv, name, desc) in flat {
-            by[srv, default: []].append((name: name, description: desc))
+        var by: [String: [MCPToolDescriptor]] = [:]
+        for (srv, tool) in flat {
+            by[srv, default: []].append(tool)
         }
         return MCPToolsDiscoveryResult(servers: by, errorMessage: errorMessage)
     }
@@ -417,7 +453,7 @@ extension MCPToolsDiscoveryResult {
             let canonTool = MCPIdentityResolution.canonicalToolName(modelOutput: atool, knownTools: names)
             ok.insert(canonSrv + "\u{1E}" + canonTool)
         }
-        var by: [String: [(name: String, description: String)]] = [:]
+        var by: [String: [MCPToolDescriptor]] = [:]
         for (srv, tools) in servers {
             let ft = tools.filter { ok.contains(srv + "\u{1E}" + $0.name) }
             if !ft.isEmpty { by[srv] = ft }

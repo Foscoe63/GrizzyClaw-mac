@@ -446,7 +446,7 @@ public struct GrizzyClawMainShell: View {
         }
         .environmentObject(statusBarStore)
         .frame(minWidth: 1080, minHeight: 700)
-        .onChange(of: selectedNav) { new in
+        .onChange(of: selectedNav) { _, new in
             switch new {
             case .workspaces:
                 openWorkspacesWindow()

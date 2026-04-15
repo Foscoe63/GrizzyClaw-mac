@@ -1,6 +1,7 @@
 import GrizzyClawCore
 import SwiftUI
 
+@MainActor
 extension ConfigYamlDocument {
     func bindingString(_ key: String, default d: String = "") -> Binding<String> {
         Binding(

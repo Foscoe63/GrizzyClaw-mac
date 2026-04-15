@@ -1,4 +1,5 @@
 import AppKit
+import GrizzyClawAgent
 import GrizzyClawCore
 import SwiftUI
 import UniformTypeIdentifiers
@@ -53,7 +54,7 @@ private enum WorkspaceEditorPane: Hashable {
 /// view recreation (save/reload, split view updates, tab switches that drop `tabContent` branches).
 @MainActor
 private enum WorkspaceEditorMCPCache {
-    static var discovery: [String: [String: [(name: String, description: String)]]] = [:]
+    static var discovery: [String: [String: [MCPToolDescriptor]]] = [:]
 }
 
 /// Full settings + tabs for one workspace (Python Workspaces dialog right pane).
@@ -133,7 +134,7 @@ struct WorkspaceFullEditorView: View {
 
     // Tools (Python WorkspaceDialog → Tools tab)
     @State private var enforceToolAllowlist: Bool
-    @State private var discoveredTools: [String: [(name: String, description: String)]]
+    @State private var discoveredTools: [String: [MCPToolDescriptor]]
     @State private var toolSwitchOn: [String: Bool]
     @State private var expandedToolServers: Set<String> = []
     @State private var toolsRefreshing = false
@@ -142,6 +143,13 @@ struct WorkspaceFullEditorView: View {
     // Skills marketplace rows
     @State private var marketplaceEntries: [SkillMarketplaceEntry] = []
     @State private var marketplaceLoadError: String?
+    @State private var workspaceSkillsOverrideEnabled: Bool
+    @State private var workspaceSkillIDs: [String]
+
+    // LLM model suggestions for the workspace editor.
+    @State private var availableModelsByProvider: [String: [ModelPickerModels.Row]] = [:]
+    @State private var llmModelsLoading = false
+    @State private var llmModelsMessage: String?
 
     @State private var benchmarkBusy = false
     @State private var benchmarkResult = ""
@@ -253,10 +261,12 @@ struct WorkspaceFullEditorView: View {
         _apiKeyOpenCodeZen = State(initialValue: cfg?.string(forKey: "opencode_zen_api_key") ?? "")
         _apiKeyLMStudio = State(initialValue: cfg?.string(forKey: "lmstudio_api_key") ?? "")
         _apiKeyLMStudioV1 = State(initialValue: cfg?.string(forKey: "lmstudio_v1_api_key") ?? "")
+        _workspaceSkillsOverrideEnabled = State(initialValue: cfg?.stringArrayIfPresent(forKey: "enabled_skills") != nil)
+        _workspaceSkillIDs = State(initialValue: cfg?.stringArray(forKey: "enabled_skills") ?? [])
 
         let capPairs = cfg?.mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
         let cachedDisc = WorkspaceEditorMCPCache.discovery[workspace.id] ?? [:]
-        let initialDisc: [String: [(name: String, description: String)]] = {
+        let initialDisc: [String: [MCPToolDescriptor]] = {
             if !cachedDisc.isEmpty { return cachedDisc }
             if let pairs = capPairs, !pairs.isEmpty {
                 return Self.discoveredToolsFromAllowlistPairs(pairs)
@@ -335,7 +345,7 @@ struct WorkspaceFullEditorView: View {
                 marketplaceEntries = (try? SkillMarketplaceLoader.load(skillMarketplacePathFromConfig: "")) ?? []
             }
         }
-        .onChange(of: workspace.id) { _ in
+        .onChange(of: workspace.id) {
             benchmarkResult = ""
         }
     }
@@ -569,7 +579,13 @@ struct WorkspaceFullEditorView: View {
             case .tools:
                 workspaceToolsSection
             case .skills:
-                workspaceSkillsSection
+                WorkspaceSkillEditorSection(
+                    usesWorkspaceOverride: $workspaceSkillsOverrideEnabled,
+                    workspaceSkillIDs: $workspaceSkillIDs,
+                    inheritedSkillIDs: ClawHubSkillResolver.defaultSkillIDs(user: configStore.snapshot),
+                    marketplaceEntries: marketplaceEntries,
+                    marketplaceLoadError: marketplaceLoadError
+                )
             }
         }
     }
@@ -661,6 +677,16 @@ struct WorkspaceFullEditorView: View {
         return o
     }
 
+    private var availableModelsForSelectedProvider: [ModelPickerModels.Row] {
+        let providerKey = llmProvider.trimmingCharacters(in: .whitespacesAndNewlines)
+        var rows = availableModelsByProvider[providerKey] ?? []
+        let trimmedCurrentModel = llmModel.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedCurrentModel.isEmpty, !rows.contains(where: { $0.modelId == trimmedCurrentModel }) {
+            rows.insert(.init(modelId: trimmedCurrentModel, displayName: trimmedCurrentModel), at: 0)
+        }
+        return rows
+    }
+
     private var llmForm: some View {
         Form {
             Section {
@@ -671,13 +697,43 @@ struct WorkspaceFullEditorView: View {
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     TextField("Select or type model name", text: $llmModel)
+                    if !availableModelsForSelectedProvider.isEmpty {
+                        Menu {
+                            ForEach(availableModelsForSelectedProvider) { row in
+                                Button(row.displayName) {
+                                    llmModel = row.modelId
+                                }
+                            }
+                        } label: {
+                            Text("Suggestions")
+                        }
+                        .fixedSize()
+                    }
                     Button {
-                        // No-op: refresh requires Python router / HTTP; parity affordance.
+                        refreshWorkspaceModelList()
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help("Refresh models from provider (full discovery runs in the Python app.)")
-                    .disabled(true)
+                    .help("Refresh models from configured providers and update suggestions for this workspace.")
+                    .disabled(llmModelsLoading)
+                    if llmModelsLoading {
+                        ProgressView()
+                            .controlSize(.small)
+                    }
+                }
+                Text(
+                    availableModelsForSelectedProvider.isEmpty
+                        ? "Type a model manually or refresh to load provider-backed suggestions."
+                        : "Suggestions come from the selected provider when available; you can still type any model id manually."
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                if let llmModelsMessage {
+                    Text(llmModelsMessage)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 LabeledContent("Temperature:") {
                     TextField("", text: $temperatureText)
@@ -734,6 +790,16 @@ struct WorkspaceFullEditorView: View {
             }
         }
         .formStyle(.grouped)
+        .task(id: workspace.id) {
+            guard availableModelsByProvider.isEmpty else { return }
+            refreshWorkspaceModelList()
+        }
+        .onChange(of: llmProvider) {
+            llmModelsMessage = nil
+            if availableModelsByProvider[llmProvider.trimmingCharacters(in: .whitespacesAndNewlines)] == nil {
+                refreshWorkspaceModelList()
+            }
+        }
     }
 
     private var promptForm: some View {
@@ -1120,11 +1186,11 @@ struct WorkspaceFullEditorView: View {
     }
 
     /// Builds a minimal discovery map from persisted `mcp_tool_allowlist` (descriptions empty until Refresh).
-    private static func discoveredToolsFromAllowlistPairs(_ pairs: [(String, String)]) -> [String: [(name: String, description: String)]] {
-        var dict: [String: [(name: String, description: String)]] = [:]
+    private static func discoveredToolsFromAllowlistPairs(_ pairs: [(String, String)]) -> [String: [MCPToolDescriptor]] {
+        var dict: [String: [MCPToolDescriptor]] = [:]
         for (srv, tool) in pairs {
             guard !srv.isEmpty, !tool.isEmpty else { continue }
-            dict[srv, default: []].append((name: tool, description: ""))
+            dict[srv, default: []].append(MCPToolDescriptor(name: tool, description: ""))
         }
         for srv in dict.keys {
             dict[srv]?.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
@@ -1164,7 +1230,7 @@ struct WorkspaceFullEditorView: View {
     }
 
     private static func toolSwitchMap(
-        discovered: [String: [(name: String, description: String)]],
+        discovered: [String: [MCPToolDescriptor]],
         capPairs: [(String, String)]?
     ) -> [String: Bool] {
         let capSet: Set<String>? = capPairs.map { pairs in
@@ -1182,83 +1248,6 @@ struct WorkspaceFullEditorView: View {
             }
         }
         return next
-    }
-
-    private var enabledSkillSet: Set<String> {
-        let cfg = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?.config
-        return Set(cfg?.stringArray(forKey: "enabled_skills") ?? [])
-    }
-
-    private var workspaceSkillsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Add curated skills to this workspace")
-                .font(.headline)
-            Text(
-                "Marketplace bundles add entries to `enabled_skills` in this workspace’s config. "
-                    + "Add/Remove saves immediately (same as the Python app). Override the catalog with "
-                    + "`skill_marketplace_path` in config.yaml or `~/.grizzyclaw/skill_marketplace.json`."
-            )
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .fixedSize(horizontal: false, vertical: true)
-
-            if let marketplaceLoadError {
-                Text(marketplaceLoadError)
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-            }
-
-            if marketplaceEntries.isEmpty {
-                Text("No marketplace entries loaded.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(marketplaceEntries) { entry in
-                    let added = entry.enabledSkillsAdd.contains { enabledSkillSet.contains($0) }
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(entry.name)
-                                .font(.subheadline.weight(.medium))
-                            if !entry.description.isEmpty {
-                                Text(entry.description)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                        }
-                        Spacer(minLength: 12)
-                        Button(added ? "Remove" : "Add") {
-                            toggleMarketplaceSkill(id: entry.id, remove: added)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(added ? Color(red: 0.75, green: 0.22, blue: 0.17) : nil)
-                    }
-                    .padding(.vertical, 6)
-                }
-            }
-        }
-        .frame(maxWidth: 560, alignment: .leading)
-    }
-
-    private func toggleMarketplaceSkill(id: String, remove: Bool) {
-        saveError = nil
-        do {
-            if remove {
-                try workspaceStore.removeMarketplaceSkillFromWorkspace(
-                    workspaceId: workspace.id,
-                    marketplaceId: id,
-                    skillMarketplacePathFromConfig: configStore.snapshot.skillMarketplacePath
-                )
-            } else {
-                try workspaceStore.addMarketplaceSkillToWorkspace(
-                    workspaceId: workspace.id,
-                    marketplaceId: id,
-                    skillMarketplacePathFromConfig: configStore.snapshot.skillMarketplacePath
-                )
-            }
-        } catch {
-            saveError = error.localizedDescription
-        }
     }
 
     private func browseAvatarPath() {
@@ -1297,6 +1286,38 @@ struct WorkspaceFullEditorView: View {
             NSPasteboard.general.setString(link, forType: .string)
         } catch {
             saveError = error.localizedDescription
+        }
+    }
+
+    private func refreshWorkspaceModelList() {
+        guard !llmModelsLoading else { return }
+        llmModelsLoading = true
+        llmModelsMessage = nil
+        let cfg = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?.config ?? workspace.config
+        let user = configStore.snapshot
+        let routing = configStore.routingExtras
+        Task {
+            let secrets: UserConfigSecrets
+            do {
+                secrets = try UserConfigLoader.loadSecretsWithKeychain()
+            } catch {
+                secrets = .empty
+            }
+            let models = await ModelPickerModels.fetch(
+                workspaceConfig: cfg,
+                user: user,
+                routing: routing,
+                secrets: secrets
+            )
+            await MainActor.run {
+                availableModelsByProvider = models
+                llmModelsLoading = false
+                let providerKey = llmProvider.trimmingCharacters(in: .whitespacesAndNewlines)
+                let count = models[providerKey]?.count ?? 0
+                llmModelsMessage = count > 0
+                    ? "Loaded \(count) model suggestion\(count == 1 ? "" : "s") for \(providerKey)."
+                    : "No provider-backed suggestions were returned for \(providerKey); manual model entry still works."
+            }
         }
     }
 
@@ -1415,6 +1436,12 @@ struct WorkspaceFullEditorView: View {
             }
         } else {
             patch["mcp_tool_allowlist"] = .null
+        }
+
+        if workspaceSkillsOverrideEnabled {
+            patch["enabled_skills"] = .array(workspaceSkillIDs.map { .string($0) })
+        } else {
+            patch["enabled_skills"] = .null
         }
 
         do {

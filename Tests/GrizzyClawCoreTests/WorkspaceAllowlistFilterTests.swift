@@ -2,10 +2,14 @@ import XCTest
 import GrizzyClawCore
 
 final class WorkspaceAllowlistFilterTests: XCTestCase {
+    private func tool(_ name: String, _ description: String) -> MCPToolDescriptor {
+        MCPToolDescriptor(name: name, description: description)
+    }
+
     func testAllowlistNormalizesUserPrefixedServer() {
         let disc = MCPToolsDiscoveryResult(
             servers: [
-                "ddg-search": [(name: "search", description: "Web search")],
+                "ddg-search": [tool("search", "Web search")],
             ],
             errorMessage: nil
         )
@@ -16,7 +20,7 @@ final class WorkspaceAllowlistFilterTests: XCTestCase {
     func testAllowlistFallsBackWhenNothingMatches() {
         let disc = MCPToolsDiscoveryResult(
             servers: [
-                "ddg-search": [(name: "ddg_web_search", description: "x")],
+                "ddg-search": [tool("ddg_web_search", "x")],
             ],
             errorMessage: nil
         )

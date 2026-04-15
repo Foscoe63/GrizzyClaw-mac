@@ -1,5 +1,7 @@
+import AppKit
 import GrizzyClawCore
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Workspace browser + detail (`workspaces.json` parity); layout aligned with Python `WorkspaceDialog`.
 struct WorkspacesMainView: View {
@@ -172,12 +174,27 @@ struct WorkspacesMainView: View {
                     .controlSize(.large)
                     .help("Create a new workspace")
 
-                    Button("Import") {
+                    Button("Import Link") {
                         importLinkText = ""
                         showingImport = true
                     }
                     .buttonStyle(.bordered)
                     .help("Import from a pasted share link")
+                }
+
+                HStack(spacing: 8) {
+                    Button("Import File") {
+                        importWorkspaceFromFile()
+                    }
+                    .buttonStyle(.bordered)
+                    .help("Import a workspace/agent JSON file")
+
+                    Button("Export JSON") {
+                        exportSelectedWorkspaceJSON()
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(selectedWorkspaceId == nil)
+                    .help("Export the selected workspace as a JSON file")
 
                     Button("Delete") {
                         if let id = selectedWorkspaceId {
@@ -335,6 +352,50 @@ struct WorkspacesMainView: View {
                     ?? workspaceStore.index?.workspaces.first?.id
             }
             mutationError = nil
+        } catch {
+            mutationError = error.localizedDescription
+        }
+    }
+
+    private func importWorkspaceFromFile() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowedContentTypes = [.json]
+        panel.prompt = "Import Workspace"
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            do {
+                let data = try Data(contentsOf: url)
+                let newId = try workspaceStore.importWorkspaceFromJSONData(data)
+                selectedWorkspaceId = newId
+                mutationError = nil
+            } catch {
+                mutationError = error.localizedDescription
+            }
+        }
+    }
+
+    private func exportSelectedWorkspaceJSON() {
+        guard let id = selectedWorkspaceId else { return }
+        do {
+            let data = try workspaceStore.exportWorkspaceToJSONData(id: id)
+            let workspaceName = workspaceStore.index?.workspaces.first(where: { $0.id == id })?.name ?? "workspace"
+            let savePanel = NSSavePanel()
+            savePanel.canCreateDirectories = true
+            savePanel.nameFieldStringValue = "\(workspaceName.replacingOccurrences(of: "/", with: "-")).json"
+            savePanel.allowedContentTypes = [.json]
+            savePanel.prompt = "Export Workspace"
+            savePanel.begin { response in
+                guard response == .OK, let url = savePanel.url else { return }
+                do {
+                    try data.write(to: url, options: .atomic)
+                    mutationError = nil
+                } catch {
+                    mutationError = error.localizedDescription
+                }
+            }
         } catch {
             mutationError = error.localizedDescription
         }

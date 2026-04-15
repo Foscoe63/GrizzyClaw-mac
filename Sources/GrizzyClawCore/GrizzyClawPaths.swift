@@ -38,6 +38,11 @@ public enum GrizzyClawPaths {
         userDataDirectory.appendingPathComponent("skills.json", isDirectory: false)
     }
 
+    /// `~/.grizzyclaw/skills/` — locally installed custom skills (`SKILL.md` bundles).
+    public static var skillsDirectory: URL {
+        userDataDirectory.appendingPathComponent("skills", isDirectory: true)
+    }
+
     /// `~/.grizzyclaw/watchers/` — per-file watcher JSON (Python `watcher_store`).
     public static var watchersDirectory: URL {
         userDataDirectory.appendingPathComponent("watchers", isDirectory: true)
@@ -75,6 +80,14 @@ public enum GrizzyClawPaths {
     @discardableResult
     public static func ensureSessionsDirectoryExists() throws -> URL {
         let url = sessionsDirectory
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    /// Ensures `skills/` exists for imported custom skills.
+    @discardableResult
+    public static func ensureSkillsDirectoryExists() throws -> URL {
+        let url = skillsDirectory
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         return url
     }

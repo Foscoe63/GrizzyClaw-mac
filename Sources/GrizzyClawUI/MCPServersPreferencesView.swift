@@ -119,11 +119,14 @@ struct MCPServersPreferencesView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(bg)
         .onAppear {
-            toolCounts = MCPServersPreferencesCache.toolCountsByJSONPath[cacheKey] ?? [:]
+            let persistedCounts = guiChatPrefs.cachedMcpToolCounts(jsonPath: cacheKey)
+            toolCounts = MCPServersPreferencesCache.toolCountsByJSONPath[cacheKey] ?? persistedCounts
             runningMap = MCPServersPreferencesCache.runningMapByJSONPath[cacheKey] ?? [:]
             reloadMCPFile()
             Task {
-                await refreshToolCounts()
+                if toolCounts.isEmpty, guiChatPrefs.lastDiscovery == nil {
+                    await refreshToolCounts()
+                }
                 await recomputeRunningMap()
             }
         }
@@ -235,6 +238,24 @@ struct MCPServersPreferencesView: View {
             Link("How to add MCP servers", destination: URL(string: "https://modelcontextprotocol.io/introduction")!)
                 .font(.system(size: 12))
                 .tint(accent)
+
+            HStack(alignment: .top, spacing: 12) {
+                Toggle(
+                    "Auto-follow returned tool actions",
+                    isOn: Binding(
+                        get: { guiChatPrefs.mcpAutoFollowActions },
+                        set: { guiChatPrefs.setMcpAutoFollowActions($0) }
+                    )
+                )
+                .toggleStyle(.checkbox)
+                .foregroundStyle(fg)
+                .help("When enabled, GrizzyClaw can automatically execute follow-up tool calls returned in an MCP tool's `actions` payload.")
+
+                Spacer(minLength: 0)
+            }
+            Text("Useful for low-context servers and tool chains that return the next recommended `tool_call`. Turn this off if you want to inspect each step manually.")
+                .font(.system(size: 11))
+                .foregroundStyle(secondary)
 
             if let loadError {
                 Text(loadError)
@@ -740,11 +761,12 @@ struct MCPServersPreferencesView: View {
     private func refreshToolCounts() async {
         let path = doc.string("mcp_servers_file", default: "~/.grizzyclaw/grizzyclaw.json")
         do {
-            let r = try await MCPToolsDiscovery.discover(mcpServersFile: path)
-            var counts: [String: Int] = [:]
-            for (k, v) in r.servers { counts[k] = v.count }
+            let r = try await MCPToolsDiscovery.discover(mcpServersFile: path, forceRefresh: true)
             await MainActor.run {
-                toolCounts = counts
+                var next = toolCounts
+                for (k, v) in r.servers { next[k] = v.count }
+                toolCounts = next
+                guiChatPrefs.applyDiscoveryPreservingPreviousOnFailure(r)
                 persistCachedViewState()
             }
         } catch {
@@ -761,7 +783,11 @@ struct MCPServersPreferencesView: View {
         let rowName = row.name
         do {
             // Only probe this server — full-file discovery connects to every enabled server and can hang or fail silently.
-            let r = try await MCPToolsDiscovery.discover(mcpServersFile: path, onlyServerNames: Set([rowName]))
+            let r = try await MCPToolsDiscovery.discover(
+                mcpServersFile: path,
+                onlyServerNames: Set([rowName]),
+                forceRefresh: true
+            )
             let n = r.servers[rowName]?.count ?? 0
             if let err = r.errorMessage, !err.isEmpty {
                 await MainActor.run { presentMcpSheetAlert(title: "MCP test", message: "Test: \(rowName)\n\(err)") }
@@ -770,6 +796,7 @@ struct MCPServersPreferencesView: View {
                     var next = toolCounts
                     next[rowName] = n
                     toolCounts = next
+                    guiChatPrefs.mergeDiscovery(r)
                     persistCachedViewState()
                     presentMcpSheetAlert(title: "MCP test", message: "Test: \(rowName)\nOK — \(n) tools")
                 }
@@ -837,7 +864,7 @@ struct MCPServersPreferencesView: View {
         }
         var toolSummary = ""
         do {
-            let r = try await MCPToolsDiscovery.discover(mcpServersFile: path)
+            let r = try await MCPToolsDiscovery.discover(mcpServersFile: path, forceRefresh: true)
             let totalTools = r.servers.values.reduce(0) { $0 + $1.count }
             toolSummary = "\n\nTool discovery: \(totalTools) tools listed across \(r.servers.count) server(s)."
             if let e = r.errorMessage, !e.isEmpty {
@@ -847,6 +874,7 @@ struct MCPServersPreferencesView: View {
                 var next = toolCounts
                 for (k, v) in r.servers { next[k] = v.count }
                 toolCounts = next
+                guiChatPrefs.applyDiscoveryPreservingPreviousOnFailure(r)
                 persistCachedViewState()
             }
         } catch {
@@ -905,6 +933,7 @@ struct MCPServersPreferencesView: View {
     private func persistCachedViewState() {
         MCPServersPreferencesCache.toolCountsByJSONPath[cacheKey] = toolCounts
         MCPServersPreferencesCache.runningMapByJSONPath[cacheKey] = runningMap
+        guiChatPrefs.setCachedMcpToolCounts(toolCounts, jsonPath: cacheKey)
     }
 }
 
@@ -979,7 +1008,9 @@ struct MCPServerEditorSheet: View {
                     fsAllow = split.allowPaths.joined(separator: ", ")
                 }
                 if let env = row.dictionary["env"] as? [String: Any] {
-                    envText = env.keys.sorted().map { k in "\(k)=\(env[k]!)" }.joined(separator: "\n")
+                    envText = env.keys.sorted().map { k in
+                        "\(k)=\(env[k].map { String(describing: $0) } ?? "")"
+                    }.joined(separator: "\n")
                 }
                 if let t = row.dictionary["timeout_s"] as? Int { timeoutText = String(t) }
                 if let m = row.dictionary["max_concurrency"] as? Int { maxConcText = String(m) }

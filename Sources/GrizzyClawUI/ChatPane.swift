@@ -129,11 +129,11 @@ public struct ChatPane: View {
             .padding(.bottom, 10)
         }
         .background(AppearanceTheme.chatBackground(theme: snap.theme))
-        .onChange(of: session.assistantCanvasObservationEpoch) { _ in
+        .onChange(of: session.assistantCanvasObservationEpoch) {
             applyCanvasSyncAfterAssistantObservation()
         }
-        .onChange(of: session.isStreaming) { streaming in
-            if !streaming {
+        .onChange(of: session.isStreaming) {
+            if !session.isStreaming {
                 syncCanvasFromAssistantStream(forceFinal: true)
             }
         }
@@ -261,13 +261,13 @@ public struct ChatPane: View {
                 .padding(.top, 16)
                 .padding(.trailing, 12)
             }
-            .onChange(of: session.assistantCanvasObservationEpoch) { _ in
+            .onChange(of: session.assistantCanvasObservationEpoch) {
                 scrollChatToBottom(proxy: proxy)
             }
-            .onChange(of: session.messages.count) { _ in
+            .onChange(of: session.messages.count) {
                 scrollChatToBottom(proxy: proxy)
             }
-            .onChange(of: guiChatPrefs.mcpTranscriptMode) { _ in
+            .onChange(of: guiChatPrefs.mcpTranscriptMode) {
                 scrollChatToBottom(proxy: proxy)
             }
         }

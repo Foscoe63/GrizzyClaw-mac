@@ -24,7 +24,7 @@ public struct SchedulerMainView: View {
 
     @State private var mcpServers: [String] = []
     @State private var mcpToolsForServer: [String] = []
-    @State private var mcpDiscoveryMap: [String: [(name: String, description: String)]] = [:]
+    @State private var mcpDiscoveryMap: [String: [MCPToolDescriptor]] = [:]
 
     @State private var infoAlertTitle = ""
     @State private var infoAlertMessage = ""
@@ -137,7 +137,7 @@ public struct SchedulerMainView: View {
                             }
                             .labelsHidden()
                             .frame(minWidth: 220)
-                            .onChange(of: cronPresetIndex) { new in
+                            .onChange(of: cronPresetIndex) { _, new in
                                 if new > 0, new < Self.cronPresets.count {
                                     cronField = Self.cronPresets[new].cron
                                 }
@@ -157,7 +157,7 @@ public struct SchedulerMainView: View {
                         HStack {
                             TextField("e.g. mcp-obsidian-advanced", text: $mcpServerField)
                                 .textFieldStyle(.roundedBorder)
-                                .onChange(of: mcpServerField) { _ in
+                                .onChange(of: mcpServerField) {
                                     syncMcpToolsForServer()
                                 }
                             if !mcpServers.isEmpty {
@@ -209,13 +209,13 @@ public struct SchedulerMainView: View {
             refreshStatus()
             loadMcpChoices()
         }
-        .onChange(of: scheduledTasksStore.tasks) { _ in
+        .onChange(of: scheduledTasksStore.tasks) {
             refreshStatus()
         }
-        .onChange(of: scheduledTasksStore.disabledTaskIds) { _ in
+        .onChange(of: scheduledTasksStore.disabledTaskIds) {
             refreshStatus()
         }
-        .onChange(of: selectedTaskId) { new in
+        .onChange(of: selectedTaskId) { _, new in
             applySelection(taskId: new)
         }
         .alert(infoAlertTitle, isPresented: $showInfoAlert) {
