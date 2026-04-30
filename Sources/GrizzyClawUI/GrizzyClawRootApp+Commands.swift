@@ -27,24 +27,12 @@ public struct GrizzyClawMenuCommands: Commands {
                 NotificationCenter.default.post(name: .grizzyOpenBrowserWindow, object: nil)
             }
             .keyboardShortcut("u", modifiers: [.command, .shift])
-            Button("Sessions…") {
-                NotificationCenter.default.post(name: .grizzyOpenSessionsWindow, object: nil)
-            }
-            .keyboardShortcut("e", modifiers: [.command, .shift])
             Button("Conversation history…") {
                 NotificationCenter.default.post(name: .grizzyOpenConversationHistoryWindow, object: nil)
             }
             Button("Usage & Performance…") {
                 NotificationCenter.default.post(name: .grizzyOpenUsageDashboardWindow, object: nil)
             }
-            Button("Swarm activity…") {
-                NotificationCenter.default.post(name: .grizzyOpenSwarmWindow, object: nil)
-            }
-            .keyboardShortcut("a", modifiers: [.command, .shift])
-            Button("Sub-agents…") {
-                NotificationCenter.default.post(name: .grizzyOpenSubagentsWindow, object: nil)
-            }
-            .keyboardShortcut("k", modifiers: [.command, .shift])
             Button("Watchers…") {
                 NotificationCenter.default.post(name: .grizzyOpenWatchersWindow, object: nil)
             }

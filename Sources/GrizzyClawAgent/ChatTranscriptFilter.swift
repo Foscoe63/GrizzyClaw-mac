@@ -3,6 +3,27 @@ import GrizzyClawCore
 
 /// Pure transcript filtering for chat (MCP display modes, blank assistant shells).
 public enum ChatTranscriptFilter: Sendable {
+    private static func isToolOutputUserMessage(_ m: ChatMessage) -> Bool {
+        m.role == .user && m.content.hasPrefix("[Tool output]")
+    }
+
+    private static func replyBlockHasNonBlankAssistant(afterUserIndex userIndex: Int, in all: [ChatMessage]) -> Bool {
+        guard userIndex >= 0, userIndex < all.count, all[userIndex].role == .user else { return false }
+        var j = userIndex + 1
+        while j < all.count, all[j].role != .user {
+            if all[j].role == .assistant {
+                let stripped = ToolCallCommandParsing
+                    .stripToolCallBlocks(all[j].content)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                if !stripped.isEmpty, stripped != "…" {
+                    return true
+                }
+            }
+            j += 1
+        }
+        return false
+    }
+
     public static func visibleMessages(
         _ all: [ChatMessage],
         mode: GuiChatPreferences.McpTranscriptMode,
@@ -11,9 +32,23 @@ public enum ChatTranscriptFilter: Sendable {
         let lastAssistantId = all.last(where: { $0.role == .assistant })?.id
         var out: [ChatMessage] = []
         for (i, m) in all.enumerated() where m.role != .system {
+            // `[Tool output]` user messages are an internal transport detail (e.g. MLX chat templates).
+            // They should never be shown in the GUI transcript; the `.tool` message is the user-visible one.
+            if isToolOutputUserMessage(m) { continue }
             switch mode {
             case .assistant:
-                guard m.role != .tool else { continue }
+                // Assistant-only mode normally hides tool output; however, some local models never emit a
+                // follow-up assistant summary after the tool runs. In that case, hiding tool output makes
+                // results "flash then disappear". Keep tool output when there is no non-blank assistant
+                // message in the same reply block.
+                if m.role == .tool {
+                    let lastUser = (0..<i).last { all[$0].role == .user } ?? -1
+                    if lastUser >= 0, replyBlockHasNonBlankAssistant(afterUserIndex: lastUser, in: all) {
+                        continue
+                    }
+                    out.append(m)
+                    continue
+                }
                 if shouldHideBlankAssistant(m, in: all, isStreaming: isStreaming, lastAssistantId: lastAssistantId) {
                     continue
                 }

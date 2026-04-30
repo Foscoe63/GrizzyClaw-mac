@@ -24,38 +24,20 @@ public struct MCPToolsDiscoveryResult: Sendable {
 }
 
 public enum MCPToolsDiscoveryError: Error, LocalizedError {
-    case pythonNotFound
-    case scriptResourceMissing
-    case emptyOutput
-    case invalidJSON(String)
+    case nativeDiscoveryFailed(String)
 
     public var errorDescription: String? {
         switch self {
-        case .pythonNotFound:
-            return "Could not find python3 on this Mac (install Python 3 and pip install mcp httpx)."
-        case .scriptResourceMissing:
-            return "mcp_discover.py could not be found. Reinstall the app, or set GRIZZYCLAW_MCP_DISCOVER to the script path, or ensure ~/.grizzyclaw/support/mcp_discover.py exists (copied after a successful run)."
-        case .emptyOutput:
-            return "MCP discovery produced no output."
-        case .invalidJSON(let s):
-            return "MCP discovery returned invalid JSON: \(s)"
+        case .nativeDiscoveryFailed(let s):
+            return "MCP discovery failed: \(s)"
         }
     }
 }
 
-/// Runs the bundled `mcp_discover.py` helper (same protocol stack as the Python GrizzyClaw app).
+/// Native-Swift MCP tool discovery via `GrizzyMCPNativeRuntime`.
+/// The legacy Python fallback (`mcp_discover.py`) has been removed — the app no longer
+/// depends on a Python interpreter.
 public enum MCPToolsDiscovery {
-    /// Optional override: absolute path to `mcp_discover.py` (for debugging or custom installs).
-    public static let environmentScriptKey = "GRIZZYCLAW_MCP_DISCOVER"
-
-    /// Stable copy updated whenever a bundled script is found (`~/.grizzyclaw/support/mcp_discover.py`).
-    public static var cachedScriptURL: URL {
-        GrizzyClawPaths.userDataDirectory.appendingPathComponent("support/mcp_discover.py", isDirectory: false)
-    }
-
-    /// Set `GRIZZYCLAW_MCP_USE_PYTHON=1` to force the legacy Python `mcp_discover.py` path (e.g. debugging).
-    public static let forcePythonDiscoveryKey = "GRIZZYCLAW_MCP_USE_PYTHON"
-
     private struct CacheKey: Hashable {
         let path: String
         let modificationTime: TimeInterval?
@@ -100,106 +82,26 @@ public enum MCPToolsDiscovery {
             return cached
         }
 
-        let forcePython = ProcessInfo.processInfo.environment[Self.forcePythonDiscoveryKey] == "1"
-        if !forcePython {
-            do {
-                let url = URL(fileURLWithPath: path)
-                let rows = try MCPServersFileIO.load(url: url)
-                let rowsToProbe = probeRows(rows: rows, onlyServerNames: onlyServerNames)
-                if rowsToProbe.isEmpty {
-                    if let filter = onlyServerNames, !filter.isEmpty {
-                        return MCPToolsDiscoveryResult(servers: [:], errorMessage: "No MCP server in the JSON file matches the requested name(s).")
-                    }
-                    await DiscoveryCache.shared.put(MCPToolsDiscoveryResult(servers: [:], errorMessage: nil), for: cacheKey)
-                    return MCPToolsDiscoveryResult(servers: [:], errorMessage: nil)
+        do {
+            let url = URL(fileURLWithPath: path)
+            let rows = try MCPServersFileIO.load(url: url)
+            let rowsToProbe = probeRows(rows: rows, onlyServerNames: onlyServerNames)
+            if rowsToProbe.isEmpty {
+                if let filter = onlyServerNames, !filter.isEmpty {
+                    return MCPToolsDiscoveryResult(servers: [:], errorMessage: "No MCP server in the JSON file matches the requested name(s).")
                 }
-                let native = try await GrizzyMCPNativeRuntime.shared.discoverTools(servers: rowsToProbe)
-                let merged = native.mergingPythonInternalTools()
-                await DiscoveryCache.shared.put(merged, for: cacheKey)
-                return merged
-            } catch {
-                GrizzyClawLog.error("MCP native discovery failed, falling back to Python: \(error.localizedDescription)")
+                let empty = MCPToolsDiscoveryResult(servers: [:], errorMessage: nil)
+                await DiscoveryCache.shared.put(empty, for: cacheKey)
+                return empty
             }
+            let native = try await GrizzyMCPNativeRuntime.shared.discoverTools(servers: rowsToProbe)
+            let merged = native.mergingPythonInternalTools()
+            await DiscoveryCache.shared.put(merged, for: cacheKey)
+            return merged
+        } catch {
+            GrizzyClawLog.error("MCP native discovery failed: \(error.localizedDescription)")
+            throw MCPToolsDiscoveryError.nativeDiscoveryFailed(error.localizedDescription)
         }
-
-        guard let scriptURL = resolveMcpDiscoverScriptURL() else {
-            throw MCPToolsDiscoveryError.scriptResourceMissing
-        }
-
-        let python = Self.resolvePython3Executable()
-        guard FileManager.default.isExecutableFile(atPath: python) else {
-            throw MCPToolsDiscoveryError.pythonNotFound
-        }
-
-        let result = try await Task.detached(priority: .userInitiated) {
-            let proc = Process()
-            proc.executableURL = URL(fileURLWithPath: python)
-            proc.arguments = [scriptURL.path, path]
-
-            let outPipe = Pipe()
-            let errPipe = Pipe()
-            proc.standardOutput = outPipe
-            proc.standardError = errPipe
-
-            try proc.run()
-            // `waitUntilExit()` does not honor Swift task cancellation; terminate if the script hangs.
-            let killTask = Task {
-                try? await Task.sleep(nanoseconds: UInt64(43 * 1_000_000_000))
-                if proc.isRunning {
-                    proc.terminate()
-                }
-            }
-            proc.waitUntilExit()
-            killTask.cancel()
-
-            let outData = outPipe.fileHandleForReading.readDataToEndOfFile()
-            let errData = errPipe.fileHandleForReading.readDataToEndOfFile()
-            let errText = String(data: errData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-
-            guard !outData.isEmpty else {
-                if !errText.isEmpty {
-                    throw MCPToolsDiscoveryError.invalidJSON(errText)
-                }
-                throw MCPToolsDiscoveryError.emptyOutput
-            }
-
-            let obj = try JSONSerialization.jsonObject(with: outData) as? [String: Any]
-            guard let obj else {
-                throw MCPToolsDiscoveryError.invalidJSON("not an object")
-            }
-
-            let err: String?
-            if let e = obj["error"] as? String, !e.isEmpty {
-                err = e
-            } else if obj["error"] is NSNull {
-                err = nil
-            } else {
-                err = obj["error"] as? String
-            }
-
-            var servers: [String: [MCPToolDescriptor]] = [:]
-            if let srv = obj["servers"] as? [String: Any] {
-                for (name, val) in srv {
-                    guard let rows = val as? [[Any]] else { continue }
-                    var pairs: [MCPToolDescriptor] = []
-                    for row in rows {
-                        guard row.count >= 1 else { continue }
-                        let tool = String(describing: row[0])
-                        let desc = row.count >= 2 ? String(describing: row[1]) : ""
-                        if !tool.isEmpty {
-                            pairs.append(MCPToolDescriptor(name: tool, description: desc))
-                        }
-                    }
-                    if !pairs.isEmpty {
-                        servers[name] = pairs
-                    }
-                }
-            }
-
-            return MCPToolsDiscoveryResult(servers: servers, errorMessage: err)
-        }.value
-        await DiscoveryCache.shared.put(result, for: cacheKey)
-        return result
     }
 
     static func probeRows(rows: [MCPServerRow], onlyServerNames: Set<String>? = nil) -> [MCPServerRow] {
@@ -212,7 +114,7 @@ public enum MCPToolsDiscovery {
             .map { MCPServerRow(name: $0.name, enabled: true, dictionary: $0.dictionary) }
     }
 
-    /// Validates a local stdio server by writing a temporary `grizzyclaw.json` and running `mcp_discover.py` (same path as **Test** in the list; approximates Python `validate_server_config` + `ValidateConfigWorker`).
+    /// Validates a local stdio server by writing a temporary `grizzyclaw.json` and running native discovery on it.
     public static func validateStdioConfiguration(command: String, args: [String], env: [String: String]) async -> (ok: Bool, message: String) {
         let cmd = command.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cmd.isEmpty else {
@@ -251,121 +153,9 @@ public enum MCPToolsDiscovery {
             return (false, error.localizedDescription)
         }
     }
-
-    /// Resolves `mcp_discover.py` for **any** MCP server entry in JSON — discovery is one shared script, not per-server.
-    private static func resolveMcpDiscoverScriptURL() -> URL? {
-        let fm = FileManager.default
-
-        if let raw = ProcessInfo.processInfo.environment[Self.environmentScriptKey], !raw.isEmpty {
-            let u = URL(fileURLWithPath: (raw as NSString).expandingTildeInPath)
-            if fm.isReadableFile(atPath: u.path) { return u }
-        }
-
-        if let bundled = locateBundledMcpDiscoverScript() {
-            try? fm.createDirectory(at: cachedScriptURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try? fm.removeItem(at: cachedScriptURL)
-            try? fm.copyItem(at: bundled, to: cachedScriptURL)
-            return bundled
-        }
-
-        if fm.isReadableFile(atPath: cachedScriptURL.path) {
-            return cachedScriptURL
-        }
-
-        return nil
-    }
-
-    /// `Bundle.module` alone fails for some `.app` / Xcode + SPM layouts; search main bundle, framework bundles, and SPM `.build` bundles.
-    private static func locateBundledMcpDiscoverScript() -> URL? {
-        let fm = FileManager.default
-        let filename = "mcp_discover.py"
-
-        let bundles: [Bundle] = [
-            Bundle.module,
-            Bundle.main,
-            Bundle(for: MCPToolsDiscoveryBundleAnchor.self),
-        ]
-
-        for b in bundles {
-            if let u = b.url(forResource: "mcp_discover", withExtension: "py"), fm.isReadableFile(atPath: u.path) {
-                return u
-            }
-            if let r = b.resourceURL {
-                let direct = r.appendingPathComponent(filename)
-                if fm.isReadableFile(atPath: direct.path) { return direct }
-                let alt = r.appendingPathComponent("Resources/\(filename)")
-                if fm.isReadableFile(atPath: alt.path) { return alt }
-            }
-        }
-
-        if let res = Bundle.main.resourceURL,
-           let found = findNamedFile(filename, under: res, maxEntries: 1200) {
-            return found
-        }
-
-        let fw = Bundle.main.bundleURL.appendingPathComponent("Contents/Frameworks", isDirectory: true)
-        if fm.fileExists(atPath: fw.path),
-           let found = findNamedFile(filename, under: fw, maxEntries: 2500) {
-            return found
-        }
-
-        if let exe = Bundle.main.executableURL {
-            var dir = exe.deletingLastPathComponent()
-            for _ in 0..<10 {
-                for leaf in ["GrizzyClawCore_GrizzyClawCore.bundle", "GrizzyClawCore.bundle"] {
-                    let bURL = dir.appendingPathComponent(leaf)
-                    var isDir: ObjCBool = false
-                    guard fm.fileExists(atPath: bURL.path, isDirectory: &isDir), isDir.boolValue else { continue }
-                    let cand = bURL.appendingPathComponent("Contents/Resources/\(filename)")
-                    if fm.isReadableFile(atPath: cand.path) { return cand }
-                    if let bu = Bundle(url: bURL), let u = bu.url(forResource: "mcp_discover", withExtension: "py"), fm.isReadableFile(atPath: u.path) {
-                        return u
-                    }
-                }
-                if dir.path == "/" { break }
-                dir = dir.deletingLastPathComponent()
-            }
-        }
-
-        return nil
-    }
-
-    private static func findNamedFile(_ name: String, under root: URL, maxEntries: Int) -> URL? {
-        let fm = FileManager.default
-        guard let en = fm.enumerator(at: root, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles]) else { return nil }
-        var n = 0
-        for case let u as URL in en {
-            n += 1
-            if n > maxEntries { return nil }
-            if u.lastPathComponent == name, fm.isReadableFile(atPath: u.path) { return u }
-        }
-        return nil
-    }
-
-    private static func resolvePython3Executable() -> String {
-        let pipxCandidates = [
-            "~/.local/pipx/venvs/mcp/bin/python",
-            "~/.local/pipx/venvs/mcp/bin/python3",
-        ].map { ($0 as NSString).expandingTildeInPath }
-        for p in pipxCandidates where FileManager.default.isExecutableFile(atPath: p) {
-            return p
-        }
-        let candidates = [
-            "/usr/bin/python3",
-            "/opt/homebrew/bin/python3",
-            "/usr/local/bin/python3",
-        ]
-        for p in candidates where FileManager.default.isExecutableFile(atPath: p) {
-            return p
-        }
-        return "/usr/bin/python3"
-    }
 }
 
-/// Objective-C class anchor so `Bundle(for:)` resolves the GrizzyClawCore module bundle when embedded as a framework.
-private final class MCPToolsDiscoveryBundleAnchor: NSObject {}
-
-// MARK: - Python `ChatWidget._populate_tools_picker` parity (`_INTERNAL_GRIZZY_TOOLS`, workspace allowlist)
+// MARK: - Built-in Grizzy tools (native parity)
 
 extension MCPToolsDiscoveryResult {
     public struct InternalTool: Sendable {
@@ -380,7 +170,7 @@ extension MCPToolsDiscoveryResult {
         }
     }
 
-    /// Python `main_window._INTERNAL_GRIZZY_TOOLS` — prepended before discovered MCP tools, deduped.
+    /// Built-in native Grizzy tools — prepended before discovered MCP tools, deduped.
     public static let pythonInternalTools: [InternalTool] = [
         .init(
             server: "grizzyclaw",
@@ -436,7 +226,7 @@ extension MCPToolsDiscoveryResult {
         return MCPToolsDiscoveryResult(servers: by, errorMessage: errorMessage)
     }
 
-    /// Hide tools outside the workspace `mcp_tool_allowlist` when that list is non-empty (Python `ws_allow`).
+    /// Hide tools outside the workspace `mcp_tool_allowlist` when that list is non-empty (`ws_allow`).
     /// Resolves each allow entry against discovered server/tool names (same rules as chat tool identity) so
     /// saved rows like `user-ddg-search` / case drift still match `ddg-search` from discovery.
     public func filteredByWorkspaceAllowlist(_ allow: [(String, String)]) -> MCPToolsDiscoveryResult {

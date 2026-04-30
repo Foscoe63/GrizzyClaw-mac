@@ -10,8 +10,6 @@ public enum WorkspaceBootstrap {
             "llm_model": .string("llama3.2"),
             "temperature": .double(0.7),
             "max_tokens": .int(131_072),
-            "ollama_url": .string("http://localhost:11434"),
-            "lmstudio_url": .string("http://localhost:1234/v1"),
             "system_prompt": .string(defaultSystemPrompt),
             "memory_enabled": .bool(true),
             "max_context_length": .int(4000),

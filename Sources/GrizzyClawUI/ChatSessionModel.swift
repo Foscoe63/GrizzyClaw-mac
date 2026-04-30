@@ -22,10 +22,35 @@ public final class ChatSessionModel: ObservableObject {
     /// True after the last connection test failed (shows Retry in Chat).
     @Published public private(set) var connectionTestFailed = false
 
+    // MARK: - Summary mode (prompt caching)
+
+    /// When enabled, new sends include `rollingSummary` plus a small tail window of recent messages.
+    @Published public var useSummaryMode = false
+    /// Latest generated summary (stored locally in memory; not automatically persisted).
+    @Published public private(set) var rollingSummary: String?
+    /// The `messages.count` snapshot when `rollingSummary` was created. Used as an anchor to prefer recent context.
+    @Published public private(set) var rollingSummaryAnchorMessageCount: Int = 0
+    /// How many recent messages to include in summary mode (in addition to the summary).
+    @Published public var summaryModeRecentMessageLimit: Int = 16
+
     private var streamTask: Task<Void, Never>?
     private var coalesceAssistantCanvasEpochTask: Task<Void, Never>?
 
     public init() {}
+
+    private static func appendDeduped(_ messages: inout [ChatMessage], role: ChatMessage.Role, content: String) {
+        if let last = messages.last, last.role == role, last.content == content {
+            return
+        }
+        messages.append(ChatMessage(role: role, content: content))
+    }
+
+    private static func toolDedupeKey(server: String, tool: String, args: [String: Any]) -> String {
+        if let q = args["query"] as? String {
+            return server + "\u{1E}" + tool + "\u{1E}" + q
+        }
+        return server + "\u{1E}" + tool
+    }
 
     private func bumpAssistantCanvasObservationImmediate() {
         assistantCanvasObservationEpoch &+= 1
@@ -44,6 +69,127 @@ public final class ChatSessionModel: ObservableObject {
     /// Rough token estimate for the Conversation history dialog (Python `get_session_summary` parity: ~bytes/4).
     public var approximateSessionTokens: Int {
         messages.reduce(0) { $0 + $1.content.utf8.count } / 4
+    }
+
+    private func conversationForLLM(maxMessages: Int) -> [ChatMessage] {
+        // Default path: keep existing trimming behavior.
+        guard useSummaryMode, let summary = rollingSummary, !summary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return SessionTrim.trim(messages, maxMessages: maxMessages)
+        }
+
+        let tailCount = max(1, min(summaryModeRecentMessageLimit, maxMessages - 1))
+
+        // Prefer messages after the summary was generated, but fall back to full tail if that window is empty.
+        let anchor = max(0, min(rollingSummaryAnchorMessageCount, messages.count))
+        let candidate = Array(messages.dropFirst(anchor))
+        let tailSource = candidate.isEmpty ? messages : candidate
+        let tail = Array(tailSource.suffix(tailCount))
+
+        let sys = ChatMessage(
+            role: .system,
+            content: """
+            Conversation summary (authoritative; may omit details):
+            \(summary)
+            """
+        )
+        return [sys] + tail
+    }
+
+    public func clearRollingSummary() {
+        rollingSummary = nil
+        rollingSummaryAnchorMessageCount = 0
+        useSummaryMode = false
+    }
+
+    public func generateRollingSummary(
+        workspaceStore: WorkspaceStore,
+        configStore: ConfigStore,
+        guiChatPrefs: GuiChatPrefsStore,
+        selectedWorkspaceId: String
+    ) {
+        guard !isStreaming else { return }
+
+        infoLine = "Summarizing chat…"
+        statusLine = nil
+
+        streamTask?.cancel()
+        streamTask = Task { @MainActor in
+            defer { streamTask = nil }
+
+            let userSnap = configStore.snapshot
+            let secrets = UserConfigLoader.loadSecretsWithKeychainLenient()
+            let routing = configStore.routingExtras
+            let guiLlmOverride = guiChatPrefs.resolverLlmOverride()
+            guard let idx = workspaceStore.index else {
+                infoLine = nil
+                statusLine = "No workspaces file found."
+                return
+            }
+            guard let ws = idx.workspaces.first(where: { $0.id == selectedWorkspaceId }) else {
+                infoLine = nil
+                statusLine = "Workspace not found."
+                return
+            }
+
+            let maxMsgs = ws.config?.int(forKey: "max_session_messages") ?? userSnap.maxSessionMessages
+
+            // Summaries should be deterministic-ish and never call tools.
+            let summarizerSuffix = """
+            You are summarizing a chat transcript for future continuation.
+            - Do NOT call tools or emit TOOL_CALL JSON.
+            - Write a compact, factual summary with enough detail to continue the work.
+            - Include: user intent, current state, what has been tried, current errors, key file paths, and next steps.
+            - Prefer bullets. Keep under ~500-900 tokens.
+            """
+
+            let resolved: ResolvedLLMStreamRequest
+            do {
+                resolved = try ChatParameterResolver.resolve(
+                    user: userSnap,
+                    routing: routing,
+                    secrets: secrets,
+                    workspace: ws,
+                    guiLlmOverride: guiLlmOverride,
+                    systemPromptSuffix: summarizerSuffix
+                )
+            } catch {
+                infoLine = nil
+                statusLine = Self.formatError(error)
+                return
+            }
+
+            // Give the model enough to build a solid summary; one-time cost is fine.
+            let convo = SessionTrim.trim(messages, maxMessages: max(maxMsgs, 120))
+
+            var out = ""
+            do {
+                for try await piece in Self.stream(for: resolved, conversation: convo) {
+                    if Task.isCancelled { break }
+                    out += piece
+                }
+            } catch is CancellationError {
+                infoLine = "Cancelled."
+                statusLine = nil
+                return
+            } catch {
+                infoLine = nil
+                statusLine = Self.formatError(error)
+                return
+            }
+
+            let cleaned = out.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !cleaned.isEmpty else {
+                infoLine = nil
+                statusLine = "Summary generation returned empty output."
+                return
+            }
+
+            rollingSummary = cleaned
+            rollingSummaryAnchorMessageCount = messages.count
+            useSummaryMode = true
+            infoLine = "Summary updated. Using summary mode for next prompts."
+            statusLine = nil
+        }
     }
 
     /// One line: `Current session: N messages, ~Xk tokens` (matches `conversation_history_dialog.py`).
@@ -225,13 +371,7 @@ public final class ChatSessionModel: ObservableObject {
         connectionTestFailed = false
         statusLine = nil
         infoLine = nil
-        let secrets: UserConfigSecrets
-        do {
-            secrets = try UserConfigLoader.loadSecretsWithKeychain()
-        } catch {
-            GrizzyClawLog.error("secrets load failed (connection test): \(error.localizedDescription)")
-            secrets = .empty
-        }
+        let secrets = UserConfigLoader.loadSecretsWithKeychainLenient()
         let userSnap = configStore.snapshot
         let routing = configStore.routingExtras
         guard let idx = workspaceStore.index else {
@@ -312,13 +452,7 @@ public final class ChatSessionModel: ObservableObject {
             persistSession(workspaceId: selectedWorkspaceId ?? workspaceStore.index?.activeWorkspaceId, config: configStore.snapshot)
         }
 
-        let secrets: UserConfigSecrets
-        do {
-            secrets = try UserConfigLoader.loadSecretsWithKeychain()
-        } catch {
-            GrizzyClawLog.error("secrets load failed (send): \(error.localizedDescription)")
-            secrets = .empty
-        }
+        let secrets = UserConfigLoader.loadSecretsWithKeychainLenient()
 
         let userSnap = configStore.snapshot
         let routing = configStore.routingExtras
@@ -491,6 +625,7 @@ public final class ChatSessionModel: ObservableObject {
 
         var toolRound = 0
         let maxToolRounds = 5
+        var executedToolKeys = Set<String>()
 
         while toolRound < maxToolRounds {
             toolRound += 1
@@ -521,7 +656,7 @@ public final class ChatSessionModel: ObservableObject {
                 GrizzyClawLog.debug("chat send: MLX local stream")
             }
 
-            let trimmedSession = SessionTrim.trim(messages, maxMessages: maxMsgs)
+            let trimmedSession = conversationForLLM(maxMessages: maxMsgs)
             messages.append(ChatMessage(role: .assistant, content: ""))
             bumpAssistantCanvasObservationImmediate()
             guard let assistantIndex = messages.indices.last else { return }
@@ -583,6 +718,47 @@ public final class ChatSessionModel: ObservableObject {
                     GrizzyClawLog.debug("chat retry: suppressed low-context narration without TOOL_CALL")
                     bumpAssistantCanvasObservationImmediate()
                     continue
+                } else if let (server, tool, args) = Self.directDdgSearchToolCallIfRequested(
+                    assistantText: rawAssistant,
+                    messages: messages,
+                    discovery: merged
+                ) {
+                    // Deterministic fallback: if the user explicitly asked to use ddg-search but the model
+                    // failed to emit a TOOL_CALL, run the tool anyway so the user sees results.
+                    //
+                    // This avoids "nothing happened" UX for small/local models that don't reliably follow
+                    // tool-calling format.
+                    messages[assistantIndex].content = ""
+                    if guiChatPrefs.isToolOn(server: server, tool: tool) {
+                        do {
+                            let k = Self.toolDedupeKey(server: server, tool: tool, args: args)
+                            if executedToolKeys.contains(k) {
+                                bumpAssistantCanvasObservationImmediate()
+                                continue
+                            }
+                            executedToolKeys.insert(k)
+                            let r = try await MCPToolCaller.call(
+                                mcpServersFile: userSnap.mcpServersFile,
+                                mcpServer: server,
+                                tool: tool,
+                                arguments: args
+                            )
+                            var toolUserMsg = "[Tool result \(server).\(tool)]\n\(r)"
+                            toolUserMsg += McpToolTranscriptFormatting.llmFollowUpInstructionSuffix
+                            Self.appendDeduped(&messages, role: .tool, content: toolUserMsg)
+                        } catch {
+                            Self.appendDeduped(&messages, role: .tool, content: "[Tool error]\n\(error.localizedDescription)")
+                        }
+                    } else {
+                        Self.appendDeduped(
+                            &messages,
+                            role: .tool,
+                            content: "[Tool result \(server).\(tool)]\n**⏸ Tool disabled in the Tools menu for this chat session.**"
+                                + McpToolTranscriptFormatting.llmFollowUpInstructionSuffix
+                        )
+                    }
+                    bumpAssistantCanvasObservationImmediate()
+                    continue
                 }
                 messages[assistantIndex].content = CanvasExtraction.stripMLXChannelFormat(
                     ToolCallCommandParsing.stripToolCallBlocks(rawAssistant)
@@ -599,6 +775,7 @@ public final class ChatSessionModel: ObservableObject {
             let shouldAutoListLowContextCalendars =
                 jsonBodies.count == 1 && Self.shouldAutoListCalendarsAfterLowContextDiscovery(messages)
             var parts: [String] = []
+            var suppressedDuplicateToolCall = false
             for body in jsonBodies {
                 guard let data = body.data(using: .utf8),
                       let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -626,6 +803,11 @@ public final class ChatSessionModel: ObservableObject {
 
                 let (canonMcp, canonTool) = guiChatPrefs.resolvedMcpToolPair(modelMcp: mcpName, modelTool: toolName)
                 let merged = guiChatPrefs.lastDiscovery?.mergingPythonInternalTools()
+                let dedupeKey = Self.toolDedupeKey(server: canonMcp, tool: canonTool, args: args)
+                if executedToolKeys.contains(dedupeKey) {
+                    suppressedDuplicateToolCall = true
+                    continue
+                }
 
                 if !ToolCallValidation.isKnownTool(server: canonMcp, tool: canonTool, discovery: merged) {
                     parts.append(
@@ -658,6 +840,7 @@ public final class ChatSessionModel: ObservableObject {
                 }
 
                 do {
+                    executedToolKeys.insert(dedupeKey)
                     let r = try await MCPToolCaller.call(
                         mcpServersFile: userSnap.mcpServersFile,
                         mcpServer: canonMcp,
@@ -706,12 +889,22 @@ public final class ChatSessionModel: ObservableObject {
             }
 
             if parts.isEmpty {
+                // If the model re-requested tools we already ran, don't silently produce "nothing".
+                // Provide a tiny tool transcript hint so the model continues with the existing results.
+                if suppressedDuplicateToolCall {
+                    var toolUserMsg =
+                        "[Tool result]\n(duplicate TOOL_CALL suppressed; use the previous tool results above and continue your answer)"
+                    toolUserMsg += McpToolTranscriptFormatting.llmFollowUpInstructionSuffix
+                    Self.appendDeduped(&messages, role: .tool, content: toolUserMsg)
+                    bumpAssistantCanvasObservationImmediate()
+                    continue
+                }
                 break
             }
 
             var toolUserMsg = parts.joined(separator: "\n\n")
             toolUserMsg += McpToolTranscriptFormatting.llmFollowUpInstructionSuffix
-            messages.append(ChatMessage(role: .tool, content: toolUserMsg))
+            Self.appendDeduped(&messages, role: .tool, content: toolUserMsg)
             bumpAssistantCanvasObservationImmediate()
         }
     }
@@ -722,6 +915,28 @@ public final class ChatSessionModel: ObservableObject {
         let pick = users.reversed().first(where: { !$0.content.hasPrefix("[Tool output]") }) ?? users.last
         let t = pick?.content.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         return t.isEmpty ? nil : t
+    }
+
+    private static func directDdgSearchToolCallIfRequested(
+        assistantText: String,
+        messages: [ChatMessage],
+        discovery: MCPToolsDiscoveryResult?
+    ) -> (server: String, tool: String, arguments: [String: Any])? {
+        let userText = heuristicSearchQueryFromSession(messages)?.lowercased() ?? ""
+        // User explicitly asked for ddg-search.
+        guard userText.contains("ddg-search") else { return nil }
+        // Avoid triggering on tool result echoes.
+        if userText.hasPrefix("[tool output]") { return nil }
+        // Require that ddg-search.search exists in discovery (or we should not guess).
+        guard let tools = discovery?.servers["ddg-search"], tools.contains(where: { $0.name == "search" }) else { return nil }
+        // Prefer using the latest user prompt as the query, stripped of the "use ddg-search" preface.
+        let rawQuery = heuristicSearchQueryFromSession(messages) ?? ""
+        let cleaned = rawQuery
+            .replacingOccurrences(of: "use ddg-search", with: "", options: [.caseInsensitive], range: nil)
+            .replacingOccurrences(of: "ddg-search", with: "", options: [.caseInsensitive], range: nil)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let query = cleaned.isEmpty ? rawQuery : cleaned
+        return (server: "ddg-search", tool: "search", arguments: ["query": query, "max_results": 10])
     }
 
     private static func directLowContextTodayCalendarEventsRequest(
@@ -986,6 +1201,7 @@ public final class ChatSessionModel: ObservableObject {
             arguments: ["names": ["calendar_*"]]
         )
 
+        let (startISO, endISO) = todayISO8601Range()
         let searchResult = try await MCPToolCaller.call(
             mcpServersFile: mcpServersFile,
             mcpServer: server,
@@ -993,8 +1209,8 @@ public final class ChatSessionModel: ObservableObject {
             arguments: [
                 "name": "calendar_search_events",
                 "arguments": [
-                    "start_date": "today",
-                    "end_date": "+1d",
+                    "start_date": startISO,
+                    "end_date": endISO,
                 ],
             ]
         )
@@ -1028,6 +1244,19 @@ public final class ChatSessionModel: ObservableObject {
             blocks.append(contentsOf: followups)
         }
         return McpToolTranscriptFormatting.toolMessageDisplayString(rawContent: blocks.joined(separator: "\n\n"))
+    }
+
+    /// Returns (startOfToday, startOfTomorrow) in ISO-8601 (local timezone).
+    /// Some MCP calendar tools require concrete ISO strings, not relative tokens like "today" or "+1d".
+    private static func todayISO8601Range() -> (String, String) {
+        let cal = Calendar.current
+        let now = Date()
+        let start = cal.startOfDay(for: now)
+        let end = cal.date(byAdding: .day, value: 1, to: start) ?? start.addingTimeInterval(24 * 60 * 60)
+        let fmt = ISO8601DateFormatter()
+        fmt.timeZone = TimeZone.current
+        fmt.formatOptions = [.withInternetDateTime]
+        return (fmt.string(from: start), fmt.string(from: end))
     }
 
     private static func runDirectLowContextNewEmail(
@@ -1283,9 +1512,23 @@ public final class ChatSessionModel: ObservableObject {
                 args["query"] = q
                 args["limit"] = args["limit"] ?? 10
             } else if name.contains("calendar_search_events") {
+                // Prefer concrete ISO-8601 dates for calendar tools (many reject relative tokens).
                 let wantsToday = lower.contains("today")
-                args["start_date"] = "today"
-                args["end_date"] = wantsToday ? "+1d" : "+7d"
+                let (startISO, endISO) = todayISO8601Range()
+                args["start_date"] = startISO
+                if wantsToday {
+                    args["end_date"] = endISO
+                } else {
+                    // 7-day window from start-of-today.
+                    let cal = Calendar.current
+                    let startDate = cal.startOfDay(for: Date())
+                    let end = cal.date(byAdding: .day, value: 7, to: startDate)
+                        ?? startDate.addingTimeInterval(7 * 24 * 60 * 60)
+                    let fmt = ISO8601DateFormatter()
+                    fmt.timeZone = TimeZone.current
+                    fmt.formatOptions = [.withInternetDateTime]
+                    args["end_date"] = fmt.string(from: end)
+                }
             }
 
             return args
@@ -1846,12 +2089,7 @@ public final class ChatSessionModel: ObservableObject {
         selectedWorkspaceId: String?,
         guiLlmOverride: GuiChatPreferences.LLM? = nil
     ) async -> UsageBenchmarkOutcome {
-        let secrets: UserConfigSecrets
-        do {
-            secrets = try UserConfigLoader.loadSecretsWithKeychain()
-        } catch {
-            return .failed(error.localizedDescription)
-        }
+        let secrets = UserConfigLoader.loadSecretsWithKeychainLenient()
         guard let idx = workspaceStore.index else {
             return .failed("No workspaces file found.")
         }

@@ -65,20 +65,11 @@ public struct GrizzyClawRootContentView: View {
             .onReceive(NotificationCenter.default.publisher(for: .grizzyOpenBrowserWindow)) { _ in
                 openWindow(id: "browser")
             }
-            .onReceive(NotificationCenter.default.publisher(for: .grizzyOpenSessionsWindow)) { _ in
-                openWindow(id: "sessions")
-            }
             .onReceive(NotificationCenter.default.publisher(for: .grizzyOpenConversationHistoryWindow)) { _ in
                 openWindow(id: "conversationHistory")
             }
             .onReceive(NotificationCenter.default.publisher(for: .grizzyOpenUsageDashboardWindow)) { _ in
                 openWindow(id: "usage")
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .grizzyOpenSwarmWindow)) { _ in
-                openWindow(id: "swarm")
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .grizzyOpenSubagentsWindow)) { _ in
-                openWindow(id: "subagents")
             }
             .onReceive(NotificationCenter.default.publisher(for: .grizzyOpenWatchersWindow)) { _ in
                 openWindow(id: "watchers")
@@ -163,6 +154,9 @@ public struct GrizzyClawRootContentView: View {
         session.configStore.reload()
         // Local MCP subprocesses always exit when the app quits; restart rows that are still enabled in grizzyclaw.json.
         MCPAutoStart.startEnabledLocalServersIfNeeded(mcpServersFile: session.configStore.snapshot.mcpServersFile)
+        // Native scheduled-task executor (replaces Python `CronScheduler`). Starts idle and
+        // only fires enabled tasks, so this is safe to run unconditionally at launch.
+        session.scheduledTaskRunner.start()
         syncWorkspaceSelectionAfterLoad()
         syncChatSessionWorkspace()
     }

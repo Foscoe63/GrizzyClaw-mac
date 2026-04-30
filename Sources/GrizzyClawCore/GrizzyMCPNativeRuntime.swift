@@ -67,6 +67,29 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
             }
         }
 
+        // Normalize discovery keys: some models (and sometimes copy/pasted docs) append `[id=…]` to server names.
+        // Keeping that suffix in the discovery map causes tool validation mismatches (e.g. tool call uses `ddg-search`
+        // but discovery key is `ddg-search[id=ABC123]`). Strip bracket suffixes to make discovery consistent.
+        if !serversMap.isEmpty {
+            let knownServerNames = servers.map(\.name)
+            var normalized: [String: [MCPToolDescriptor]] = [:]
+            for (srv, tools) in serversMap {
+                let canon = MCPIdentityResolution.canonicalServerName(modelOutput: srv, knownServers: knownServerNames)
+                if normalized[canon] == nil {
+                    normalized[canon] = tools
+                } else {
+                    // Collision is unlikely; if it happens, keep stable order and de-dupe by tool name.
+                    var merged = normalized[canon] ?? []
+                    let existing = Set(merged.map(\.name))
+                    for t in tools where !existing.contains(t.name) {
+                        merged.append(t)
+                    }
+                    normalized[canon] = merged
+                }
+            }
+            serversMap = normalized
+        }
+
         let errMsg: String?
         if errs.isEmpty {
             errMsg = nil

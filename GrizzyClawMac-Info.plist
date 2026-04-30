@@ -33,6 +33,10 @@
 	</dict>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>GrizzyClaw connects to LLM and tool servers on your network (for example LM Studio, Ollama, or MCP on another computer).</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>GrizzyClaw records your voice so it can transcribe spoken prompts into chat messages.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>GrizzyClaw transcribes recorded speech into text so you can prompt by voice.</string>
 	<key>NSSupportsAutomaticTermination</key>
 	<false/>
 	<key>NSSupportsSuddenTermination</key>

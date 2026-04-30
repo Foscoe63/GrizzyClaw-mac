@@ -11,6 +11,7 @@ public struct PreferencesMainView: View {
     @ObservedObject var configStore: ConfigStore
     @ObservedObject var workspaceStore: WorkspaceStore
     @ObservedObject var guiChatPrefs: GuiChatPrefsStore
+    @ObservedObject var telegramService: TelegramService
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openWindow) private var openWindow
@@ -35,21 +36,24 @@ public struct PreferencesMainView: View {
     @State private var llmModelFetchAlert: String?
     @State private var telegramTesting = false
     @State private var telegramTestMessage: String?
-    @State private var daemonStatusText = "Checking…"
-    @State private var daemonGatewayHint = ""
-    @State private var daemonBusy = false
-    @State private var daemonTimer: Timer?
+    @State private var inputDevices: [AudioInputDevice] = AudioInputDevice.availableDevices()
 
     private let tabTitles = [
         "General", "LLM Providers", "Telegram", "WhatsApp",
-        "Appearance", "Daemon", "Prompts_Rules", "ClawHub",
+        "Appearance", "Prompts_Rules", "ClawHub",
         "MCP Servers", "Swarm Setup", "Security", "Integrations",
     ]
 
-    public init(configStore: ConfigStore, workspaceStore: WorkspaceStore, guiChatPrefs: GuiChatPrefsStore) {
+    public init(
+        configStore: ConfigStore,
+        workspaceStore: WorkspaceStore,
+        guiChatPrefs: GuiChatPrefsStore,
+        telegramService: TelegramService
+    ) {
         self.configStore = configStore
         self.workspaceStore = workspaceStore
         self.guiChatPrefs = guiChatPrefs
+        self.telegramService = telegramService
     }
 
     public var body: some View {
@@ -64,13 +68,12 @@ public struct PreferencesMainView: View {
                 case 2: telegramTab
                 case 3: whatsappTab
                 case 4: appearanceTab
-                case 5: daemonTab
-                case 6: promptsTab
-                case 7: clawHubTab
-                case 8: mcpTab
-                case 9: swarmTab
-                case 10: securityTab
-                case 11: integrationsTab
+                case 5: promptsTab
+                case 6: clawHubTab
+                case 7: mcpTab
+                case 8: swarmTab
+                case 9: securityTab
+                case 10: integrationsTab
                 default: EmptyView()
                 }
             }
@@ -84,16 +87,7 @@ public struct PreferencesMainView: View {
         .frame(minWidth: 700, minHeight: 550)
         .onAppear {
             doc.reload()
-            refreshDaemonStatus()
-            daemonTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-                Task { @MainActor in
-                    refreshDaemonStatus()
-                }
-            }
-        }
-        .onDisappear {
-            daemonTimer?.invalidate()
-            daemonTimer = nil
+            refreshInputDevices()
         }
         .alert("GrizzyClaw", isPresented: Binding(
             get: { telegramTestMessage != nil },
@@ -248,7 +242,7 @@ public struct PreferencesMainView: View {
                         fetched: $llmFetchLmStudio,
                         isRefreshing: $llmRefreshBusy
                     ) {
-                        let result = await ModelListFetch.lmStudioOpenAINativeModelFetch(
+                        let result = await ModelListFetch.lmStudioOpenAICompatModelFetch(
                             lmstudioOpenAICompatURL: doc.string("lmstudio_url", default: "http://localhost:1234/v1"),
                             apiKey: doc.optionalString("lmstudio_api_key")
                         )
@@ -605,22 +599,71 @@ public struct PreferencesMainView: View {
     private var telegramTab: some View {
         ScrollView {
             Form {
-                SecureField("Bot Token:", text: doc.bindingOptionalStringNull("telegram_bot_token"))
-                Text("Get from @BotFather on Telegram").font(.caption).foregroundStyle(.secondary)
-                TextField("Webhook URL:", text: doc.bindingOptionalStringNull("telegram_webhook_url"))
-                Text("Leave empty for polling mode").font(.caption).foregroundStyle(.secondary)
-                TextField("Proxy (optional):", text: doc.bindingOptionalStringNull("telegram_proxy"))
-                Text("Config: \(GrizzyClawPaths.configYAML.path)")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-                Button("Test Connection") {
-                    testTelegram()
+                Section("Bot Credentials") {
+                    SecureField("Bot Token:", text: doc.bindingOptionalStringNull("telegram_bot_token"))
+                    Text("Get from @BotFather on Telegram").font(.caption).foregroundStyle(.secondary)
+                    TextField("Webhook URL:", text: doc.bindingOptionalStringNull("telegram_webhook_url"))
+                    Text("Leave empty for polling mode (webhooks not yet used by the native service)")
+                        .font(.caption).foregroundStyle(.secondary)
+                    TextField("Proxy (optional):", text: doc.bindingOptionalStringNull("telegram_proxy"))
+                    Text("Config: \(GrizzyClawPaths.configYAML.path)")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                    HStack {
+                        Button("Test Connection") {
+                            testTelegram()
+                        }
+                        .disabled(telegramTesting)
+                        if let msg = telegramTestMessage {
+                            Text(msg).font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
                 }
-                .disabled(telegramTesting)
+
+                Section("Native Bot Runner") {
+                    LabeledContent("Status:", value: telegramService.status.displayText)
+                    if !telegramService.lastActivity.isEmpty {
+                        LabeledContent("Last activity:", value: telegramService.lastActivity)
+                            .font(.caption)
+                    }
+                    let activeWsName = activeWorkspaceName() ?? "(none — pick one in Workspaces)"
+                    LabeledContent("Active workspace:", value: activeWsName)
+                    HStack {
+                        Button("Start Bot") {
+                            try? doc.save()
+                            configStore.reload()
+                            telegramService.start()
+                        }
+                        .disabled(telegramService.status.isActive)
+                        Button("Stop Bot") {
+                            telegramService.stop()
+                        }
+                        .disabled(!telegramService.status.isActive)
+                        Button("Reset Conversations") {
+                            telegramService.clearHistory()
+                        }
+                        .disabled(!telegramService.status.isActive)
+                    }
+                    Text(
+                        "The bot runs in-process inside GrizzyClawMac — no Python daemon required. "
+                            + "It long-polls Telegram for messages and routes each one through the active workspace's LLM. "
+                            + "Send `/reset` in the chat to clear that chat's conversation history."
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
             }
             .formStyle(.grouped)
             .padding()
         }
+    }
+
+    private func activeWorkspaceName() -> String? {
+        guard let idx = workspaceStore.index,
+            let id = idx.activeWorkspaceId,
+            let ws = idx.workspaces.first(where: { $0.id == id })
+        else { return nil }
+        return ws.name
     }
 
     private func testTelegram() {
@@ -718,107 +761,34 @@ public struct PreferencesMainView: View {
         }
     }
 
-    // MARK: - Tab 5 Daemon
-
-    private var daemonTab: some View {
-        ScrollView {
-            Form {
-                Section("Background Daemon") {
-                    LabeledContent("Status:", value: daemonStatusText)
-                    if !daemonGatewayHint.isEmpty {
-                        LabeledContent("Gateway:", value: daemonGatewayHint)
-                    }
-                    HStack {
-                        Button("Start Daemon") {
-                            startDaemonCLI()
-                        }
-                        .disabled(
-                            daemonBusy || FileManager.default.fileExists(atPath: GrizzyClawPaths.daemonSocket.path)
-                        )
-                        Button("Stop Daemon") {
-                            stopDaemonCLI()
-                        }
-                        .disabled(
-                            daemonBusy || !FileManager.default.fileExists(atPath: GrizzyClawPaths.daemonSocket.path)
-                        )
-                        if daemonBusy {
-                            ProgressView().controlSize(.small)
-                        }
-                    }
-                    Button("Open daemon log in Finder…") {
-                        GrizzyClawShell.revealInFinder(GrizzyClawPaths.daemonStderrLog)
-                    }
-                    .disabled(!FileManager.default.fileExists(atPath: GrizzyClawPaths.daemonStderrLog.path))
-                    Text(
-                        "Uses `grizzyclaw` on your PATH (same as the Python install). "
-                            + "The daemon runs Gateway (WebSocket), webhooks, and IPC. "
-                            + "WebChat: http://127.0.0.1:18788/chat. "
-                            + "If start fails, check the log file or run `grizzyclaw daemon run` in a terminal."
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+    private var selectedInputDeviceBinding: Binding<String> {
+        Binding(
+            get: {
+                let saved = doc.optionalString("input_device_name").trimmingCharacters(in: .whitespacesAndNewlines)
+                if saved.isEmpty {
+                    return AudioInputDevice.systemDefaultID
                 }
-            }
-            .formStyle(.grouped)
-            .padding()
-        }
-    }
-
-    private func refreshDaemonStatus() {
-        let sock = GrizzyClawPaths.daemonSocket.path
-        let socketPresent = FileManager.default.fileExists(atPath: sock)
-        if !socketPresent {
-            daemonStatusText = "Stopped (no socket)"
-            daemonGatewayHint = ""
-            return
-        }
-        daemonStatusText = "Socket present"
-        Task {
-            let r = await GatewaySessionsClient.fetchSessions()
-            await MainActor.run {
-                switch r {
-                case .success(let rows):
-                    daemonStatusText = "Running"
-                    daemonGatewayHint = "Gateway OK · \(rows.count) session(s) listed"
-                case .failure(let err):
-                    daemonGatewayHint = err.message
-                    daemonStatusText = "Socket present (daemon starting or gateway error)"
+                return inputDevices.first(where: { $0.name == saved })?.id ?? AudioInputDevice.systemDefaultID
+            },
+            set: { newValue in
+                guard let selected = inputDevices.first(where: { $0.id == newValue }) else { return }
+                if selected.id == AudioInputDevice.systemDefaultID {
+                    doc.set("input_device_index", value: nil)
+                    doc.setOptionalString("input_device_name", "")
+                    return
                 }
+                let deviceIndex = inputDevices.firstIndex(of: selected).map { max(0, $0 - 1) }
+                doc.set("input_device_index", value: deviceIndex)
+                doc.set("input_device_name", value: selected.name)
             }
-        }
+        )
     }
 
-    private func startDaemonCLI() {
-        daemonBusy = true
-        daemonGatewayHint = ""
-        do {
-            try GrizzyClawDaemonProcess.launchGrizzyClawDaemon(arguments: ["daemon", "run"])
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                daemonBusy = false
-                refreshDaemonStatus()
-            }
-        } catch {
-            daemonBusy = false
-            telegramTestMessage =
-                "Could not start daemon: \(error.localizedDescription)\nEnsure `grizzyclaw` is on PATH."
-        }
+    private func refreshInputDevices() {
+        inputDevices = AudioInputDevice.availableDevices()
     }
 
-    private func stopDaemonCLI() {
-        daemonBusy = true
-        do {
-            try GrizzyClawDaemonProcess.launchGrizzyClawDaemon(arguments: ["daemon", "stop"])
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-                daemonBusy = false
-                refreshDaemonStatus()
-            }
-        } catch {
-            daemonBusy = false
-            telegramTestMessage = "Could not stop daemon: \(error.localizedDescription)"
-        }
-    }
-
-    // MARK: - Tab 6 Prompts
+    // MARK: - Tab 5 Prompts
 
     private var promptsTab: some View {
         ScrollView {
@@ -845,25 +815,25 @@ public struct PreferencesMainView: View {
         }
     }
 
-    // MARK: - Tab 7 ClawHub
+    // MARK: - Tab 6 ClawHub
 
     private var clawHubTab: some View {
         ClawHubPreferencesView(doc: doc)
     }
 
-    // MARK: - Tab 8 MCP
+    // MARK: - Tab 7 MCP
 
     private var mcpTab: some View {
         MCPServersPreferencesView(doc: doc, guiChatPrefs: guiChatPrefs)
     }
 
-    // MARK: - Tab 9 Swarm
+    // MARK: - Tab 8 Swarm
 
     private var swarmTab: some View {
         SwarmSetupPreferencesView(workspaceStore: workspaceStore)
     }
 
-    // MARK: - Tab 10 Security
+    // MARK: - Tab 9 Security
 
     private var securityTab: some View {
         ScrollView {
@@ -898,7 +868,7 @@ public struct PreferencesMainView: View {
         return Data(bytes).base64EncodedString()
     }
 
-    // MARK: - Tab 11 Integrations
+    // MARK: - Tab 10 Integrations
 
     private var integrationsTab: some View {
         ScrollView {
@@ -921,13 +891,26 @@ public struct PreferencesMainView: View {
                         Text("openai").tag("openai")
                         Text("local").tag("local")
                     }
-                    TextField("Microphone / input device name (optional)", text: doc.bindingOptionalStringNull("input_device_name"))
+                    Picker("Microphone (voice input):", selection: selectedInputDeviceBinding) {
+                        ForEach(inputDevices) { device in
+                            Text(device.name).tag(device.id)
+                        }
+                    }
+                    Text("If voice fails in app but works from terminal, select your mic explicitly.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("local = Whisper on device (pip install openai-whisper)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     Stepper(value: doc.bindingInt("media_retention_days", default: 7), in: 1...365) {
                         Text("Media Retention (days): \(doc.int("media_retention_days", default: 7))")
                     }
                     Stepper(value: doc.bindingInt("media_max_size_mb", default: 0), in: 0...10_000) {
                         Text("Media max size (MB, 0=unlimited): \(doc.int("media_max_size_mb", default: 0))")
                     }
+                    Text("openai = Whisper API; local = openai-whisper package")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
                 Section("Voice (TTS)") {
                     SecureField("ElevenLabs API Key:", text: doc.bindingOptionalStringNull("elevenlabs_api_key"))
@@ -946,8 +929,9 @@ public struct PreferencesMainView: View {
                 }
                 Section("Automation Triggers") {
                     Text(
-                        "Rules live in ~/.grizzyclaw/triggers.json. The Python agent daemon loads them; "
-                            + "events include message, webhook, schedule, file_change, and git_event."
+                        "Rules live in ~/.grizzyclaw/triggers.json. "
+                            + "Schedule events are executed natively by GrizzyClawMac. "
+                            + "Other events (message, webhook, file_change, git_event) are reserved for future native support."
                     )
                     .font(.caption)
                     .foregroundStyle(.secondary)

@@ -37,8 +37,11 @@ public struct ChatPane: View {
     @State private var streamingA2UIEmitted = false
     @State private var streamingPixmapEmitted = false
     @State private var lastAssistantMessageId: UUID?
+    @State private var pendingVoiceTranscript: String?
+    @StateObject private var voiceInput = VoiceInputController()
 
     @Environment(\.colorScheme) private var colorScheme
+    @State private var scrollCoalescePending = false
 
     private var snap: UserConfigSnapshot { configStore.snapshot }
 
@@ -120,7 +123,8 @@ public struct ChatPane: View {
 
             Text(
                 "Visual Canvas shows screenshots, A2UI blocks, and inline images from replies. "
-                    + "MCP tools use the same JSON and Python helpers as the desktop app (TOOL_CALL loop); skills, shell approval, and browser automation beyond that still use the Python agent."
+                    + "MCP tools run natively in-process (TOOL_CALL loop). Advanced skills, shell approval, and browser automation "
+                    + "are currently limited — no Python agent is required."
             )
             .font(AppearanceTheme.swiftUIFont(snap, delta: -3))
             .foregroundStyle(.tertiary)
@@ -262,13 +266,13 @@ public struct ChatPane: View {
                 .padding(.trailing, 12)
             }
             .onChange(of: session.assistantCanvasObservationEpoch) {
-                scrollChatToBottom(proxy: proxy)
+                coalescedScrollChatToBottom(proxy: proxy)
             }
             .onChange(of: session.messages.count) {
-                scrollChatToBottom(proxy: proxy)
+                coalescedScrollChatToBottom(proxy: proxy)
             }
             .onChange(of: guiChatPrefs.mcpTranscriptMode) {
-                scrollChatToBottom(proxy: proxy)
+                coalescedScrollChatToBottom(proxy: proxy)
             }
         }
     }
@@ -278,6 +282,16 @@ public struct ChatPane: View {
             withAnimation(.easeOut(duration: 0.2)) {
                 proxy.scrollTo(ChatScrollAnchor.bottom, anchor: .bottom)
             }
+        }
+    }
+
+    /// Prevent multiple scrolls from being scheduled in the same frame.
+    private func coalescedScrollChatToBottom(proxy: ScrollViewProxy) {
+        if scrollCoalescePending { return }
+        scrollCoalescePending = true
+        DispatchQueue.main.async {
+            scrollCoalescePending = false
+            scrollChatToBottom(proxy: proxy)
         }
     }
 
@@ -293,7 +307,7 @@ public struct ChatPane: View {
                 .foregroundStyle(.secondary)
             Text("Multi-Agent")
                 .font(AppearanceTheme.swiftUIFont(snap, delta: 9, weight: .semibold))
-            Text("Delegate to specialists and swarm workflows run in the Python desktop app. Chat streaming here uses the workspace LLM only.")
+            Text("Swarm delegation and specialist routing are not yet implemented natively. Chat streaming here uses the workspace LLM only.")
                 .font(AppearanceTheme.swiftUIFont(snap, delta: 3))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -351,6 +365,44 @@ public struct ChatPane: View {
                         .buttonStyle(.plain)
                     }
                 }
+            }
+
+            if let pendingVoiceTranscript, !pendingVoiceTranscript.isEmpty {
+                voiceTranscriptPreview(transcript: pendingVoiceTranscript)
+            }
+
+            // Prompt caching: summarize once, then send summary + recent tail.
+            if !session.messages.isEmpty {
+                HStack(alignment: .center, spacing: 12) {
+                    Button("Summarize chat") {
+                        if let wsId = selectedWorkspaceId {
+                            session.generateRollingSummary(
+                                workspaceStore: workspaceStore,
+                                configStore: configStore,
+                                guiChatPrefs: guiChatPrefs,
+                                selectedWorkspaceId: wsId
+                            )
+                        } else {
+                            session.setChatBannerInfo("Select a workspace before summarizing.")
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(session.isStreaming || !workspaceReady)
+
+                    Toggle("Use summary", isOn: $session.useSummaryMode)
+                        .toggleStyle(.switch)
+                        .disabled(session.rollingSummary == nil)
+
+                    Button("Clear summary") {
+                        session.clearRollingSummary()
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(session.isStreaming || session.rollingSummary == nil)
+
+                    Spacer(minLength: 0)
+                }
+                .font(AppearanceTheme.swiftUIFont(snap, delta: 0))
+                .padding(.horizontal, 4)
             }
 
             HStack(alignment: .bottom, spacing: 12) {
@@ -556,7 +608,7 @@ public struct ChatPane: View {
             )
         case "/strict":
             session.setChatBannerInfo(
-                "Strict execution mode (`exec_strict_mode`) is applied when using the Python agent runtime; edit config.yaml for parity."
+                "Strict execution mode (`exec_strict_mode`) is a stored setting; edit `~/.grizzyclaw/config.yaml` to adjust. Not yet enforced natively."
             )
         default:
             if let msg = Self.slashMessagePayload[key] {
@@ -700,16 +752,83 @@ public struct ChatPane: View {
 
     private var micButton: some View {
         Button {
-            // Voice capture matches Python app; native build focuses on text + canvas.
+            voiceInput.toggle(
+                preferredDeviceName: snap.inputDeviceName,
+                transcriptionProvider: snap.transcriptionProvider,
+                onTranscript: { transcript in
+                    pendingVoiceTranscript = transcript
+                    draft = transcript
+                    session.setChatBannerInfo("Voice transcript ready. Review it, edit if needed, then press Send.")
+                    statusBarStore.showMessage("Voice transcript ready.")
+                },
+                onError: { message in
+                    session.setChatBannerInfo(message)
+                }
+            )
         } label: {
             Text("🎤")
                 .font(AppearanceTheme.swiftUIFont(snap, delta: 1))
                 .frame(width: 44, height: 44)
+                .background(
+                    Circle()
+                        .fill(voiceInput.isRecording ? Color.red.opacity(0.18) : Color.clear)
+                )
         }
         .buttonStyle(.plain)
-        .foregroundStyle(Color(red: 0.56, green: 0.56, blue: 0.58))
-        .help("Record voice or attach audio (full pipeline in Python app)")
-        .disabled(true)
+        .foregroundStyle(
+            voiceInput.isRecording
+                ? Color.red
+                : Color(red: 0.56, green: 0.56, blue: 0.58)
+        )
+        .help(voiceInput.isRecording ? "Stop recording and send transcript" : "Record voice and send transcript")
+        .disabled(session.isStreaming || !workspaceReady)
+    }
+
+    private func voiceTranscriptPreview(transcript: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "waveform")
+                .foregroundStyle(Color(red: 0, green: 0.48, blue: 1))
+                .padding(.top, 2)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Voice transcript attached")
+                    .font(AppearanceTheme.swiftUIFont(snap, delta: -1, weight: .semibold))
+                    .foregroundStyle(primaryLabel)
+                Text(transcript)
+                    .font(AppearanceTheme.swiftUIFont(snap, delta: -1))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(3)
+            }
+
+            Spacer(minLength: 8)
+
+            HStack(spacing: 10) {
+                Button("Send now") {
+                    send()
+                }
+                .buttonStyle(.plain)
+                .font(AppearanceTheme.swiftUIFont(snap, delta: -1, weight: .semibold))
+                .foregroundStyle(Color(red: 0, green: 0.48, blue: 1))
+                .disabled(!sendEnabled)
+
+                Button("Clear") {
+                    pendingVoiceTranscript = nil
+                }
+                .buttonStyle(.plain)
+                .font(AppearanceTheme.swiftUIFont(snap, delta: -1, weight: .medium))
+                .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(colorScheme == .dark ? Color(red: 0.18, green: 0.20, blue: 0.24) : Color(red: 0.94, green: 0.97, blue: 1.0))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color(red: 0.82, green: 0.82, blue: 0.84), lineWidth: 1)
+        )
     }
 
     private var workspaceReady: Bool {
@@ -793,8 +912,12 @@ public struct ChatPane: View {
     private func displayText(for msg: ChatMessage) -> String {
         let raw = msg.content
         if msg.role == .assistant {
-            let stripped = CanvasExtraction.stripDisplayControls(raw)
-            return stripped.isEmpty && session.isStreaming ? "…" : stripped
+            // Keep the transcript readable by stripping non-user-visible control blocks:
+            // - Canvas display controls (A2UI / screenshot refs)
+            // - Tool-call directives that some local models emit as plain text
+            let canvasStripped = CanvasExtraction.stripDisplayControls(raw)
+            let toolStripped = ToolCallCommandParsing.stripToolCallBlocks(canvasStripped)
+            return toolStripped.isEmpty && session.isStreaming ? "…" : toolStripped
         }
         if msg.role == .tool {
             return McpToolTranscriptFormatting.toolMessageDisplayString(rawContent: raw)
@@ -806,6 +929,7 @@ public struct ChatPane: View {
         let t = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !t.isEmpty else { return }
         hideComposerPalettes()
+        pendingVoiceTranscript = nil
         draft = ""
         statusBarStore.showMessage("Sending to \(snap.defaultLlmProvider)...")
         session.send(

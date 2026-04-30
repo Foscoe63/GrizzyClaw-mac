@@ -14,16 +14,10 @@ extension Notification.Name {
     public static let grizzyOpenSchedulerWindow = Notification.Name("GrizzyClaw.openSchedulerWindow")
     /// Open the Browser window (Python `BrowserDialog` parity).
     public static let grizzyOpenBrowserWindow = Notification.Name("GrizzyClaw.openBrowserWindow")
-    /// Open the Sessions window (Python `SessionsDialog` parity).
-    public static let grizzyOpenSessionsWindow = Notification.Name("GrizzyClaw.openSessionsWindow")
     /// Open the Conversation history window (`conversation_history_dialog.py` parity).
     public static let grizzyOpenConversationHistoryWindow = Notification.Name("GrizzyClaw.openConversationHistoryWindow")
     /// Open the Usage dashboard (`usage_dashboard_dialog.py` parity).
     public static let grizzyOpenUsageDashboardWindow = Notification.Name("GrizzyClaw.openUsageDashboardWindow")
-    /// Open the Swarm activity window (Python `SwarmActivityDialog` parity).
-    public static let grizzyOpenSwarmWindow = Notification.Name("GrizzyClaw.openSwarmWindow")
-    /// Open the Sub-agents window (Python `SubagentsDialog` parity).
-    public static let grizzyOpenSubagentsWindow = Notification.Name("GrizzyClaw.openSubagentsWindow")
     /// Open the Folder Watchers window (Python **Watchers** dialog parity; `~/.grizzyclaw/watchers/`).
     public static let grizzyOpenWatchersWindow = Notification.Name("GrizzyClaw.openWatchersWindow")
     /// Open the Preferences window (Python `SettingsDialog` / `Preferences` title parity).
@@ -90,6 +84,7 @@ public struct GrizzyClawRootScene: Scene {
                 SchedulerMainView(
                     scheduledTasksStore: session.scheduledTasksStore,
                     configStore: session.configStore,
+                    runner: session.scheduledTaskRunner,
                     theme: session.configStore.snapshot.theme
                 )
                 .id(session.configStore.snapshot.theme)
@@ -115,19 +110,6 @@ public struct GrizzyClawRootScene: Scene {
             }
         }
         .defaultSize(width: 880, height: 640)
-
-        /// Python `SessionsDialog`: `setWindowTitle("Sessions")`, `setMinimumSize(700, 500)` (`sessions_dialog.py`).
-        Window("Sessions", id: "sessions") {
-            AppThemedWindowRoot(configStore: session.configStore) {
-                SessionsMainView(configStore: session.configStore)
-                    .id(session.configStore.snapshot.theme)
-                    .frame(minWidth: 700, minHeight: 500)
-                    .onAppear {
-                        session.configStore.reload()
-                    }
-            }
-        }
-        .defaultSize(width: 760, height: 540)
 
         /// Python `ConversationHistoryDialog`: `setWindowTitle("Conversation history")`, `setMinimumWidth(360)`.
         Window("📜 Conversation history", id: "conversationHistory") {
@@ -172,32 +154,6 @@ public struct GrizzyClawRootScene: Scene {
         }
         .defaultSize(width: 720, height: 560)
 
-        /// Python `SwarmActivityDialog`: `setWindowTitle("Swarm activity")`, `setMinimumSize(560, 400)` (`swarm_activity_dialog.py`).
-        Window("Swarm activity", id: "swarm") {
-            AppThemedWindowRoot(configStore: session.configStore) {
-                SwarmActivityMainView()
-                    .id(session.configStore.snapshot.theme)
-                    .frame(minWidth: 560, minHeight: 400)
-                    .onAppear {
-                        session.configStore.reload()
-                    }
-            }
-        }
-        .defaultSize(width: 600, height: 480)
-
-        /// Python `SubagentsDialog`: `setWindowTitle("Sub-agents")`, `setMinimumSize(620, 480)` (`subagents_dialog.py`).
-        Window("Sub-agents", id: "subagents") {
-            AppThemedWindowRoot(configStore: session.configStore) {
-                SubagentsMainView(configStore: session.configStore)
-                    .id(session.configStore.snapshot.theme)
-                    .frame(minWidth: 620, minHeight: 480)
-                    .onAppear {
-                        session.configStore.reload()
-                    }
-            }
-        }
-        .defaultSize(width: 640, height: 520)
-
         /// Folder watchers: `~/.grizzyclaw/watchers/*.json` (Python **Watchers** dialog parity; Osaurus-style dedicated window).
         Window("👁️ Watchers", id: "watchers") {
             AppThemedWindowRoot(configStore: session.configStore) {
@@ -231,7 +187,8 @@ public struct GrizzyClawRootScene: Scene {
             PreferencesMainView(
                 configStore: session.configStore,
                 workspaceStore: session.workspaceStore,
-                guiChatPrefs: session.guiChatPrefs
+                guiChatPrefs: session.guiChatPrefs,
+                telegramService: session.telegramService
             )
             .environmentObject(session.statusBarStore)
             .id(session.configStore.snapshot.theme)

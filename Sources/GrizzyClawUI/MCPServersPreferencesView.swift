@@ -764,7 +764,18 @@ struct MCPServersPreferencesView: View {
             let r = try await MCPToolsDiscovery.discover(mcpServersFile: path, forceRefresh: true)
             await MainActor.run {
                 var next = toolCounts
-                for (k, v) in r.servers { next[k] = v.count }
+                // Discovery normalizes server keys (e.g. strips `[id=…]` suffixes). Map back onto the
+                // MCP rows we display (which may still include that suffix) so tool counts show up.
+                let discoveredKeys = Array(r.servers.keys)
+                for row in servers {
+                    let canon = MCPIdentityResolution.canonicalServerName(
+                        modelOutput: row.name,
+                        knownServers: discoveredKeys
+                    )
+                    if let tools = r.servers[canon] {
+                        next[row.name] = tools.count
+                    }
+                }
                 toolCounts = next
                 guiChatPrefs.applyDiscoveryPreservingPreviousOnFailure(r)
                 persistCachedViewState()
@@ -788,7 +799,12 @@ struct MCPServersPreferencesView: View {
                 onlyServerNames: Set([rowName]),
                 forceRefresh: true
             )
-            let n = r.servers[rowName]?.count ?? 0
+            let discoveredKeys = Array(r.servers.keys)
+            let canonRowName = MCPIdentityResolution.canonicalServerName(
+                modelOutput: rowName,
+                knownServers: discoveredKeys
+            )
+            let n = r.servers[canonRowName]?.count ?? 0
             if let err = r.errorMessage, !err.isEmpty {
                 await MainActor.run { presentMcpSheetAlert(title: "MCP test", message: "Test: \(rowName)\n\(err)") }
             } else {
@@ -872,7 +888,17 @@ struct MCPServersPreferencesView: View {
             }
             await MainActor.run {
                 var next = toolCounts
-                for (k, v) in r.servers { next[k] = v.count }
+                // Same key normalization note as `refreshToolCounts()`.
+                let discoveredKeys = Array(r.servers.keys)
+                for row in servers {
+                    let canon = MCPIdentityResolution.canonicalServerName(
+                        modelOutput: row.name,
+                        knownServers: discoveredKeys
+                    )
+                    if let tools = r.servers[canon] {
+                        next[row.name] = tools.count
+                    }
+                }
                 toolCounts = next
                 guiChatPrefs.applyDiscoveryPreservingPreviousOnFailure(r)
                 persistCachedViewState()

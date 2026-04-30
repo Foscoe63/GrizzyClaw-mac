@@ -19,8 +19,25 @@ public final class GrizzyClawSession: ObservableObject {
     /// Model / Tools bar prefs (`~/.grizzyclaw/gui_chat_prefs.json`), same file as Python.
     public let guiChatPrefs = GuiChatPrefsStore()
     public let scheduledTasksStore = ScheduledTasksStore()
+    /// Native Swift Telegram bot service (no Python daemon). Created lazily in `init` so it can
+    /// share the same stores the chat UI uses (workspace + config + model picker preferences).
+    public let telegramService: TelegramService
+    /// Native scheduled-task executor (replaces Python `CronScheduler`). In-process, uses the
+    /// same LLM path as the chat UI via `HeadlessLLMDispatcher`.
+    public let scheduledTaskRunner: ScheduledTaskRunner
 
     public init() {
+        self.telegramService = TelegramService(
+            workspaceStore: workspaceStore,
+            configStore: configStore,
+            guiChatPrefs: guiChatPrefs
+        )
+        self.scheduledTaskRunner = ScheduledTaskRunner(
+            scheduledTasksStore: scheduledTasksStore,
+            workspaceStore: workspaceStore,
+            configStore: configStore,
+            guiChatPrefs: guiChatPrefs
+        )
         // So `GrizzyClawRootScene` Window builders re-evaluate when Preferences saves `config.yaml`.
         configStore.objectWillChange
             .receive(on: DispatchQueue.main)

@@ -53,14 +53,11 @@ public enum GrizzyClawPaths {
         userDataDirectory.appendingPathComponent("scheduled_tasks.json")
     }
 
-    /// `~/.grizzyclaw/daemon.sock` — Python `IPCServer` Unix socket when the background daemon is running.
+    /// `~/.grizzyclaw/daemon.sock` — legacy Python IPC socket path. Retained as a filesystem constant for
+    /// doctor/diagnostic checks that report whether a daemon was previously running. GrizzyClawMac no longer
+    /// creates or consumes this socket.
     public static var daemonSocket: URL {
         userDataDirectory.appendingPathComponent("daemon.sock")
-    }
-
-    /// `~/.grizzyclaw/daemon_stderr.log` — Python daemon stderr redirect (troubleshooting).
-    public static var daemonStderrLog: URL {
-        userDataDirectory.appendingPathComponent("daemon_stderr.log")
     }
 
     /// `~/.grizzyclaw/triggers.json` — Python `automation.triggers.load_triggers` / `TriggersDialog`.

@@ -41,6 +41,18 @@ private let kToolsPopupWidth: CGFloat = 360
 /// Below this toolbar width, shorten MCP controls and tighten model/tools dropdowns.
 private let kComposerToolbarNarrowWidth: CGFloat = 760
 
+/// Wraps a picker row so `ForEach` ids are unique per provider. `ModelPickerModels.Row.id` is only
+/// the model id; LM Studio OpenAI-compat and LM Studio v1 often return the same ids, which
+/// caused SwiftUI to recycle row views and show the wrong list under the `lmstudio` header.
+private struct ProviderScopedModelRow: Identifiable {
+    let id: String
+    let row: ModelPickerModels.Row
+    init(provider: String, row: ModelPickerModels.Row) {
+        self.id = provider + "\u{1e}" + row.modelId
+        self.row = row
+    }
+}
+
 /// Python `composer_bar`: Model + ↻, Tools + ↻ — centered above the input, `composer_bar_toolbutton_stylesheet` parity.
 struct ChatComposerToolbar: View {
     @ObservedObject var guiPrefs: GuiChatPrefsStore
@@ -53,6 +65,9 @@ struct ChatComposerToolbar: View {
     private var snap: UserConfigSnapshot { configStore.snapshot }
 
     @State private var modelsByProvider: [String: [ModelPickerModels.Row]] = [:]
+    @State private var modelDiagnosticsByProvider: [String: String] = [:]
+    /// Bumped on every `refreshModelsList()` so a slower, older `Task` cannot overwrite results after settings change (e.g. toggling `lmstudio_v1_enabled`).
+    @State private var modelListFetchGeneration: Int = 0
     @State private var modelListLoading = false
     @State private var expandedProviders: Set<String> = []
     @State private var isRefreshingModels = false
@@ -124,6 +139,27 @@ struct ChatComposerToolbar: View {
             if guiPrefs.lastDiscovery == nil {
                 refreshTools()
             }
+        }
+        .onChange(of: showModelPopover) {
+            if showModelPopover { refreshModelsList() }
+        }
+        .onChange(of: selectedWorkspaceId) {
+            refreshModelsList()
+        }
+        .onChange(of: workspaceStore.index?.activeWorkspaceId) {
+            refreshModelsList()
+        }
+        .onChange(of: configStore.snapshot.lmstudioUrl) {
+            refreshModelsList()
+        }
+        .onChange(of: configStore.snapshot.lmstudioV1Url) {
+            refreshModelsList()
+        }
+        .onChange(of: configStore.snapshot.lmstudioV1Enabled) {
+            refreshModelsList()
+        }
+        .onChange(of: configStore.snapshot.defaultLlmProvider) {
+            refreshModelsList()
         }
         .onChange(of: configStore.snapshot.mcpServersFile) {
             refreshTools()
@@ -458,8 +494,17 @@ struct ChatComposerToolbar: View {
 
             if expanded {
                 VStack(alignment: .leading, spacing: 6) {
-                    ForEach(rows) { row in
-                        modelRowButton(provider: provider, row: row)
+                    if let diag = modelDiagnosticsByProvider[provider] {
+                        Text(diag)
+                            .font(.system(size: 12))
+                            .foregroundColor(.red)
+                            .textSelection(.enabled)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                    }
+                    ForEach(rows.map { ProviderScopedModelRow(provider: provider, row: $0) }) { scoped in
+                        modelRowButton(provider: provider, row: scoped.row)
                     }
                 }
                 .padding(.leading, 6)
@@ -468,6 +513,7 @@ struct ChatComposerToolbar: View {
                 .padding(.bottom, 6)
             }
         }
+        .id("model-picker-provider-\(provider)")
     }
 
     private func modelRowButton(provider: String, row: ModelPickerModels.Row) -> some View {
@@ -503,26 +549,25 @@ struct ChatComposerToolbar: View {
     }
 
     private func refreshModelsList() {
+        modelListFetchGeneration += 1
+        let generation = modelListFetchGeneration
         isRefreshingModels = true
         modelListLoading = true
         let cfg = currentWorkspace()?.config
         let user = configStore.snapshot
         let routing = configStore.routingExtras
         Task {
-            let secrets: UserConfigSecrets
-            do {
-                secrets = try UserConfigLoader.loadSecretsWithKeychain()
-            } catch {
-                secrets = .empty
-            }
-            let data = await ModelPickerModels.fetch(
+            let secrets = UserConfigLoader.loadSecretsWithKeychainLenient()
+            let outcome = await ModelPickerModels.fetchWithDiagnostics(
                 workspaceConfig: cfg,
                 user: user,
                 routing: routing,
                 secrets: secrets
             )
             await MainActor.run {
-                modelsByProvider = data
+                guard generation == modelListFetchGeneration else { return }
+                modelsByProvider = outcome.rowsByProvider
+                modelDiagnosticsByProvider = outcome.diagnosticsByProvider
                 modelListLoading = false
                 isRefreshingModels = false
             }

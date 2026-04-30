@@ -2,6 +2,14 @@ import Foundation
 
 /// Mirrors `grizzyclaw/agent/command_parsers.py` `find_json_blocks` for `TOOL_CALL` and balanced `{…}` extraction.
 public enum ToolCallCommandParsing {
+    private static func safeIndexAfter(_ i: String.Index, in s: String) -> String.Index? {
+        s.index(i, offsetBy: 1, limitedBy: s.endIndex)
+    }
+
+    private static func safeIndexBefore(_ i: String.Index, in s: String) -> String.Index? {
+        s.index(i, offsetBy: -1, limitedBy: s.startIndex)
+    }
+
     /// Local models often omit `TOOL_CALL =` and emit `{"mcp":...}` (sometimes after junk like `commentary to=…json`).
     private static let looseMcpJsonStart = try! NSRegularExpression(
         pattern: #"\{\s*"mcp"\s*:"#,
@@ -10,19 +18,22 @@ public enum ToolCallCommandParsing {
 
     /// Bundled **MLX** (and some other local) models often emit routing in the prefix and **only** argument JSON: `commentary to=ddg-search[id=x].search json{"query":"…"}`.
     private static let commentaryRoutedArgs = try! NSRegularExpression(
-        pattern: #"(?i)commentary\s+to=([a-zA-Z0-9_.-]+)(?:\[[^\]]*\])?\.([a-zA-Z0-9_.-]+)\s+(?:(?:json|arguments)\s*)?\{"#,
+        // Also tolerate models that omit whitespace: `.searchjson{...}`.
+        pattern: #"(?i)commentary\s+to=([a-zA-Z0-9_.-]+)(?:\[[^\]]*\])?\.([a-zA-Z0-9_.-]+)(?:\s*(?:json|arguments)\s*)?\{"#,
         options: []
     )
 
     /// Same intent as ``commentaryRoutedArgs``, but some models use ` tool=search ` instead of `.search` before `{…}`.
     private static let commentaryRoutedToolEqualsArgs = try! NSRegularExpression(
-        pattern: #"(?i)commentary\s+to=([a-zA-Z0-9_.-]+)(?:\[[^\]]*\])?\s+tool=([a-zA-Z0-9_.-]+)\s+(?:(?:json|arguments)\s*)?\{"#,
+        // Also tolerate `tool=searchjson{...}` (no whitespace before `json{`).
+        pattern: #"(?i)commentary\s+to=([a-zA-Z0-9_.-]+)(?:\[[^\]]*\])?\s+tool=([a-zA-Z0-9_.-]+)(?:\s*(?:json|arguments)\s*)?\{"#,
         options: []
     )
 
     /// Some models emit only the server route and args object: `commentary to=ddg-search json{"query":"…"}`.
     private static let commentaryRoutedServerOnlyArgs = try! NSRegularExpression(
-        pattern: #"(?i)commentary\s+to=([a-zA-Z0-9_.-]+)(?:\[[^\]]*\])?\s+(?:(?:json|arguments)\s*)?\{"#,
+        // Also tolerate `commentary to=ddg-searchjson{...}` (no whitespace).
+        pattern: #"(?i)commentary\s+to=([a-zA-Z0-9_.-]+)(?:\[[^\]]*\])?(?:\s*(?:json|arguments)\s*)?\{"#,
         options: []
     )
 
@@ -60,6 +71,31 @@ public enum ToolCallCommandParsing {
         return String(t[..<i]).trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    /// Some local models glue the tool name to the args keyword (`searchjson{...}` / `searcharguments{...}`).
+    /// Normalize those back to the intended tool name (`search`).
+    private static func normalizeCommentaryRoutedToolToken(_ raw: String) -> String {
+        var t = normalizeMcpIdentifier(raw)
+        let lower = t.lowercased()
+        // Common: `tooljson{...}` / `toolarguments{...}` (no whitespace).
+        if lower.hasSuffix("json"), t.count > 4 {
+            t = String(t.dropLast(4))
+        } else if lower.hasSuffix("arguments"), t.count > 9 {
+            t = String(t.dropLast(9))
+        } else {
+            // Some models append extra junk after `json` / `arguments`, e.g. `fast_read_filejsonanalysis{...}`
+            // or `searchargumentsjson{...}`. Strip from the start of the keyword onward.
+            // IMPORTANT: do not slice `t` using indices from `lower` (different String storage → invalid indices).
+            if let r = t.range(of: "json", options: [.caseInsensitive]), r.lowerBound > t.startIndex {
+                let prefix = t[..<r.lowerBound]
+                if prefix.count >= 2 { t = String(prefix) }
+            } else if let r = t.range(of: "arguments", options: [.caseInsensitive]), r.lowerBound > t.startIndex {
+                let prefix = t[..<r.lowerBound]
+                if prefix.count >= 2 { t = String(prefix) }
+            }
+        }
+        return t.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     /// Returns JSON object bodies (inside `{`…`}`) for each `TOOL_CALL = {` occurrence.
     private static func findExplicitToolCallJsonObjects(in text: String) -> [String] {
         let prefix = "TOOL_CALL"
@@ -68,25 +104,33 @@ public enum ToolCallCommandParsing {
         while let r = text.range(of: prefix, options: .caseInsensitive, range: searchRange, locale: nil) {
             let afterPrefix = text.index(r.upperBound, offsetBy: 0, limitedBy: text.endIndex) ?? text.endIndex
             guard let eqRange = text.range(of: "=", range: afterPrefix..<text.endIndex) else {
+                let next = safeIndexAfter(r.upperBound, in: text) ?? text.endIndex
+                searchRange = next..<text.endIndex
+                continue
+            }
+            // `eqRange.upperBound` is already after "=", so don't advance unsafely.
+            var i = eqRange.upperBound
+            while i < text.endIndex, text[i].isWhitespace { text.formIndex(after: &i) }
+            guard i < text.endIndex else {
                 searchRange = text.index(after: r.upperBound)..<text.endIndex
                 continue
             }
-            var i = text.index(after: eqRange.upperBound)
-            while i < text.endIndex, text[i].isWhitespace { text.formIndex(after: &i) }
             if text[i..<text.endIndex].hasPrefix("```") {
                 if let fence = text[i...].firstIndex(of: "\n") {
-                    i = text.index(after: fence)
+                    i = safeIndexAfter(fence, in: text) ?? text.endIndex
                 }
             }
             while i < text.endIndex, text[i].isWhitespace { text.formIndex(after: &i) }
             guard i < text.endIndex, text[i] == "{" else {
-                searchRange = text.index(after: r.upperBound)..<text.endIndex
+                let next = safeIndexAfter(r.upperBound, in: text) ?? text.endIndex
+                searchRange = next..<text.endIndex
                 continue
             }
             if let pair = extractBalancedBrace(text, start: i) {
                 blocks.append(String(text[pair]))
             }
-            searchRange = text.index(after: r.upperBound)..<text.endIndex
+            let next = safeIndexAfter(r.upperBound, in: text) ?? text.endIndex
+            searchRange = next..<text.endIndex
         }
         return blocks
     }
@@ -114,8 +158,10 @@ public enum ToolCallCommandParsing {
                   let toolR = Range(match.range(at: 2), in: text),
                   let fullR = Range(match.range(at: 0), in: text)
             else { return }
-            let braceStart = text.index(before: fullR.upperBound)
-            guard braceStart < text.endIndex, text[braceStart] == "{" else { return }
+            guard let braceStart = safeIndexBefore(fullR.upperBound, in: text),
+                  braceStart < text.endIndex,
+                  text[braceStart] == "{"
+            else { return }
             guard let argRange = extractBalancedBrace(text, start: braceStart) else { return }
             let argsRaw = String(text[argRange])
             guard let argsData = argsRaw.data(using: .utf8),
@@ -123,7 +169,7 @@ public enum ToolCallCommandParsing {
                   let argsDict = argsObj as? [String: Any]
             else { return }
             let mcp = normalizeMcpIdentifier(String(text[mcpR]))
-            let tool = normalizeMcpIdentifier(String(text[toolR]))
+            let tool = normalizeCommentaryRoutedToolToken(String(text[toolR]))
             guard !mcp.isEmpty, !tool.isEmpty else { return }
             let wrapper: [String: Any] = ["mcp": mcp, "tool": tool, "arguments": argsDict]
             guard let wstr = safeJSONString(from: wrapper)
@@ -145,8 +191,10 @@ public enum ToolCallCommandParsing {
                   let mcpR = Range(match.range(at: 1), in: text),
                   let fullR = Range(match.range(at: 0), in: text)
             else { return }
-            let braceStart = text.index(before: fullR.upperBound)
-            guard braceStart < text.endIndex, text[braceStart] == "{" else { return }
+            guard let braceStart = safeIndexBefore(fullR.upperBound, in: text),
+                  braceStart < text.endIndex,
+                  text[braceStart] == "{"
+            else { return }
             guard let argRange = extractBalancedBrace(text, start: braceStart) else { return }
             let argsRaw = String(text[argRange])
             guard let argsData = argsRaw.data(using: .utf8),
@@ -208,25 +256,32 @@ public enum ToolCallCommandParsing {
             }
             let afterPrefix = r.upperBound
             guard let eqRange = trimmed.range(of: "=", range: afterPrefix..<trimmed.endIndex) else {
+                let next = safeIndexAfter(r.upperBound, in: trimmed) ?? trimmed.endIndex
+                searchRange = next..<trimmed.endIndex
+                continue
+            }
+            var i = eqRange.upperBound
+            while i < trimmed.endIndex, trimmed[i].isWhitespace { trimmed.formIndex(after: &i) }
+            guard i < trimmed.endIndex else {
                 searchRange = trimmed.index(after: r.upperBound)..<trimmed.endIndex
                 continue
             }
-            var i = trimmed.index(after: eqRange.upperBound)
-            while i < trimmed.endIndex, trimmed[i].isWhitespace { i = trimmed.index(after: i) }
             if trimmed[i..<trimmed.endIndex].hasPrefix("```") {
                 if let fence = trimmed[i...].firstIndex(of: "\n") {
-                    i = trimmed.index(after: fence)
+                    i = safeIndexAfter(fence, in: trimmed) ?? trimmed.endIndex
                 }
             }
-            while i < trimmed.endIndex, trimmed[i].isWhitespace { i = trimmed.index(after: i) }
+            while i < trimmed.endIndex, trimmed[i].isWhitespace { trimmed.formIndex(after: &i) }
             guard i < trimmed.endIndex, trimmed[i] == "{" else {
-                searchRange = trimmed.index(after: r.upperBound)..<trimmed.endIndex
+                let next = safeIndexAfter(r.upperBound, in: trimmed) ?? trimmed.endIndex
+                searchRange = next..<trimmed.endIndex
                 continue
             }
             if let pair = extractBalancedBrace(trimmed, start: i) {
                 ranges.append(blockStart..<pair.upperBound)
             }
-            searchRange = trimmed.index(after: r.upperBound)..<trimmed.endIndex
+            let next = safeIndexAfter(r.upperBound, in: trimmed) ?? trimmed.endIndex
+            searchRange = next..<trimmed.endIndex
         }
         ranges.append(contentsOf: rangesOfLooseMcpToolJson(in: trimmed))
         ranges.append(contentsOf: rangesOfCommentaryRoutedPreamble(in: trimmed))
@@ -266,8 +321,10 @@ public enum ToolCallCommandParsing {
                 guard let match, match.numberOfRanges >= 3,
                       let fullR = Range(match.range(at: 0), in: text)
                 else { return }
-                let braceStart = text.index(before: fullR.upperBound)
-                guard braceStart < text.endIndex, text[braceStart] == "{" else { return }
+                guard let braceStart = safeIndexBefore(fullR.upperBound, in: text),
+                      braceStart < text.endIndex,
+                      text[braceStart] == "{"
+                else { return }
                 guard let argRange = extractBalancedBrace(text, start: braceStart) else { return }
                 ranges.append(fullR.lowerBound..<argRange.upperBound)
             }
@@ -276,8 +333,10 @@ public enum ToolCallCommandParsing {
             guard let match, match.numberOfRanges >= 2,
                   let fullR = Range(match.range(at: 0), in: text)
             else { return }
-            let braceStart = text.index(before: fullR.upperBound)
-            guard braceStart < text.endIndex, text[braceStart] == "{" else { return }
+            guard let braceStart = safeIndexBefore(fullR.upperBound, in: text),
+                  braceStart < text.endIndex,
+                  text[braceStart] == "{"
+            else { return }
             guard let argRange = extractBalancedBrace(text, start: braceStart) else { return }
             ranges.append(fullR.lowerBound..<argRange.upperBound)
         }

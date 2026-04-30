@@ -103,4 +103,16 @@ extension UserConfigLoader {
     public static func loadSecretsWithKeychain(at url: URL = GrizzyClawPaths.configYAML) throws -> UserConfigSecrets {
         try loadSecrets(at: url).mergedWithKeychain()
     }
+
+    /// YAML read/parse failures yield empty YAML-derived secrets, then Keychain overrides still apply.
+    /// Use this for model probes and chat paths so a corrupt `config.yaml` does not wipe Keychain-only API keys.
+    public static func loadSecretsWithKeychainLenient(at url: URL = GrizzyClawPaths.configYAML) -> UserConfigSecrets {
+        let yamlPart: UserConfigSecrets
+        do {
+            yamlPart = try loadSecrets(at: url)
+        } catch {
+            yamlPart = .empty
+        }
+        return yamlPart.mergedWithKeychain()
+    }
 }

@@ -85,6 +85,7 @@ struct WorkspaceFullEditorView: View {
     @State private var llmModel: String
     @State private var ollamaUrl: String
     @State private var lmstudioUrl: String
+    @State private var lmstudioV1Url: String
     @State private var temperatureText: String
     @State private var maxTokensText: String
 
@@ -150,6 +151,7 @@ struct WorkspaceFullEditorView: View {
     @State private var availableModelsByProvider: [String: [ModelPickerModels.Row]] = [:]
     @State private var llmModelsLoading = false
     @State private var llmModelsMessage: String?
+    @State private var llmModelsMessageIsError = false
 
     @State private var benchmarkBusy = false
     @State private var benchmarkResult = ""
@@ -165,6 +167,8 @@ struct WorkspaceFullEditorView: View {
         defaultProvider: String,
         defaultModel: String,
         defaultOllamaUrl: String,
+        defaultLmstudioUrl: String,
+        defaultLmstudioV1Url: String,
         onSave: @escaping () -> Void,
         onNavigateToWorkspaceId: ((String) -> Void)? = nil
     ) {
@@ -190,7 +194,8 @@ struct WorkspaceFullEditorView: View {
         _llmProvider = State(initialValue: cfg?.string(forKey: "llm_provider") ?? defaultProvider)
         _llmModel = State(initialValue: cfg?.string(forKey: "llm_model") ?? defaultModel)
         _ollamaUrl = State(initialValue: cfg?.string(forKey: "ollama_url") ?? defaultOllamaUrl)
-        _lmstudioUrl = State(initialValue: cfg?.string(forKey: "lmstudio_url") ?? "http://localhost:1234/v1")
+        _lmstudioUrl = State(initialValue: cfg?.string(forKey: "lmstudio_url") ?? defaultLmstudioUrl)
+        _lmstudioV1Url = State(initialValue: cfg?.string(forKey: "lmstudio_v1_url") ?? defaultLmstudioV1Url)
         if let t = cfg?.double(forKey: "temperature") {
             _temperatureText = State(initialValue: String(t))
         } else {
@@ -732,7 +737,8 @@ struct WorkspaceFullEditorView: View {
                 if let llmModelsMessage {
                     Text(llmModelsMessage)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(llmModelsMessageIsError ? .red : .secondary)
+                        .textSelection(.enabled)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 LabeledContent("Temperature:") {
@@ -771,7 +777,8 @@ struct WorkspaceFullEditorView: View {
             }
             Section("Custom provider URLs (optional overrides)") {
                 TextField("Ollama URL", text: $ollamaUrl)
-                TextField("LM Studio URL", text: $lmstudioUrl)
+                TextField("LM Studio URL (OpenAI-compat, e.g. http://localhost:1234/v1)", text: $lmstudioUrl)
+                TextField("LM Studio V1 URL (native API base, e.g. http://192.168.1.x:1234)", text: $lmstudioV1Url)
             }
             Section("Memory") {
                 Text(
@@ -1036,8 +1043,7 @@ struct WorkspaceFullEditorView: View {
             Text(
                 "When enabled, this workspace can only call the tools you select here. "
                     + "The chat Tools dropdown can still filter further, but cannot enable anything outside this list. "
-                    + "Discovery uses the same MCP config as the Python app (`mcp_servers_file` → JSON), "
-                    + "via a bundled helper that requires Python 3 with `pip install mcp httpx`."
+                    + "Discovery reads `mcp_servers_file` (JSON) and talks to each server natively over stdio / HTTP — no Python helper required."
             )
             .font(.caption)
             .foregroundStyle(.secondary)
@@ -1293,30 +1299,82 @@ struct WorkspaceFullEditorView: View {
         guard !llmModelsLoading else { return }
         llmModelsLoading = true
         llmModelsMessage = nil
-        let cfg = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?.config ?? workspace.config
+        // Start from the persisted workspace config, then overlay live UI state so unsaved
+        // edits to LM Studio URL / API keys / provider / ollama URL are used when probing
+        // provider model lists (fixes: empty dropdown in workspace editor when the URL/key
+        // was typed but not yet saved — parity with the global Settings dialog which reads
+        // its live ConfigYamlDocument).
+        let storedCfg = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?.config ?? workspace.config
+        var overlay: [String: JSONValue] = {
+            if case .object(let dict) = storedCfg { return dict }
+            return [:]
+        }()
+
+        let trimmedProvider = llmProvider.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedProvider.isEmpty {
+            overlay["llm_provider"] = .string(trimmedProvider)
+        }
+
+        let trimmedOllama = ollamaUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedOllama.isEmpty {
+            overlay["ollama_url"] = .string(trimmedOllama)
+        }
+
+        let trimmedLmUrl = lmstudioUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedLmUrl.isEmpty {
+            overlay["lmstudio_url"] = .string(trimmedLmUrl)
+        }
+        let trimmedLmV1Url = lmstudioV1Url.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedLmV1Url.isEmpty {
+            overlay["lmstudio_v1_url"] = .string(trimmedLmV1Url)
+        }
+
+        func applyKey(_ key: String, value: String) {
+            let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty {
+                overlay.removeValue(forKey: key)
+            } else {
+                overlay[key] = .string(trimmed)
+            }
+        }
+        applyKey("openai_api_key", value: apiKeyOpenAI)
+        applyKey("anthropic_api_key", value: apiKeyAnthropic)
+        applyKey("openrouter_api_key", value: apiKeyOpenRouter)
+        applyKey("cursor_api_key", value: apiKeyCursor)
+        applyKey("opencode_zen_api_key", value: apiKeyOpenCodeZen)
+        applyKey("lmstudio_api_key", value: apiKeyLMStudio)
+        applyKey("lmstudio_v1_api_key", value: apiKeyLMStudioV1)
+
+        let cfg: JSONValue = .object(overlay)
         let user = configStore.snapshot
         let routing = configStore.routingExtras
         Task {
-            let secrets: UserConfigSecrets
-            do {
-                secrets = try UserConfigLoader.loadSecretsWithKeychain()
-            } catch {
-                secrets = .empty
-            }
-            let models = await ModelPickerModels.fetch(
+            let secrets = UserConfigLoader.loadSecretsWithKeychainLenient()
+            let outcome = await ModelPickerModels.fetchWithDiagnostics(
                 workspaceConfig: cfg,
                 user: user,
                 routing: routing,
                 secrets: secrets
             )
             await MainActor.run {
-                availableModelsByProvider = models
+                availableModelsByProvider = outcome.rowsByProvider
                 llmModelsLoading = false
                 let providerKey = llmProvider.trimmingCharacters(in: .whitespacesAndNewlines)
-                let count = models[providerKey]?.count ?? 0
-                llmModelsMessage = count > 0
-                    ? "Loaded \(count) model suggestion\(count == 1 ? "" : "s") for \(providerKey)."
-                    : "No provider-backed suggestions were returned for \(providerKey); manual model entry still works."
+                let rows = outcome.rowsByProvider[providerKey] ?? []
+                let count = rows.count
+                // Surface the real probe error when we only have the fallback row (the stored
+                // default model id) — otherwise users see "Loaded 1 model suggestion" and
+                // assume the LM Studio server is reachable when it is not.
+                if let diag = outcome.diagnosticsByProvider[providerKey] {
+                    llmModelsMessage = diag
+                    llmModelsMessageIsError = true
+                } else if count > 0 {
+                    llmModelsMessage = "Loaded \(count) model suggestion\(count == 1 ? "" : "s") for \(providerKey)."
+                    llmModelsMessageIsError = false
+                } else {
+                    llmModelsMessage = "No provider-backed suggestions were returned for \(providerKey); manual model entry still works."
+                    llmModelsMessageIsError = false
+                }
             }
         }
     }
@@ -1357,6 +1415,7 @@ struct WorkspaceFullEditorView: View {
         patch["llm_model"] = .string(llmModel)
         patch["ollama_url"] = .string(ollamaUrl)
         patch["lmstudio_url"] = .string(lmstudioUrl)
+        patch["lmstudio_v1_url"] = .string(lmstudioV1Url)
         if let t = tempParsed {
             patch["temperature"] = .double(t)
         }

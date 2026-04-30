@@ -27,7 +27,10 @@ public enum LocalHTTPSession {
     /// Prefer IPv4 loopback so the client does not rely on `localhost` → IPv6 / multiple address resolution.
     public static func preferIPv4Loopback(_ url: URL) -> URL {
         guard var parts = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return url }
-        if parts.host?.lowercased() == "localhost" {
+        // Many local servers (LM Studio, Ollama) bind to IPv4 only; when macOS resolves `localhost`
+        // to `::1` first, URLSession will attempt IPv6 and log noisy connection failures.
+        let host = parts.host?.lowercased()
+        if host == "localhost" || host == "::1" {
             parts.host = "127.0.0.1"
         }
         return parts.url ?? url

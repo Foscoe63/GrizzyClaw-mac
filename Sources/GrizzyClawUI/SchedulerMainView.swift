@@ -5,6 +5,7 @@ import SwiftUI
 public struct SchedulerMainView: View {
     @ObservedObject var scheduledTasksStore: ScheduledTasksStore
     @ObservedObject var configStore: ConfigStore
+    @ObservedObject var runner: ScheduledTaskRunner
     var theme: String
 
     @Environment(\.colorScheme) private var colorScheme
@@ -69,10 +70,12 @@ public struct SchedulerMainView: View {
     public init(
         scheduledTasksStore: ScheduledTasksStore,
         configStore: ConfigStore,
+        runner: ScheduledTaskRunner,
         theme: String
     ) {
         self.scheduledTasksStore = scheduledTasksStore
         self.configStore = configStore
+        self.runner = runner
         self.theme = theme
     }
 
@@ -104,6 +107,33 @@ public struct SchedulerMainView: View {
                             saveSchedulerSettings()
                         }
                     }
+                }
+
+                GroupBox("Runner") {
+                    HStack(spacing: 10) {
+                        Button(runner.isRunning ? "⏸ Stop runner" : "▶ Start runner") {
+                            toggleRunner()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(runner.isRunning ? .orange : .green)
+                        Text(runner.isRunning ? "Running (\(runnerLastActivity()))" : "Stopped")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        if let summary = selectedRunStateSummary() {
+                            Text(summary)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                        }
+                    }
+                    Text(
+                        "The native runner executes scheduled tasks in-process using the active workspace's LLM. "
+                            + "It replaces the Python agent's cron scheduler — no daemon required."
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
 
                 GroupBox {
@@ -215,6 +245,12 @@ public struct SchedulerMainView: View {
         .onChange(of: scheduledTasksStore.disabledTaskIds) {
             refreshStatus()
         }
+        .onChange(of: runner.isRunning) {
+            refreshStatus()
+        }
+        .onChange(of: runner.lastTickAt) {
+            refreshStatus()
+        }
         .onChange(of: selectedTaskId) { _, new in
             applySelection(taskId: new)
         }
@@ -280,7 +316,7 @@ public struct SchedulerMainView: View {
             }
 
             Button("▶ Run now") {
-                runNowInfo()
+                runNow()
             }
             .disabled(lastSelectedTaskId == nil)
             .buttonStyle(.borderedProminent)
@@ -305,8 +341,9 @@ public struct SchedulerMainView: View {
     private func refreshStatus() {
         let total = scheduledTasksStore.tasks.count
         let enabled = scheduledTasksStore.tasks.filter { scheduledTasksStore.isEnabled(taskId: $0.taskId) }.count
+        let runnerState = runner.isRunning ? "Running" : "Stopped"
         statusText =
-            "Total Tasks: \(total) | Enabled: \(enabled) | Execution: Python agent (native app edits scheduled_tasks.json; the agent runs tasks on schedule)"
+            "Total Tasks: \(total) | Enabled: \(enabled) | Execution: in-process (native) | Runner: \(runnerState)"
     }
 
     private func taskListLine(task: ScheduledTaskRecord) -> String {
@@ -339,7 +376,19 @@ public struct SchedulerMainView: View {
             nextStr = "N/A"
             countdown = ""
         }
-        return "\(statusIcon) \(task.name) | Cron: \(task.cron) | Next: \(nextStr)\(countdown) | Runs: —"
+        let st = runner.runStates[task.taskId]
+        let runsText: String
+        switch st?.status ?? .idle {
+        case .idle:
+            runsText = "Runs: \(st?.runCount ?? 0)"
+        case .running:
+            runsText = "Runs: \(st?.runCount ?? 0) (running…)"
+        case .success:
+            runsText = "Runs: \(st?.runCount ?? 0) ✓"
+        case .failed:
+            runsText = "Runs: \(st?.runCount ?? 0) ✗"
+        }
+        return "\(statusIcon) \(task.name) | Cron: \(task.cron) | Next: \(nextStr)\(countdown) | \(runsText)"
     }
 
     private func applySelection(taskId: String?) {
@@ -543,12 +592,47 @@ public struct SchedulerMainView: View {
         }
     }
 
-    private func runNowInfo() {
-        presentInfo(
-            title: "Run now",
-            message:
-                "Running a task immediately executes the Python GrizzyClaw agent on that task’s message. Use the Python app with the agent running, or ask the model to call the grizzyclaw tool run_scheduled_task with this task’s id."
-        )
+    private func runNow() {
+        guard let id = lastSelectedTaskId ?? selectedTaskId else {
+            presentInfo(title: "No Selection", message: "Select a task first, then click Run now.")
+            return
+        }
+        runner.runNow(taskId: id)
+    }
+
+    private func toggleRunner() {
+        if runner.isRunning {
+            runner.stop()
+        } else {
+            runner.start()
+        }
+        refreshStatus()
+    }
+
+    private func runnerLastActivity() -> String {
+        if let t = runner.lastTickAt {
+            let f = DateFormatter()
+            f.dateFormat = "HH:mm:ss"
+            return "last tick \(f.string(from: t))"
+        }
+        return "no ticks yet"
+    }
+
+    private func selectedRunStateSummary() -> String? {
+        guard let id = lastSelectedTaskId ?? selectedTaskId,
+              let st = runner.runStates[id] else { return nil }
+        var parts: [String] = []
+        parts.append("status: \(st.status.rawValue)")
+        if let last = st.lastCompletedAt {
+            let f = DateFormatter()
+            f.dateFormat = "HH:mm:ss"
+            parts.append("last completed \(f.string(from: last))")
+        }
+        if let err = st.lastError { parts.append("error: \(err)") }
+        if let preview = st.lastReplyPreview, !preview.isEmpty {
+            parts.append("reply: \(preview)")
+        }
+        return parts.joined(separator: " · ")
     }
 
     private func presentInfo(title: String, message: String) {

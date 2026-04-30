@@ -9,9 +9,6 @@ struct ClawHubPreferencesView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     @State private var selectedSkill: String?
-    @State private var skillInstallURL = ""
-    @State private var installBusy = false
-    @State private var checkUpdatesBusy = false
     @State private var hfShowToken = false
     @State private var showAddSkillSheet = false
     @State private var showGitHubImportSheet = false
@@ -135,24 +132,6 @@ struct ClawHubPreferencesView: View {
                 .foregroundStyle(secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text("Install from URL:")
-                    .font(.system(size: 13))
-                    .foregroundStyle(fg)
-                TextField("https://github.com/.../Skill-repo", text: $skillInstallURL)
-                    .textFieldStyle(.roundedBorder)
-                if installBusy {
-                    ProgressView()
-                        .controlSize(.small)
-                        .frame(width: 28, height: 28)
-                }
-                Button("Install") {
-                    Task { await runInstallFromURL() }
-                }
-                .disabled(installBusy || skillInstallURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                .help("Clone repo and install as reference skill (SKILL.md). Requires git and pip install grizzyclaw.")
-            }
-
             HStack(spacing: 8) {
                 Button("Import GitHub…") {
                     showGitHubImportSheet = true
@@ -189,10 +168,6 @@ struct ClawHubPreferencesView: View {
                     doc.reloadValue(forKey: "enabled_skills")
                     alertInfo = "Global skill defaults reloaded from saved config.yaml on disk."
                 }
-                Button("Check for updates") {
-                    Task { await runCheckUpdates() }
-                }
-                .disabled(checkUpdatesBusy)
                 Spacer(minLength: 0)
             }
             .controlSize(.regular)
@@ -210,7 +185,7 @@ struct ClawHubPreferencesView: View {
                 .font(.headline)
             let available = BuiltinClawHubSkills.availableToAdd(enabledLowercased: enabledLowercased)
             if available.isEmpty {
-                Text("All built-in skills from the registry are already enabled. Use “Install from URL” for GitHub skills, or add a custom id below.")
+                Text("All built-in skills from the registry are already enabled. Use “Import GitHub…” to add GitHub skills, or add a custom id below.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             } else {
@@ -313,44 +288,4 @@ struct ClawHubPreferencesView: View {
         }
     }
 
-    private func runInstallFromURL() async {
-        installBusy = true
-        defer { installBusy = false }
-        let url = skillInstallURL.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !url.isEmpty else {
-            await MainActor.run {
-                alertInfo = "Paste a GitHub repo URL (e.g. https://github.com/.../SwiftUI-Agent-Skill) and click Install."
-            }
-            return
-        }
-        do {
-            let skillId = try await ClawHubPythonBridge.installSkillFromURL(url)
-            await MainActor.run {
-                appendSkill(skillId)
-                skillInstallURL = ""
-                alertInfo =
-                    "Installed skill: \(skillId). It has been added to your enabled list. "
-                    + "Restart the app to use it in chat if it was already running."
-            }
-        } catch {
-            await MainActor.run {
-                alertInfo = "Install failed:\n\n\(error.localizedDescription)"
-            }
-        }
-    }
-
-    private func runCheckUpdates() async {
-        checkUpdatesBusy = true
-        defer { checkUpdatesBusy = false }
-        let ids = enabledSkillsBinding.wrappedValue
-        let result = await ClawHubPythonBridge.checkSkillUpdates(enabledSkillIds: ids)
-        await MainActor.run {
-            switch result {
-            case .success(let text):
-                alertInfo = "Skill versions\n\n\(text)"
-            case .failure(let err):
-                alertInfo = err.localizedDescription
-            }
-        }
-    }
 }

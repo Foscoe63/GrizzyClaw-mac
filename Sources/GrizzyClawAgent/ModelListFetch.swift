@@ -13,6 +13,24 @@ public enum ModelListFetch: Sendable {
         }
     }
 
+    /// Collapses mistaken `http://host:PORT:PORT` (duplicate numeric port) to `http://host:PORT`.
+    /// Foundation rejects the double-port form, which previously led to concatenating `/api/v1/models`
+    /// onto a non-URL string and surfacing "Invalid LM Studio model list URL: …:1234:1234/…".
+    public static func collapseDuplicateLmStudioAuthorityPort(_ raw: String) -> String {
+        var t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let re = try? NSRegularExpression(
+            pattern: #"^(?i)(https?://)([^/:?\[\]]+):(\d{1,5}):\3(?=/|$)"#,
+            options: []
+        ) else { return t }
+        for _ in 0..<6 {
+            let fullRange = NSRange(t.startIndex..., in: t)
+            let next = re.stringByReplacingMatches(in: t, options: [], range: fullRange, withTemplate: "$1$2:$3")
+            if next == t { break }
+            t = next
+        }
+        return t
+    }
+
     private struct LMStudioAttemptResult: Sendable {
         var ids: [String]
         var diagnostic: String?
@@ -43,8 +61,10 @@ public enum ModelListFetch: Sendable {
     /// For loopback hosts, `URLSession` / resolution can behave differently for `localhost` vs `127.0.0.1` vs `::1`.
     /// Remote LAN URLs use a single candidate. Order: preserve configured host first, then IPv4 literal, then the other loopback name.
     static func lmStudioNativeModelListBaseCandidates(_ base: String) -> [String] {
-        let b = base.trimmingCharacters(in: .whitespacesAndNewlines)
-            .trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let b = collapseDuplicateLmStudioAuthorityPort(
+            base.trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        )
         guard let u = URL(string: b), let host = u.host?.lowercased() else {
             return [LocalHTTPSession.preferIPv4LoopbackString(b)]
         }
@@ -71,7 +91,7 @@ public enum ModelListFetch: Sendable {
 
     /// Strips OpenAI-compat `/v1` suffix only — does **not** rewrite `localhost` → `127.0.0.1` (see ``lmStudioNativeModelListBaseCandidates``).
     private static func lmStudioNativeApiBaseFromOpenAICompatURL(_ raw: String) -> String {
-        var base = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        var base = collapseDuplicateLmStudioAuthorityPort(raw.trimmingCharacters(in: .whitespacesAndNewlines))
         if base.isEmpty { return "http://localhost:1234" }
         if !base.hasPrefix("http://"), !base.hasPrefix("https://") {
             base = "http://\(base)"
@@ -141,6 +161,8 @@ public enum ModelListFetch: Sendable {
     }
 
     /// LM Studio **OpenAI-compat** URL (e.g. `http://localhost:1234/v1`) → native `GET {host}/api/v1/models` (`models` array). See `LMStudioProvider._native_api_base` in Python.
+    ///
+    /// Prefer ``lmStudioOpenAICompatModelFetch(lmstudioOpenAICompatURL:apiKey:)`` for provider `lmstudio` so model discovery stays on the OpenAI surface (`/v1/models`) and does not follow a different host than the configured compat URL.
     public static func lmStudioOpenAINativeModelIds(lmstudioOpenAICompatURL: String, apiKey: String?) async -> [String] {
         await lmStudioOpenAINativeModelFetch(lmstudioOpenAICompatURL: lmstudioOpenAICompatURL, apiKey: apiKey).ids
     }
@@ -149,6 +171,82 @@ public enum ModelListFetch: Sendable {
         let stripped = lmStudioNativeApiBaseFromOpenAICompatURL(lmstudioOpenAICompatURL)
         let candidates = lmStudioNativeModelListBaseCandidates(stripped)
         return await lmStudioFetchNativeModelResult(baseCandidates: candidates, apiKey: apiKey)
+    }
+
+    /// Normalizes `lmstudio_url` to a base ending in `/v1` for `GET …/v1/models` (no trailing slash after `v1`).
+    public static func normalizeLmStudioOpenAICompatBaseForModelsList(_ raw: String) -> String? {
+        var b = collapseDuplicateLmStudioAuthorityPort(raw.trimmingCharacters(in: .whitespacesAndNewlines))
+        if b.isEmpty { return nil }
+        if !b.hasPrefix("http://"), !b.hasPrefix("https://") {
+            b = "http://\(b)"
+        }
+        b = b.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        if !b.lowercased().hasSuffix("/v1") {
+            b += "/v1"
+        }
+        return b
+    }
+
+    /// LM Studio **OpenAI-compatible** model list: `GET {lmstudio_url}/models` where the URL includes `/v1` (same host/path style as chat). Optional `Authorization: Bearer` when `apiKey` is non-empty.
+    public static func lmStudioOpenAICompatModelFetch(
+        lmstudioOpenAICompatURL: String,
+        apiKey: String?,
+        unauthorizedRetry: Bool = false
+    ) async -> FetchResult {
+        guard let base = normalizeLmStudioOpenAICompatBaseForModelsList(lmstudioOpenAICompatURL) else {
+            return FetchResult(ids: [], diagnostic: "LM Studio OpenAI-compat URL is empty.")
+        }
+        guard let rawUrl = URL(string: base + "/models") else {
+            return FetchResult(ids: [], diagnostic: "Invalid LM Studio OpenAI-compat models URL: \(base)/models")
+        }
+        let url = LocalHTTPSession.preferIPv4Loopback(rawUrl)
+        var req = URLRequest(url: url)
+        req.timeoutInterval = 15
+        let trimmedKey = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if !trimmedKey.isEmpty {
+            req.setValue("Bearer \(trimmedKey)", forHTTPHeaderField: "Authorization")
+        }
+        GrizzyClawLog.debug("LM Studio model refresh: GET \(url.absoluteString)")
+        do {
+            let (data, resp) = try await LocalHTTPSession.modelProbe.data(for: req)
+            if let http = resp as? HTTPURLResponse, http.statusCode == 401, !trimmedKey.isEmpty, !unauthorizedRetry {
+                GrizzyClawLog.debug("LM Studio OpenAI-compat /v1/models: retrying without Authorization (401 with non-empty API key)")
+                return await lmStudioOpenAICompatModelFetch(
+                    lmstudioOpenAICompatURL: lmstudioOpenAICompatURL,
+                    apiKey: nil,
+                    unauthorizedRetry: true
+                )
+            }
+            guard let http = resp as? HTTPURLResponse else {
+                return FetchResult(ids: [], diagnostic: "LM Studio returned a non-HTTP response at \(url.absoluteString).")
+            }
+            guard http.statusCode == 200 else {
+                let body = String(data: data, encoding: .utf8) ?? ""
+                let snippet = body.prefix(500)
+                return FetchResult(
+                    ids: [],
+                    diagnostic:
+                        "LM Studio OpenAI-compat GET /v1/models returned HTTP \(http.statusCode) at \(url.absoluteString).\n\(snippet)"
+                )
+            }
+            let parsed = try JSONDecoder().decode(OpenAIModelsEnvelope.self, from: data)
+            let ids = (parsed.data ?? []).compactMap { $0.id?.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+            if ids.isEmpty {
+                return FetchResult(
+                    ids: [],
+                    diagnostic:
+                        "LM Studio returned HTTP 200 at \(url.absoluteString) but no model ids in the OpenAI `data` array (wrong server or schema?)."
+                )
+            }
+            GrizzyClawLog.debug("LM Studio model refresh: \(ids.count) model(s) from \(url.absoluteString)")
+            return FetchResult(ids: Array(Set(ids)).sorted())
+        } catch {
+            let formatted = LLMErrorHints.formattedMessage(for: error)
+            return FetchResult(
+                ids: [],
+                diagnostic: "LM Studio OpenAI-compat request failed at \(url.absoluteString).\n\n\(formatted)"
+            )
+        }
     }
 
     /// `base` is normalized LM Studio base without `/v1` suffix (see `ChatParameterResolver.normalizeLmStudioV1Base`).
@@ -161,6 +259,17 @@ public enum ModelListFetch: Sendable {
         let normalized = ChatParameterResolver.normalizeLmStudioV1Base(base)
         let candidates = lmStudioNativeModelListBaseCandidates(normalized)
         return await lmStudioFetchNativeModelResult(baseCandidates: candidates, apiKey: apiKey)
+    }
+
+    /// True when the OpenAI-compat ``lmstudio_url`` and the native v1 base resolve to the same HTTP authority (scheme + canonical host + port).
+    ///
+    /// URL comparison helper (e.g. diagnostics or future UX); the chat model picker always probes OpenAI-compat ``GET …/v1/models`` for `lmstudio` regardless of v1 enablement.
+    public static func lmStudioOpenAICompatURLSharesAuthorityWithV1Base(openAICompatURL: String, lmstudioV1BaseRaw: String) -> Bool {
+        let compatRoot = lmStudioNativeApiBaseFromOpenAICompatURL(openAICompatURL)
+        let v1Root = ChatParameterResolver.normalizeLmStudioV1Base(lmstudioV1BaseRaw)
+        guard let a = lmStudioHttpAuthorityFingerprint(compatRoot),
+              let b = lmStudioHttpAuthorityFingerprint(v1Root) else { return false }
+        return a == b
     }
 
     /// Curated ids from `AnthropicProvider.list_models()` (Python).
@@ -220,7 +329,36 @@ public enum ModelListFetch: Sendable {
 }
 
 private extension ModelListFetch {
-    static func lmStudioFetchNativeModelResult(baseCandidates: [String], apiKey: String?) async -> FetchResult {
+    static func lmStudioHttpAuthorityFingerprint(_ root: String) -> String? {
+        var t = collapseDuplicateLmStudioAuthorityPort(
+            root.trimmingCharacters(in: .whitespacesAndNewlines)
+        )
+        if t.isEmpty { return nil }
+        if !t.hasPrefix("http://"), !t.hasPrefix("https://") {
+            t = "http://\(t)"
+        }
+        t = t.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        guard let u = URL(string: t), let hostRaw = u.host, !hostRaw.isEmpty else { return nil }
+        let scheme = (u.scheme ?? "http").lowercased()
+        let host = lmStudioCanonicalHost(hostRaw)
+        let port: Int = {
+            if let p = u.port { return p }
+            return scheme == "https" ? 443 : 80
+        }()
+        return "\(scheme)://\(host):\(port)"
+    }
+
+    static func lmStudioCanonicalHost(_ host: String) -> String {
+        let h = host.lowercased()
+        if h == "localhost" || h == "127.0.0.1" || h == "::1" { return "loopback" }
+        return h
+    }
+
+    static func lmStudioFetchNativeModelResult(
+        baseCandidates: [String],
+        apiKey: String?,
+        unauthorizedRetry: Bool = false
+    ) async -> FetchResult {
         var lastDiagnostic: String?
         for base in baseCandidates {
             let path = base.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/api/v1/models"
@@ -243,6 +381,19 @@ private extension ModelListFetch {
                 lastDiagnostic = diagnostic
                 GrizzyClawLog.debug("LM Studio model refresh failed: \(singleLine(diagnostic))")
             }
+        }
+        let trimmedKey = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let diagLower = (lastDiagnostic ?? "").lowercased()
+        if !unauthorizedRetry,
+           !trimmedKey.isEmpty,
+           diagLower.contains("401") || diagLower.contains("unauthorized")
+        {
+            GrizzyClawLog.debug("LM Studio model refresh: retrying without Authorization (401 with non-empty API key)")
+            return await lmStudioFetchNativeModelResult(
+                baseCandidates: baseCandidates,
+                apiKey: nil,
+                unauthorizedRetry: true
+            )
         }
         return FetchResult(
             ids: [],

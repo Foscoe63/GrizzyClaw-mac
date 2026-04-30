@@ -190,7 +190,8 @@ struct MessageBubbleView: View {
                 )
             )
             .frame(maxWidth: 600, alignment: isUser ? .trailing : .leading)
-            .fixedSize(horizontal: true, vertical: false)
+            // Allow wrapping while still "hugging" content up to the max width.
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var bubbleFontSizeDelta: CGFloat {

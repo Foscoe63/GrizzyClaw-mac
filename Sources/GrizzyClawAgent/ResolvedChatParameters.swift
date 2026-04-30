@@ -374,7 +374,9 @@ public enum ChatParameterResolver {
 
     /// Aligns with `_normalize_v1_base_url` in `grizzyclaw/llm/lmstudio_v1.py`.
     public static func normalizeLmStudioV1Base(_ raw: String) -> String {
-        var url = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        var url = ModelListFetch.collapseDuplicateLmStudioAuthorityPort(
+            raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        )
         if url.isEmpty {
             return "http://localhost:1234"
         }
@@ -405,6 +407,6 @@ public enum ChatParameterResolver {
         guard let url = URL(string: t + "/chat/completions") else {
             throw ChatResolutionError.invalidURL(hostBase)
         }
-        return url
+        return LocalHTTPSession.preferIPv4Loopback(url)
     }
 }

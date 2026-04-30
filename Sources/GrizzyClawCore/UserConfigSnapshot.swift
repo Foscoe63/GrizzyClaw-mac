@@ -22,6 +22,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
     public var ollamaUrl: String
     public var ollamaModel: String
     public var lmstudioUrl: String
+    /// When true, the app may use LM Studio's native v1 REST API (`lmstudio_v1_url`); from `lmstudio_v1_enabled` in `config.yaml`.
+    public var lmstudioV1Enabled: Bool
     /// Native LM Studio v1 REST base (no `/api` or `/v1` suffix); from `lmstudio_v1_url` in `config.yaml`.
     public var lmstudioV1Url: String
     public var lmstudioModel: String
@@ -53,6 +55,10 @@ public struct UserConfigSnapshot: Sendable, Equatable {
 
     /// Optional gateway WebSocket auth for `sessions_send` (`gateway_auth_token` in `config.yaml`; Python `Settings.gateway_auth_token`).
     public var gatewayAuthToken: String?
+    /// Audio transcription backend for voice prompts (`transcription_provider` in `config.yaml`).
+    public var transcriptionProvider: String
+    /// Preferred microphone display name (`input_device_name` in `config.yaml`).
+    public var inputDeviceName: String?
 
     public static let empty = UserConfigSnapshot(
         configPathDisplay: "",
@@ -71,6 +77,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         ollamaUrl: "http://localhost:11434",
         ollamaModel: "llama3.2",
         lmstudioUrl: "http://localhost:1234/v1",
+        lmstudioV1Enabled: false,
         lmstudioV1Url: "http://localhost:1234",
         lmstudioModel: "local-model",
         mlxModel: "mlx-community/Llama-3.2-3B-Instruct-4bit",
@@ -87,7 +94,9 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         hasOpenrouterApiKey: false,
         sessionPersistence: true,
         scheduledTaskRunTimeoutSeconds: 300,
-        gatewayAuthToken: nil
+        gatewayAuthToken: nil,
+        transcriptionProvider: "openai",
+        inputDeviceName: nil
     )
 
     /// Defaults with `fileMissing == true` (no `config.yaml` on disk yet).
@@ -110,6 +119,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             ollamaUrl: e.ollamaUrl,
             ollamaModel: e.ollamaModel,
             lmstudioUrl: e.lmstudioUrl,
+            lmstudioV1Enabled: e.lmstudioV1Enabled,
             lmstudioV1Url: e.lmstudioV1Url,
             lmstudioModel: e.lmstudioModel,
             mlxModel: e.mlxModel,
@@ -126,7 +136,9 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             hasOpenrouterApiKey: false,
             sessionPersistence: e.sessionPersistence,
             scheduledTaskRunTimeoutSeconds: e.scheduledTaskRunTimeoutSeconds,
-            gatewayAuthToken: nil
+            gatewayAuthToken: nil,
+            transcriptionProvider: e.transcriptionProvider,
+            inputDeviceName: e.inputDeviceName
         )
     }
 
@@ -147,6 +159,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         ollamaUrl: String,
         ollamaModel: String,
         lmstudioUrl: String,
+        lmstudioV1Enabled: Bool,
         lmstudioV1Url: String,
         lmstudioModel: String,
         mlxModel: String,
@@ -163,7 +176,9 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         hasOpenrouterApiKey: Bool,
         sessionPersistence: Bool,
         scheduledTaskRunTimeoutSeconds: Int,
-        gatewayAuthToken: String?
+        gatewayAuthToken: String?,
+        transcriptionProvider: String,
+        inputDeviceName: String?
     ) {
         self.configPathDisplay = configPathDisplay
         self.fileMissing = fileMissing
@@ -181,6 +196,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         self.ollamaUrl = ollamaUrl
         self.ollamaModel = ollamaModel
         self.lmstudioUrl = lmstudioUrl
+        self.lmstudioV1Enabled = lmstudioV1Enabled
         self.lmstudioV1Url = lmstudioV1Url
         self.lmstudioModel = lmstudioModel
         self.mlxModel = mlxModel
@@ -198,6 +214,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         self.sessionPersistence = sessionPersistence
         self.scheduledTaskRunTimeoutSeconds = scheduledTaskRunTimeoutSeconds
         self.gatewayAuthToken = gatewayAuthToken
+        self.transcriptionProvider = transcriptionProvider
+        self.inputDeviceName = inputDeviceName
     }
 
     /// Parse YAML-loaded dictionary (same keys as Python `Settings` / `yaml.safe_load`).
@@ -245,6 +263,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             ollamaUrl: str("ollama_url", "http://localhost:11434"),
             ollamaModel: str("ollama_model", "llama3.2"),
             lmstudioUrl: str("lmstudio_url", "http://localhost:1234/v1"),
+            lmstudioV1Enabled: bool("lmstudio_v1_enabled", false),
             lmstudioV1Url: str("lmstudio_v1_url", "http://localhost:1234"),
             lmstudioModel: str("lmstudio_model", "local-model"),
             mlxModel: str("mlx_model", "mlx-community/Llama-3.2-3B-Instruct-4bit"),
@@ -261,7 +280,9 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             hasOpenrouterApiKey: hasSecret("openrouter_api_key"),
             sessionPersistence: bool("session_persistence", true),
             scheduledTaskRunTimeoutSeconds: int("scheduled_task_run_timeout_seconds", 300),
-            gatewayAuthToken: optionalSecret("gateway_auth_token")
+            gatewayAuthToken: optionalSecret("gateway_auth_token"),
+            transcriptionProvider: str("transcription_provider", "openai"),
+            inputDeviceName: optionalSecret("input_device_name")
         )
     }
 

@@ -11,6 +11,14 @@ final class ChatTranscriptFilterTests: XCTestCase {
         XCTAssertEqual(v.map(\.role), [.user, .assistant])
     }
 
+    func testAssistantModeKeepsToolWhenNoAssistantSummaryExists() {
+        let u = ChatMessage(role: .user, content: "search")
+        let a = ChatMessage(role: .assistant, content: "commentary to=ddg-search.searchjson{\"query\":\"iran\"}")
+        let t = ChatMessage(role: .tool, content: "[Tool output]\n- result 1\n- result 2")
+        let v = ChatTranscriptFilter.visibleMessages([u, a, t], mode: .assistant, isStreaming: false)
+        XCTAssertEqual(v.map(\.role), [.user, .assistant, .tool])
+    }
+
     func testToolModeShowsUserAndToolHidesAssistantWhenBlockHasTool() {
         let u = ChatMessage(role: .user, content: "search")
         let a1 = ChatMessage(role: .assistant, content: "")

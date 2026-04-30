@@ -9,19 +9,25 @@
 /* Begin PBXBuildFile section */
 		B1B1B1B1B1B1B1B1B1B1B1B1 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json in Resources */ = {isa = PBXBuildFile; fileRef = B2B2B2B2B2B2B2B2B2B2B2B2 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json */; };
 		C2C2C2C2C2C2C2C2C2C2C2C2 /* GrizzyClawMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C1C1C1C1C1C1C1C1C1C1C1 /* GrizzyClawMacApp.swift */; };
+		DE9153AD2F90F09F0067944F /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE9153AC2F90F09F0067944F /* Media.xcassets */; };
 		DEEA9AB52F8BBBCC00769B95 /* GrizzyClawUI in Frameworks */ = {isa = PBXBuildFile; productRef = E6E6E6E6E6E6E6E6E6E6E6E6 /* GrizzyClawUI */; };
+		AB1000010000000000000001 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = AB2000010000000000000001 /* Yams */; };
+		AB1000020000000000000002 /* SwifCron in Frameworks */ = {isa = PBXBuildFile; productRef = AB2000020000000000000002 /* SwifCron */; };
+		AB1000030000000000000003 /* MCP in Frameworks */ = {isa = PBXBuildFile; productRef = AB2000030000000000000003 /* MCP */; };
+		AB1000040000000000000004 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB2000040000000000000004 /* NIOCore */; };
+		AB1000050000000000000005 /* NIOHTTP1 in Frameworks */ = {isa = PBXBuildFile; productRef = AB2000050000000000000005 /* NIOHTTP1 */; };
+		AB1000060000000000000006 /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = AB2000060000000000000006 /* NIOPosix */; };
+		AB1000070000000000000007 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = AB2000070000000000000007 /* MLXLLM */; };
+		AB1000080000000000000008 /* HuggingFace in Frameworks */ = {isa = PBXBuildFile; productRef = AB2000080000000000000008 /* HuggingFace */; };
 		L2L2L2L2L2L2L2L2L2L2L2L2 /* launch_trace.c in Sources */ = {isa = PBXBuildFile; fileRef = L1L1L1L1L1L1L1L1L1L1L1L1 /* launch_trace.c */; };
-		M1M1M1M1M1M1M1M1M1M1M1M1 /* Sources/GrizzyClawCore/Resources/mcp_discover.py in Resources */ = {isa = PBXBuildFile; fileRef = M2M2M2M2M2M2M2M2M2M2M2M2 /* Sources/GrizzyClawCore/Resources/mcp_discover.py */; };
-		M3M3M3M3M3M3M3M3M3M3M3M3 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py in Resources */ = {isa = PBXBuildFile; fileRef = M4M4M4M4M4M4M4M4M4M4M4M4 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B0B0B0B0B0B0B0B0B0B0B0B0 /* GrizzyClawMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrizzyClawMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2B2B2B2B2B2B2B2B2B2B2B2 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json; sourceTree = SOURCE_ROOT; };
 		C1C1C1C1C1C1C1C1C1C1C1C1 /* GrizzyClawMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrizzyClawMacApp.swift; sourceTree = "<group>"; usesTabs = 0; };
+		DE9153AC2F90F09F0067944F /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		L1L1L1L1L1L1L1L1L1L1L1L1 /* launch_trace.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = launch_trace.c; sourceTree = "<group>"; };
-		M2M2M2M2M2M2M2M2M2M2M2M2 /* Sources/GrizzyClawCore/Resources/mcp_discover.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = Sources/GrizzyClawCore/Resources/mcp_discover.py; sourceTree = SOURCE_ROOT; };
-		M4M4M4M4M4M4M4M4M4M4M4M4 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = Sources/GrizzyClawCore/Resources/mcp_call_tool.py; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -30,6 +36,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEEA9AB52F8BBBCC00769B95 /* GrizzyClawUI in Frameworks */,
+				AB1000010000000000000001 /* Yams in Frameworks */,
+				AB1000020000000000000002 /* SwifCron in Frameworks */,
+				AB1000030000000000000003 /* MCP in Frameworks */,
+				AB1000040000000000000004 /* NIOCore in Frameworks */,
+				AB1000050000000000000005 /* NIOHTTP1 in Frameworks */,
+				AB1000060000000000000006 /* NIOPosix in Frameworks */,
+				AB1000070000000000000007 /* MLXLLM in Frameworks */,
+				AB1000080000000000000008 /* HuggingFace in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -39,6 +53,7 @@
 		A0A0A0A0A0A0A0A0A0A0A0A0 = {
 			isa = PBXGroup;
 			children = (
+				DE9153AC2F90F09F0067944F /* Media.xcassets */,
 				A3A3A3A3A3A3A3A3A3A3A3A3 /* App */,
 				A4A4A4A4A4A4A4A4A4A4A4A4 /* Products */,
 			);
@@ -48,8 +63,6 @@
 			isa = PBXGroup;
 			children = (
 				A5A5A5A5A5A5A5A5A5A5A5A5 /* MacHost */,
-				M2M2M2M2M2M2M2M2M2M2M2M2 /* Sources/GrizzyClawCore/Resources/mcp_discover.py */,
-				M4M4M4M4M4M4M4M4M4M4M4M4 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py */,
 				B2B2B2B2B2B2B2B2B2B2B2B2 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json */,
 			);
 			path = App;
@@ -90,6 +103,14 @@
 			name = GrizzyClawMac;
 			packageProductDependencies = (
 				E6E6E6E6E6E6E6E6E6E6E6E6 /* GrizzyClawUI */,
+				AB2000010000000000000001 /* Yams */,
+				AB2000020000000000000002 /* SwifCron */,
+				AB2000030000000000000003 /* MCP */,
+				AB2000040000000000000004 /* NIOCore */,
+				AB2000050000000000000005 /* NIOHTTP1 */,
+				AB2000060000000000000006 /* NIOPosix */,
+				AB2000070000000000000007 /* MLXLLM */,
+				AB2000080000000000000008 /* HuggingFace */,
 			);
 			productName = GrizzyClawMac;
 			productReference = B0B0B0B0B0B0B0B0B0B0B0B0 /* GrizzyClawMac.app */;
@@ -136,8 +157,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				M1M1M1M1M1M1M1M1M1M1M1M1 /* Sources/GrizzyClawCore/Resources/mcp_discover.py in Resources */,
-				M3M3M3M3M3M3M3M3M3M3M3M3 /* Sources/GrizzyClawCore/Resources/mcp_call_tool.py in Resources */,
+				DE9153AD2F90F09F0067944F /* Media.xcassets in Resources */,
 				B1B1B1B1B1B1B1B1B1B1B1B1 /* Sources/GrizzyClawCore/Resources/builtin_mcp_marketplace.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -278,19 +298,21 @@
 		FCFCFCFCFCFCFCFCFCFCFCFC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = GrizzyClawMac-Info.plist;
+				INFOPLIST_FILE = "GrizzyClawMac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grizzyclaw.macos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -301,19 +323,21 @@
 		FDFDFDFDFDFDFDFDFDFDFDFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = GrizzyClawMac-Info.plist;
+				INFOPLIST_FILE = "GrizzyClawMac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grizzyclaw.macos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -356,6 +380,46 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E7E7E7E7E7E7E7E7E7E7E7E7 /* XCLocalSwiftPackageReference "." */;
 			productName = GrizzyClawUI;
+		};
+		AB2000010000000000000001 /* Yams */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7E7E7E7E7E7E7E7E7E7E7E7 /* XCLocalSwiftPackageReference "." */;
+			productName = Yams;
+		};
+		AB2000020000000000000002 /* SwifCron */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7E7E7E7E7E7E7E7E7E7E7E7 /* XCLocalSwiftPackageReference "." */;
+			productName = SwifCron;
+		};
+		AB2000030000000000000003 /* MCP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7E7E7E7E7E7E7E7E7E7E7E7 /* XCLocalSwiftPackageReference "." */;
+			productName = MCP;
+		};
+		AB2000040000000000000004 /* NIOCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7E7E7E7E7E7E7E7E7E7E7E7 /* XCLocalSwiftPackageReference "." */;
+			productName = NIOCore;
+		};
+		AB2000050000000000000005 /* NIOHTTP1 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7E7E7E7E7E7E7E7E7E7E7E7 /* XCLocalSwiftPackageReference "." */;
+			productName = NIOHTTP1;
+		};
+		AB2000060000000000000006 /* NIOPosix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7E7E7E7E7E7E7E7E7E7E7E7 /* XCLocalSwiftPackageReference "." */;
+			productName = NIOPosix;
+		};
+		AB2000070000000000000007 /* MLXLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7E7E7E7E7E7E7E7E7E7E7E7 /* XCLocalSwiftPackageReference "." */;
+			productName = MLXLLM;
+		};
+		AB2000080000000000000008 /* HuggingFace */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7E7E7E7E7E7E7E7E7E7E7E7 /* XCLocalSwiftPackageReference "." */;
+			productName = HuggingFace;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

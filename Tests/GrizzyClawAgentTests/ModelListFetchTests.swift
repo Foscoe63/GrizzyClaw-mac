@@ -66,4 +66,54 @@ final class ModelListFetchTests: XCTestCase {
         let c = ModelListFetch.lmStudioNativeModelListBaseCandidates("http://192.168.1.10:1234")
         XCTAssertEqual(c, ["http://192.168.1.10:1234"])
     }
+
+    func testLmStudioOpenAICompatURLSharesAuthorityWithV1Base() {
+        XCTAssertTrue(
+            ModelListFetch.lmStudioOpenAICompatURLSharesAuthorityWithV1Base(
+                openAICompatURL: "http://localhost:1234/v1",
+                lmstudioV1BaseRaw: "http://localhost:1234"
+            )
+        )
+        XCTAssertTrue(
+            ModelListFetch.lmStudioOpenAICompatURLSharesAuthorityWithV1Base(
+                openAICompatURL: "http://127.0.0.1:1234/v1",
+                lmstudioV1BaseRaw: "http://localhost:1234"
+            )
+        )
+        XCTAssertFalse(
+            ModelListFetch.lmStudioOpenAICompatURLSharesAuthorityWithV1Base(
+                openAICompatURL: "http://localhost:1234/v1",
+                lmstudioV1BaseRaw: "http://192.168.1.10:1234"
+            )
+        )
+    }
+
+    func testNormalizeLmStudioOpenAICompatBaseForModelsList() {
+        XCTAssertEqual(
+            ModelListFetch.normalizeLmStudioOpenAICompatBaseForModelsList("http://localhost:1234"),
+            "http://localhost:1234/v1"
+        )
+        XCTAssertEqual(
+            ModelListFetch.normalizeLmStudioOpenAICompatBaseForModelsList("http://192.168.1.10:1234/v1/"),
+            "http://192.168.1.10:1234/v1"
+        )
+        XCTAssertNil(ModelListFetch.normalizeLmStudioOpenAICompatBaseForModelsList("   "))
+    }
+
+    func testCollapseDuplicateLmStudioPort() {
+        XCTAssertEqual(
+            ModelListFetch.collapseDuplicateLmStudioAuthorityPort("http://localhost:1234:1234"),
+            "http://localhost:1234"
+        )
+        XCTAssertEqual(
+            ModelListFetch.collapseDuplicateLmStudioAuthorityPort("http://localhost:1234:1234/v1"),
+            "http://localhost:1234/v1"
+        )
+        XCTAssertEqual(
+            ModelListFetch.collapseDuplicateLmStudioAuthorityPort("HTTP://LOCALHOST:1234:1234/api"),
+            "HTTP://LOCALHOST:1234/api"
+        )
+        let candidates = ModelListFetch.lmStudioNativeModelListBaseCandidates("http://localhost:1234:1234")
+        XCTAssertTrue(candidates.contains("http://localhost:1234"))
+    }
 }
