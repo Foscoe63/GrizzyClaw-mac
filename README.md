@@ -10,9 +10,18 @@ The Swift app is a sibling to the legacy Python/PyInstaller build. They share th
 
 - Chat-first main window with sidebar navigation
 - Workspace-aware chat sessions
+- Prompt caching via **Summary Mode** (summarize long chats and continue with a compact summary + recent turns)
 - Dedicated Workspaces window
 - Theme-aware SwiftUI shell and status bar
 - Finder shortcuts for the shared `~/.grizzyclaw` data directory
+
+### Prompt caching (Summary Mode)
+
+The chat composer includes controls to reduce context size for long-running sessions:
+
+- **Summarize chat**: generates a compact summary of the current chat transcript (no tool calls).
+- **Use summary**: when enabled, subsequent sends include the summary as a `.system` message plus a small tail window of recent messages (instead of sending the entire chat history).
+- **Clear summary**: clears the cached summary and turns off Summary Mode so you can go back to normal chat behavior.
 
 ### Dedicated windows and tools
 
@@ -37,6 +46,8 @@ The Swift app is a sibling to the legacy Python/PyInstaller build. They share th
 - Workspace memory stored in SQLite
 - Shared-memory channels for swarm-style workspaces
 - Workspace-specific provider, model, and autonomy settings
+- Global ClawHub skill defaults in `config.yaml` with per-workspace/per-agent `enabled_skills` overrides
+- Specialist templates can ship their own skill sets (for example research or personal agents)
 - Chat import and export helpers
 - Visual canvas extraction and dedicated canvas window
 
@@ -178,6 +189,8 @@ The app uses the shared GrizzyClaw data root:
 - `~/.grizzyclaw/daemon_stderr.log`
 - `~/.grizzyclaw/mlx_models/`
 
+`config.yaml` now acts as the source of truth for global/default ClawHub skills. A workspace only writes `enabled_skills` in `workspaces.json` when that agent should override the global defaults.
+
 ## Preferences Surface
 
 The Preferences window currently includes these sections:
@@ -194,6 +207,8 @@ The Preferences window currently includes these sections:
 - Swarm Setup
 - Security
 - Integrations
+
+The ClawHub preferences pane manages global/default `enabled_skills`. The workspace editor Skills tab can inherit those defaults or save an explicit override for a specific workspace/agent.
 
 ## MLX Notes
 
