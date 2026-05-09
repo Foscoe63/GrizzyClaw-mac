@@ -1,0 +1,4 @@
+module GrizzyClawMLX {
+header "GrizzyClawMLX-Swift.h"
+export *
+}

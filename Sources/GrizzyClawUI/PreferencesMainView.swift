@@ -22,6 +22,7 @@ public struct PreferencesMainView: View {
     @State private var llmRefreshBusy = false
     @State private var llmFetchOllama: [String]?
     @State private var llmFetchLmStudio: [String]?
+    @State private var llmFetchOMLX: [String]?
     @State private var llmFetchLmV1: [String]?
     @State private var llmFetchOpenAI: [String]?
     @State private var llmFetchAnthropic: [String]?
@@ -265,6 +266,41 @@ public struct PreferencesMainView: View {
                         set: { doc.setWorkspaceProviderEnabled(id: "lmstudio", enabled: $0) }
                     ))
                     .help("If checked, workspaces can override the API key for this provider (LM Studio usually does not need one).")
+                }
+
+                Section("oMLX (OpenAI-compatible)") {
+                    Text("Provider id: omlx — local server with an OpenAI-compatible HTTP API (see github.com/jundot/omlx).")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TextField("URL:", text: doc.bindingString("omlx_url", default: "http://localhost:8000/v1"))
+                    Text("Default: http://localhost:8000/v1").font(.caption).foregroundStyle(.secondary)
+                    LLMModelField(
+                        doc: doc,
+                        modelKey: "omlx_model",
+                        defaultModel: "",
+                        seeds: ["", "default", "qwen2.5", "gemma2"],
+                        fetched: $llmFetchOMLX,
+                        isRefreshing: $llmRefreshBusy
+                    ) {
+                        let result = await ModelListFetch.omlxOpenAICompatModelFetch(
+                            omlxOpenAICompatURL: doc.string("omlx_url", default: "http://localhost:8000/v1"),
+                            apiKey: doc.optionalString("omlx_api_key")
+                        )
+                        if result.ids.isEmpty {
+                            await MainActor.run {
+                                llmModelFetchAlert = result.diagnostic ?? "No models found for this provider."
+                            }
+                        }
+                        return result.ids
+                    }
+                    SecureField("API Key:", text: doc.bindingOptionalStringNull("omlx_api_key"))
+                        .textContentType(.password)
+                    Text("Optional — set if your oMLX server requires a Bearer token").font(.caption).foregroundStyle(.secondary)
+                    Toggle("Show in Workspace API Keys", isOn: Binding(
+                        get: { doc.isWorkspaceProviderEnabled(id: "omlx") },
+                        set: { doc.setWorkspaceProviderEnabled(id: "omlx", enabled: $0) }
+                    ))
+                    .help("If checked, workspaces can override the API key for this provider.")
                 }
 
                 Section("LM Studio v1 (native API)") {
@@ -738,6 +774,7 @@ public struct PreferencesMainView: View {
                         Text("Solarized Dark").tag("Solarized Dark")
                         Text("Dracula").tag("Dracula")
                         Text("Monokai").tag("Monokai")
+                        Text("Coral Spark").tag("Coral Spark")
                     }
                 }
                 Section("Typography") {

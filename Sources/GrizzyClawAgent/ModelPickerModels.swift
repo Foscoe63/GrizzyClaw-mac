@@ -74,6 +74,7 @@ public enum ModelPickerModels: Sendable {
 
         async let ollama = ollamaRowsWithDiagnostic(cfg: cfg, user: user)
         async let lmstudio = lmstudioRowsWithDiagnostic(cfg: cfg, user: user, secrets: secrets)
+        async let omlx = omlxRowsWithDiagnostic(cfg: cfg, user: user, secrets: secrets)
         async let lmstudioV1 = lmstudioV1RowsWithDiagnostic(cfg: cfg, user: user, secrets: secrets)
         async let openai = openaiRows(cfg: cfg, user: user, secrets: secrets)
         async let openrouter = openrouterRows(cfg: cfg, routing: routing, secrets: secrets)
@@ -92,6 +93,10 @@ public enum ModelPickerModels: Sendable {
         let lmstudioResult = await lmstudio
         rows["lmstudio"] = lmstudioResult.rows
         if let d = lmstudioResult.diagnostic { diags["lmstudio"] = d }
+
+        let omlxResult = await omlx
+        rows["omlx"] = omlxResult.rows
+        if let d = omlxResult.diagnostic { diags["omlx"] = d }
 
         let lmstudioV1Result = await lmstudioV1
         rows["lmstudio_v1"] = lmstudioV1Result.rows
@@ -141,6 +146,12 @@ public enum ModelPickerModels: Sendable {
         return user.lmstudioUrl
     }
 
+    private static func resolvedOmlxCompatURL(cfg: JSONValue?, user: UserConfigSnapshot) -> String {
+        if let s = cfg?.string(forKey: "omlx_url"),
+           !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return s }
+        return user.omlxUrl
+    }
+
     private static func resolvedLmStudioV1BaseRaw(cfg: JSONValue?, user: UserConfigSnapshot) -> String {
         if let s = cfg?.string(forKey: "lmstudio_v1_url"),
            !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return s }
@@ -170,6 +181,20 @@ public enum ModelPickerModels: Sendable {
         let fallback = [Row(modelId: user.lmstudioModel, displayName: user.lmstudioModel)]
         let diag = result.diagnostic
             ?? "LM Studio OpenAI-compat probe at \(base) returned no models (is LM Studio running at this URL and a model loaded?)."
+        return ProbeResult(rows: fallback, diagnostic: diag)
+    }
+
+    private static func omlxRowsWithDiagnostic(cfg: JSONValue?, user: UserConfigSnapshot, secrets: UserConfigSecrets) async -> ProbeResult {
+        let base = resolvedOmlxCompatURL(cfg: cfg, user: user)
+        let key = workspaceOrGlobalApiKey(cfg: cfg, secrets: secrets, workspaceKey: "omlx_api_key", global: secrets.omlxApiKey)
+        let result = await ModelListFetch.omlxOpenAICompatModelFetch(omlxOpenAICompatURL: base, apiKey: key)
+        if !result.ids.isEmpty {
+            return ProbeResult(rows: result.ids.map { Row(modelId: $0, displayName: $0) }, diagnostic: nil)
+        }
+        let fb = user.omlxModel.trimmingCharacters(in: .whitespacesAndNewlines)
+        let fallback = fb.isEmpty ? [] : [Row(modelId: fb, displayName: fb)]
+        let diag = result.diagnostic
+            ?? "oMLX OpenAI-compat probe at \(base) returned no models (is the server running at this URL?)."
         return ProbeResult(rows: fallback, diagnostic: diag)
     }
 

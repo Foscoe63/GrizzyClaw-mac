@@ -10,9 +10,18 @@ The Swift app is a sibling to the legacy Python/PyInstaller build. They share th
 
 - Chat-first main window with sidebar navigation
 - Workspace-aware chat sessions
+- Prompt caching via **Summary Mode** (summarize long chats and continue with a compact summary + recent turns)
 - Dedicated Workspaces window
 - Theme-aware SwiftUI shell and status bar
 - Finder shortcuts for the shared `~/.grizzyclaw` data directory
+
+### Prompt caching (Summary Mode)
+
+The chat composer includes controls to reduce context size for long-running sessions:
+
+- **Summarize chat**: generates a compact summary of the current chat transcript (no tool calls).
+- **Use summary**: when enabled, subsequent sends include the summary as a `.system` message plus a small tail window of recent messages (instead of sending the entire chat history).
+- **Clear summary**: clears the cached summary and turns off Summary Mode so you can go back to normal chat behavior.
 
 ### Dedicated windows and tools
 

@@ -90,6 +90,7 @@ struct PreferencesGeneralForm: View {
         switch yaml {
         case "lmstudio_v1": return "lmstudio-v1"
         case "opencode_zen": return "opencode-zen"
+        case "omlx": return "oLMX"
         default: return yaml
         }
     }
@@ -98,12 +99,13 @@ struct PreferencesGeneralForm: View {
         switch display {
         case "lmstudio-v1": return "lmstudio_v1"
         case "opencode-zen": return "opencode_zen"
+        case "oLMX": return "omlx"
         default: return display
         }
     }
 
     private func defaultProviderPickerOptions() -> [String] {
-        var base = ["ollama", "lmstudio", "openai", "anthropic", "openrouter", "cursor", "opencode-zen"]
+        var base = ["ollama", "lmstudio", "oLMX", "openai", "anthropic", "openrouter", "cursor", "opencode-zen"]
         #if arch(arm64)
         base.insert("mlx", at: 2)
         #endif

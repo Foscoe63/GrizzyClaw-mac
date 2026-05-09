@@ -10,6 +10,7 @@ public struct UserConfigSecrets: Sendable {
     public var opencodeZenApiKey: String?
     public var lmstudioApiKey: String?
     public var lmstudioV1ApiKey: String?
+    public var omlxApiKey: String?
     public var customProviderApiKey: String?
 
     public static let empty = UserConfigSecrets(
@@ -20,6 +21,7 @@ public struct UserConfigSecrets: Sendable {
         opencodeZenApiKey: nil,
         lmstudioApiKey: nil,
         lmstudioV1ApiKey: nil,
+        omlxApiKey: nil,
         customProviderApiKey: nil
     )
 
@@ -31,6 +33,7 @@ public struct UserConfigSecrets: Sendable {
         opencodeZenApiKey: String?,
         lmstudioApiKey: String?,
         lmstudioV1ApiKey: String?,
+        omlxApiKey: String?,
         customProviderApiKey: String?
     ) {
         self.openaiApiKey = openaiApiKey
@@ -40,6 +43,7 @@ public struct UserConfigSecrets: Sendable {
         self.opencodeZenApiKey = opencodeZenApiKey
         self.lmstudioApiKey = lmstudioApiKey
         self.lmstudioV1ApiKey = lmstudioV1ApiKey
+        self.omlxApiKey = omlxApiKey
         self.customProviderApiKey = customProviderApiKey
     }
 
@@ -61,6 +65,7 @@ public struct UserConfigSecrets: Sendable {
             opencodeZenApiKey: s("opencode_zen_api_key"),
             lmstudioApiKey: s("lmstudio_api_key"),
             lmstudioV1ApiKey: s("lmstudio_v1_api_key"),
+            omlxApiKey: s("omlx_api_key"),
             customProviderApiKey: s("custom_provider_api_key")
         )
     }
@@ -80,6 +85,7 @@ public struct UserConfigSecrets: Sendable {
             opencodeZenApiKey: pick(opencodeZenApiKey, .opencodeZenApiKey),
             lmstudioApiKey: pick(lmstudioApiKey, .lmstudioApiKey),
             lmstudioV1ApiKey: pick(lmstudioV1ApiKey, .lmstudioV1ApiKey),
+            omlxApiKey: pick(omlxApiKey, .omlxApiKey),
             customProviderApiKey: pick(customProviderApiKey, .customProviderApiKey)
         )
     }

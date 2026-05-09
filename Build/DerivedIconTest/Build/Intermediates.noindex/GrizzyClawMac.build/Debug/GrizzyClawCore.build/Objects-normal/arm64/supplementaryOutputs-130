@@ -1,0 +1,30 @@
+{
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawCore/UserConfigSnapshot.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigSnapshot.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigSnapshot.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigSnapshot.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigSnapshot.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigSnapshot.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawCore/UserConfigYAMLPatch.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigYAMLPatch.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigYAMLPatch.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigYAMLPatch.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigYAMLPatch.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/UserConfigYAMLPatch.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawCore/WatchersPersistence.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WatchersPersistence.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WatchersPersistence.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WatchersPersistence.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WatchersPersistence.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WatchersPersistence.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawCore/WorkspaceActivePersistence.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WorkspaceActivePersistence.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WorkspaceActivePersistence.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WorkspaceActivePersistence.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WorkspaceActivePersistence.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawCore.build/Objects-normal/arm64/WorkspaceActivePersistence.swiftdeps"
+  }
+}

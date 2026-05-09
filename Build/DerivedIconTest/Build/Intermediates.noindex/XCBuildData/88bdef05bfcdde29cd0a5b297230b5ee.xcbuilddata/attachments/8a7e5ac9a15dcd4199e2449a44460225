@@ -1,0 +1,4 @@
+module GrizzyClawAgent {
+header "GrizzyClawAgent-Swift.h"
+export *
+}

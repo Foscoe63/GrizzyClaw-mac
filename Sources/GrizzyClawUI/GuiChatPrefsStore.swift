@@ -34,7 +34,8 @@ public final class GuiChatPrefsStore: ObservableObject {
             return "Default — app settings"
         }
         let m = preferences.llm?.model?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return m.isEmpty ? "\(p) → default" : "\(p) → \(m)"
+        let pLabel = p == "omlx" ? "oLMX" : p
+        return m.isEmpty ? "\(pLabel) → default" : "\(pLabel) → \(m)"
     }
 
     /// Python `tools_menu_btn`: `"Tools ▾"` or `"Tools (filtered) ▾"` when any switch is off (`_tools_filtered`).

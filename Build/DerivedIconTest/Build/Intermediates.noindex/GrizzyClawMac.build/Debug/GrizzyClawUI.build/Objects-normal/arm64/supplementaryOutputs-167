@@ -1,0 +1,30 @@
+{
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawUI/GrizzyClawUI.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GrizzyClawUI.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GrizzyClawUI.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GrizzyClawUI.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GrizzyClawUI.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GrizzyClawUI.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawUI/GuiChatPrefsStore.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GuiChatPrefsStore.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GuiChatPrefsStore.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GuiChatPrefsStore.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GuiChatPrefsStore.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/GuiChatPrefsStore.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawUI/HeadlessLLMDispatcher.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/HeadlessLLMDispatcher.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/HeadlessLLMDispatcher.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/HeadlessLLMDispatcher.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/HeadlessLLMDispatcher.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/HeadlessLLMDispatcher.swiftdeps"
+  },
+  "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Sources/GrizzyClawUI/LLMPreferencesControls.swift" : {
+    "const-values" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/LLMPreferencesControls.swiftconstvalues",
+    "dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/LLMPreferencesControls.d",
+    "diagnostics" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/LLMPreferencesControls.dia",
+    "object" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/LLMPreferencesControls.o",
+    "swift-dependencies" : "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/Build/Intermediates.noindex/GrizzyClawMac.build/Debug/GrizzyClawUI.build/Objects-normal/arm64/LLMPreferencesControls.swiftdeps"
+  }
+}

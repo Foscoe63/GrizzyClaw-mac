@@ -294,6 +294,7 @@ struct WorkspacesMainView: View {
                 defaultOllamaUrl: configStore.snapshot.ollamaUrl,
                 defaultLmstudioUrl: configStore.snapshot.lmstudioUrl,
                 defaultLmstudioV1Url: configStore.snapshot.lmstudioV1Url,
+                defaultOmlxUrl: configStore.snapshot.omlxUrl,
                 onSave: {},
                 onNavigateToWorkspaceId: { selectedWorkspaceId = $0 }
             )

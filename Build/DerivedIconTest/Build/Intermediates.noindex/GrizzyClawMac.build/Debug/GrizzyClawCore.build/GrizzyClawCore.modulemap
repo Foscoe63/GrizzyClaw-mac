@@ -1,0 +1,4 @@
+module GrizzyClawCore {
+header "GrizzyClawCore-Swift.h"
+export *
+}

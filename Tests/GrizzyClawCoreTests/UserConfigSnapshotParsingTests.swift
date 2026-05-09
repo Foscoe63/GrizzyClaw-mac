@@ -32,4 +32,10 @@ final class UserConfigSnapshotParsingTests: XCTestCase {
         )
         XCTAssertTrue(on.lmstudioV1Enabled)
     }
+
+    func testOmlxDefaultsParseFromYaml() {
+        let snap = UserConfigSnapshot(parsing: [:], configPath: URL(fileURLWithPath: "/tmp/config.yaml"))
+        XCTAssertEqual(snap.omlxUrl, "http://localhost:8000/v1")
+        XCTAssertEqual(snap.omlxModel, "")
+    }
 }

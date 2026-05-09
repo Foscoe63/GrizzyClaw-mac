@@ -14,7 +14,7 @@ public enum ChatResolutionError: LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .unsupportedProvider(let p):
-            return "Provider \"\(p)\" is not supported by the macOS client yet. Supported: ollama, lmstudio, lmstudio_v1, mlx, openai, openrouter, opencode_zen, cursor, custom, anthropic."
+            return "Provider \"\(p)\" is not supported by the macOS client yet. Supported: ollama, lmstudio, lmstudio_v1, omlx, mlx, openai, openrouter, opencode_zen, cursor, custom, anthropic."
         case .missingAPIKey(let provider):
             return "No API key configured for provider \"\(provider)\" in workspace config or ~/.grizzyclaw/config.yaml."
         case .invalidURL(let s):
@@ -45,6 +45,9 @@ public enum ChatResolutionError: LocalizedError, Sendable {
             if s.contains("custom_provider_url") {
                 return "Set custom_provider_url in the workspace config (Workspaces → Edit)."
             }
+            if s.contains("omlx_url") {
+                return "Set omlx_url in the workspace config or `omlx_url` in ~/.grizzyclaw/config.yaml (default http://localhost:8000/v1). Reload Config, then try again."
+            }
             return "Check URLs in workspace config and ~/.grizzyclaw/config.yaml."
         case .workspaceRequired:
             return "Open the Workspaces tab, select a row, then return to Chat."
@@ -59,6 +62,7 @@ public enum ChatResolutionError: LocalizedError, Sendable {
         case "opencode_zen": key = "opencode_zen_api_key"
         case "cursor": key = "cursor_api_key"
         case "lmstudio": key = "lmstudio_api_key (optional for local)"
+        case "omlx": key = "omlx_api_key (optional for local)"
         case "anthropic": key = "anthropic_api_key"
         case "lmstudio_v1": key = "lmstudio_v1_api_key (optional for local)"
         default: key = "\(provider)_api_key"
@@ -240,6 +244,17 @@ public enum ChatParameterResolver {
             let url = try openAICompatURL(hostBase: base)
             let model = pickModel(cfg?.string(forKey: "llm_model"), user.lmstudioModel)
             let key = pickKey("lmstudio_api_key", secrets.lmstudioApiKey)
+            return openAIParams(providerId: provider, chatCompletionsURL: url, apiKey: key, model: model)
+
+        case "omlx":
+            let base: String = {
+                if let s = cfg?.string(forKey: "omlx_url"),
+                   !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return s }
+                return user.omlxUrl
+            }()
+            let url = try openAICompatURL(hostBase: base)
+            let model = pickModel(cfg?.string(forKey: "llm_model"), user.omlxModel)
+            let key = pickKey("omlx_api_key", secrets.omlxApiKey)
             return openAIParams(providerId: provider, chatCompletionsURL: url, apiKey: key, model: model)
 
         case "lmstudio_v1":

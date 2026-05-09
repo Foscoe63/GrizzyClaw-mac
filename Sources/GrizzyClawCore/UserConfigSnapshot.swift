@@ -27,6 +27,10 @@ public struct UserConfigSnapshot: Sendable, Equatable {
     /// Native LM Studio v1 REST base (no `/api` or `/v1` suffix); from `lmstudio_v1_url` in `config.yaml`.
     public var lmstudioV1Url: String
     public var lmstudioModel: String
+    /// oMLX ([jundot/omlx](https://github.com/jundot/omlx)) OpenAI-compatible base URL (`omlx_url`); typically ends with `/v1`.
+    public var omlxUrl: String
+    /// Default model id when `llm_provider` is `omlx` (`omlx_model` in config.yaml).
+    public var omlxModel: String
     /// Hugging Face repo id for bundled MLX (e.g. `mlx-community/Llama-3.2-3B-Instruct-4bit`).
     public var mlxModel: String
     /// Revision / branch for MLX hub downloads (default `main`).
@@ -80,6 +84,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         lmstudioV1Enabled: false,
         lmstudioV1Url: "http://localhost:1234",
         lmstudioModel: "local-model",
+        omlxUrl: "http://localhost:8000/v1",
+        omlxModel: "",
         mlxModel: "mlx-community/Llama-3.2-3B-Instruct-4bit",
         mlxRevision: "main",
         mlxModelsDirectory: "",
@@ -122,6 +128,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             lmstudioV1Enabled: e.lmstudioV1Enabled,
             lmstudioV1Url: e.lmstudioV1Url,
             lmstudioModel: e.lmstudioModel,
+            omlxUrl: e.omlxUrl,
+            omlxModel: e.omlxModel,
             mlxModel: e.mlxModel,
             mlxRevision: e.mlxRevision,
             mlxModelsDirectory: e.mlxModelsDirectory,
@@ -162,6 +170,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         lmstudioV1Enabled: Bool,
         lmstudioV1Url: String,
         lmstudioModel: String,
+        omlxUrl: String,
+        omlxModel: String,
         mlxModel: String,
         mlxRevision: String,
         mlxModelsDirectory: String,
@@ -199,6 +209,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         self.lmstudioV1Enabled = lmstudioV1Enabled
         self.lmstudioV1Url = lmstudioV1Url
         self.lmstudioModel = lmstudioModel
+        self.omlxUrl = omlxUrl
+        self.omlxModel = omlxModel
         self.mlxModel = mlxModel
         self.mlxRevision = mlxRevision
         self.mlxModelsDirectory = mlxModelsDirectory
@@ -266,6 +278,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             lmstudioV1Enabled: bool("lmstudio_v1_enabled", false),
             lmstudioV1Url: str("lmstudio_v1_url", "http://localhost:1234"),
             lmstudioModel: str("lmstudio_model", "local-model"),
+            omlxUrl: str("omlx_url", "http://localhost:8000/v1"),
+            omlxModel: str("omlx_model", ""),
             mlxModel: str("mlx_model", "mlx-community/Llama-3.2-3B-Instruct-4bit"),
             mlxRevision: str("mlx_revision", "main"),
             mlxModelsDirectory: str("mlx_models_directory", ""),

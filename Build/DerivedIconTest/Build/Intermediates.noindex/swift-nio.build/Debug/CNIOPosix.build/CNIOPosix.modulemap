@@ -1,0 +1,4 @@
+module CNIOPosix {
+umbrella header "/Volumes/Storage/Projects/AiAssistants/GrizzyClaw-mac/Build/DerivedIconTest/SourcePackages/checkouts/swift-nio/Sources/CNIOPosix/include/CNIOPosix.h"
+export *
+}

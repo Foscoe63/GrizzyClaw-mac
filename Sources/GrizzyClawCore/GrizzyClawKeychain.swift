@@ -13,6 +13,7 @@ public enum GrizzyClawKeychain {
         case opencodeZenApiKey = "opencode_zen_api_key"
         case lmstudioApiKey = "lmstudio_api_key"
         case lmstudioV1ApiKey = "lmstudio_v1_api_key"
+        case omlxApiKey = "omlx_api_key"
         case customProviderApiKey = "custom_provider_api_key"
     }
 

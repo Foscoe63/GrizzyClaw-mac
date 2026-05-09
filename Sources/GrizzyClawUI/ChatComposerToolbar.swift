@@ -158,6 +158,9 @@ struct ChatComposerToolbar: View {
         .onChange(of: configStore.snapshot.lmstudioV1Enabled) {
             refreshModelsList()
         }
+        .onChange(of: configStore.snapshot.omlxUrl) {
+            refreshModelsList()
+        }
         .onChange(of: configStore.snapshot.defaultLlmProvider) {
             refreshModelsList()
         }
@@ -397,6 +400,11 @@ struct ChatComposerToolbar: View {
         isDark ? Color(red: 0.04, green: 0.52, blue: 1) : Color(red: 0, green: 0.48, blue: 1)
     }
 
+    /// Human-readable provider label in the model picker (internal id stays `omlx`).
+    private func modelPickerProviderTitle(_ id: String) -> String {
+        id == "omlx" ? "oLMX" : id
+    }
+
     /// Python `tools_menu_btn` label from `_tools_filtered` + merged discovery.
     private var toolsMenuButtonTitle: String {
         guiPrefs.toolsButtonTitle(effectiveDiscovery: discoveryForToolsUI())
@@ -472,7 +480,7 @@ struct ChatComposerToolbar: View {
                         .font(.system(size: 12))
                         .foregroundColor(fgMuted)
                         .frame(width: 18, alignment: .leading)
-                    Text(provider)
+                    Text(modelPickerProviderTitle(provider))
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(isDark ? .white : Color(red: 0.11, green: 0.11, blue: 0.12))
                     Spacer(minLength: 0)

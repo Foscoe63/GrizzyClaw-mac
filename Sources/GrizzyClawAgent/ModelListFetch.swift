@@ -187,17 +187,46 @@ public enum ModelListFetch: Sendable {
         return b
     }
 
-    /// LM Studio **OpenAI-compatible** model list: `GET {lmstudio_url}/models` where the URL includes `/v1` (same host/path style as chat). Optional `Authorization: Bearer` when `apiKey` is non-empty.
+    /// LM Studio **OpenAI-compatible** model list: `GET …/v1/models`. Delegates to ``openAICompatV1ModelsFetch``.
     public static func lmStudioOpenAICompatModelFetch(
         lmstudioOpenAICompatURL: String,
         apiKey: String?,
         unauthorizedRetry: Bool = false
     ) async -> FetchResult {
-        guard let base = normalizeLmStudioOpenAICompatBaseForModelsList(lmstudioOpenAICompatURL) else {
-            return FetchResult(ids: [], diagnostic: "LM Studio OpenAI-compat URL is empty.")
+        await openAICompatV1ModelsFetch(
+            openAICompatURL: lmstudioOpenAICompatURL,
+            apiKey: apiKey,
+            serverLabel: "LM Studio",
+            unauthorizedRetry: unauthorizedRetry
+        )
+    }
+
+    /// [oMLX](https://github.com/jundot/omlx) OpenAI-compatible server: same `GET …/v1/models` probe as LM Studio compat.
+    public static func omlxOpenAICompatModelFetch(
+        omlxOpenAICompatURL: String,
+        apiKey: String?,
+        unauthorizedRetry: Bool = false
+    ) async -> FetchResult {
+        await openAICompatV1ModelsFetch(
+            openAICompatURL: omlxOpenAICompatURL,
+            apiKey: apiKey,
+            serverLabel: "oMLX",
+            unauthorizedRetry: unauthorizedRetry
+        )
+    }
+
+    /// Shared OpenAI-compat model discovery for any server exposing `GET {baseEndingInV1}/models`.
+    static func openAICompatV1ModelsFetch(
+        openAICompatURL: String,
+        apiKey: String?,
+        serverLabel: String,
+        unauthorizedRetry: Bool = false
+    ) async -> FetchResult {
+        guard let base = normalizeLmStudioOpenAICompatBaseForModelsList(openAICompatURL) else {
+            return FetchResult(ids: [], diagnostic: "\(serverLabel) OpenAI-compat URL is empty.")
         }
         guard let rawUrl = URL(string: base + "/models") else {
-            return FetchResult(ids: [], diagnostic: "Invalid LM Studio OpenAI-compat models URL: \(base)/models")
+            return FetchResult(ids: [], diagnostic: "Invalid \(serverLabel) OpenAI-compat models URL: \(base)/models")
         }
         let url = LocalHTTPSession.preferIPv4Loopback(rawUrl)
         var req = URLRequest(url: url)
@@ -206,19 +235,20 @@ public enum ModelListFetch: Sendable {
         if !trimmedKey.isEmpty {
             req.setValue("Bearer \(trimmedKey)", forHTTPHeaderField: "Authorization")
         }
-        GrizzyClawLog.debug("LM Studio model refresh: GET \(url.absoluteString)")
+        GrizzyClawLog.debug("\(serverLabel) model refresh: GET \(url.absoluteString)")
         do {
             let (data, resp) = try await LocalHTTPSession.modelProbe.data(for: req)
             if let http = resp as? HTTPURLResponse, http.statusCode == 401, !trimmedKey.isEmpty, !unauthorizedRetry {
-                GrizzyClawLog.debug("LM Studio OpenAI-compat /v1/models: retrying without Authorization (401 with non-empty API key)")
-                return await lmStudioOpenAICompatModelFetch(
-                    lmstudioOpenAICompatURL: lmstudioOpenAICompatURL,
+                GrizzyClawLog.debug("\(serverLabel) OpenAI-compat /v1/models: retrying without Authorization (401 with non-empty API key)")
+                return await openAICompatV1ModelsFetch(
+                    openAICompatURL: openAICompatURL,
                     apiKey: nil,
+                    serverLabel: serverLabel,
                     unauthorizedRetry: true
                 )
             }
             guard let http = resp as? HTTPURLResponse else {
-                return FetchResult(ids: [], diagnostic: "LM Studio returned a non-HTTP response at \(url.absoluteString).")
+                return FetchResult(ids: [], diagnostic: "\(serverLabel) returned a non-HTTP response at \(url.absoluteString).")
             }
             guard http.statusCode == 200 else {
                 let body = String(data: data, encoding: .utf8) ?? ""
@@ -226,7 +256,7 @@ public enum ModelListFetch: Sendable {
                 return FetchResult(
                     ids: [],
                     diagnostic:
-                        "LM Studio OpenAI-compat GET /v1/models returned HTTP \(http.statusCode) at \(url.absoluteString).\n\(snippet)"
+                        "\(serverLabel) OpenAI-compat GET /v1/models returned HTTP \(http.statusCode) at \(url.absoluteString).\n\(snippet)"
                 )
             }
             let parsed = try JSONDecoder().decode(OpenAIModelsEnvelope.self, from: data)
@@ -235,16 +265,16 @@ public enum ModelListFetch: Sendable {
                 return FetchResult(
                     ids: [],
                     diagnostic:
-                        "LM Studio returned HTTP 200 at \(url.absoluteString) but no model ids in the OpenAI `data` array (wrong server or schema?)."
+                        "\(serverLabel) returned HTTP 200 at \(url.absoluteString) but no model ids in the OpenAI `data` array (wrong server or schema?)."
                 )
             }
-            GrizzyClawLog.debug("LM Studio model refresh: \(ids.count) model(s) from \(url.absoluteString)")
+            GrizzyClawLog.debug("\(serverLabel) model refresh: \(ids.count) model(s) from \(url.absoluteString)")
             return FetchResult(ids: Array(Set(ids)).sorted())
         } catch {
             let formatted = LLMErrorHints.formattedMessage(for: error)
             return FetchResult(
                 ids: [],
-                diagnostic: "LM Studio OpenAI-compat request failed at \(url.absoluteString).\n\n\(formatted)"
+                diagnostic: "\(serverLabel) OpenAI-compat request failed at \(url.absoluteString).\n\n\(formatted)"
             )
         }
     }

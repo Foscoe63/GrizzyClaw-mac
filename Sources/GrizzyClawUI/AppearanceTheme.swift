@@ -29,7 +29,7 @@ public enum AppearanceTheme {
         switch normalize(theme) {
         case "light", "high contrast light", "solarized light":
             return .light
-        case "dark", "high contrast dark", "nord", "solarized dark", "dracula", "monokai":
+        case "dark", "high contrast dark", "nord", "solarized dark", "dracula", "monokai", "coral spark":
             return .dark
         case "auto (system)":
             return nil
@@ -65,6 +65,9 @@ public enum AppearanceTheme {
             return Color(red: 0, green: 43 / 255, blue: 54 / 255) // base03 #002b36
         case "solarized light":
             return Color(red: 253 / 255, green: 246 / 255, blue: 227 / 255) // base3 #fdf6e3
+        /// Warm magenta–coral charcoal with depth (brand mascot reds / golds).
+        case "coral spark":
+            return Color(red: 42 / 255, green: 18 / 255, blue: 28 / 255) // ~#2a121c
         default:
             return Color(nsColor: .textBackgroundColor)
         }
@@ -83,6 +86,8 @@ public enum AppearanceTheme {
             return Color(red: 7 / 255, green: 54 / 255, blue: 66 / 255) // base02 #073642
         case "solarized light":
             return Color(red: 238 / 255, green: 232 / 255, blue: 213 / 255) // base2 #eee8d5
+        case "coral spark":
+            return Color(red: 72 / 255, green: 24 / 255, blue: 40 / 255) // ~#481828 — sidebar lift
         default:
             return colorScheme == .dark
                 ? Color(red: 0.176, green: 0.176, blue: 0.176)
@@ -94,6 +99,8 @@ public enum AppearanceTheme {
         switch normalize(theme) {
         case "nord", "dracula", "monokai", "solarized dark":
             return Color.white.opacity(0.06)
+        case "coral spark":
+            return Color(red: 1.0, green: 0.78, blue: 0.35).opacity(0.28) // amber–gold rim
         case "solarized light":
             return Color(red: 0.85, green: 0.82, blue: 0.75)
         default:

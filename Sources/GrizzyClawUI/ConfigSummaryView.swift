@@ -56,6 +56,8 @@ struct ConfigSummaryView: View {
                     LabeledContent("Ollama model", value: store.snapshot.ollamaModel)
                     LabeledContent("LM Studio", value: store.snapshot.lmstudioUrl)
                     LabeledContent("LM Studio model", value: store.snapshot.lmstudioModel)
+                    LabeledContent("oMLX", value: store.snapshot.omlxUrl)
+                    LabeledContent("oMLX model", value: store.snapshot.omlxModel.isEmpty ? "—" : store.snapshot.omlxModel)
                 }
                 Section("API keys (YAML + optional Keychain)") {
                     LabeledContent("OpenAI") { secretBadge(store.snapshot.hasOpenaiApiKey) }
