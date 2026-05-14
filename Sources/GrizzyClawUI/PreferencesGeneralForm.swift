@@ -106,6 +106,9 @@ struct PreferencesGeneralForm: View {
         var base = ["ollama", "lmstudio", "openai", "anthropic", "openrouter", "cursor", "opencode-zen"]
         #if arch(arm64)
         base.insert("mlx", at: 2)
+        base.insert("omlx", at: 3)
+        #else
+        base.insert("omlx", at: 2)
         #endif
         if doc.bool("lmstudio_v1_enabled", default: false) {
             base.append("lmstudio-v1")

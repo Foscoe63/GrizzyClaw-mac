@@ -84,6 +84,7 @@ struct WorkspaceFullEditorView: View {
     @State private var llmModel: String
     @State private var ollamaUrl: String
     @State private var lmstudioUrl: String
+    @State private var omlxUrl: String
     @State private var temperatureText: String
     @State private var maxTokensText: String
 
@@ -126,6 +127,7 @@ struct WorkspaceFullEditorView: View {
     @State private var apiKeyOpenCodeZen: String
     @State private var apiKeyLMStudio: String
     @State private var apiKeyLMStudioV1: String
+    @State private var apiKeyOmlx: String
 
     @State private var saveError: String?
     @State private var saveSuccessVisible = false
@@ -183,6 +185,7 @@ struct WorkspaceFullEditorView: View {
         _llmModel = State(initialValue: cfg?.string(forKey: "llm_model") ?? defaultModel)
         _ollamaUrl = State(initialValue: cfg?.string(forKey: "ollama_url") ?? defaultOllamaUrl)
         _lmstudioUrl = State(initialValue: cfg?.string(forKey: "lmstudio_url") ?? "http://localhost:1234/v1")
+        _omlxUrl = State(initialValue: cfg?.string(forKey: "omlx_url") ?? "http://localhost:8000/v1")
         if let t = cfg?.double(forKey: "temperature") {
             _temperatureText = State(initialValue: String(t))
         } else {
@@ -253,6 +256,7 @@ struct WorkspaceFullEditorView: View {
         _apiKeyOpenCodeZen = State(initialValue: cfg?.string(forKey: "opencode_zen_api_key") ?? "")
         _apiKeyLMStudio = State(initialValue: cfg?.string(forKey: "lmstudio_api_key") ?? "")
         _apiKeyLMStudioV1 = State(initialValue: cfg?.string(forKey: "lmstudio_v1_api_key") ?? "")
+        _apiKeyOmlx = State(initialValue: cfg?.string(forKey: "omlx_api_key") ?? "")
 
         let capPairs = cfg?.mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
         let cachedDisc = WorkspaceEditorMCPCache.discovery[workspace.id] ?? [:]
@@ -648,7 +652,7 @@ struct WorkspaceFullEditorView: View {
     }
 
     private static let llmProviderOptions = [
-        "ollama", "lmstudio", "lmstudio_v1", "mlx", "openai", "anthropic", "openrouter", "cursor", "opencode_zen",
+        "ollama", "lmstudio", "lmstudio_v1", "mlx", "omlx", "openai", "anthropic", "openrouter", "cursor", "opencode_zen",
     ]
 
     /// Includes current `llm_provider` if it is a custom id not in the default list (Python combo is editable).
@@ -716,6 +720,7 @@ struct WorkspaceFullEditorView: View {
             Section("Custom provider URLs (optional overrides)") {
                 TextField("Ollama URL", text: $ollamaUrl)
                 TextField("LM Studio URL", text: $lmstudioUrl)
+                TextField("oMLX URL (OpenAI /v1 base)", text: $omlxUrl)
             }
             Section("Memory") {
                 Text(
@@ -769,6 +774,7 @@ struct WorkspaceFullEditorView: View {
                 apiKeyRow(label: "OpenCode Zen API Key:", text: $apiKeyOpenCodeZen)
                 apiKeyRow(label: "LM Studio Key:", text: $apiKeyLMStudio)
                 apiKeyRow(label: "LM Studio v1 Key:", text: $apiKeyLMStudioV1)
+                apiKeyRow(label: "oMLX Key:", text: $apiKeyOmlx)
             }
         }
         .formStyle(.grouped)
@@ -1336,6 +1342,7 @@ struct WorkspaceFullEditorView: View {
         patch["llm_model"] = .string(llmModel)
         patch["ollama_url"] = .string(ollamaUrl)
         patch["lmstudio_url"] = .string(lmstudioUrl)
+        patch["omlx_url"] = .string(omlxUrl)
         if let t = tempParsed {
             patch["temperature"] = .double(t)
         }
@@ -1359,6 +1366,7 @@ struct WorkspaceFullEditorView: View {
         putOptionalApiKey("opencode_zen_api_key", apiKeyOpenCodeZen)
         putOptionalApiKey("lmstudio_api_key", apiKeyLMStudio)
         putOptionalApiKey("lmstudio_v1_api_key", apiKeyLMStudioV1)
+        putOptionalApiKey("omlx_api_key", apiKeyOmlx)
 
         patch["memory_enabled"] = .bool(memoryEnabled)
         let mf = memoryFile.trimmingCharacters(in: .whitespacesAndNewlines)

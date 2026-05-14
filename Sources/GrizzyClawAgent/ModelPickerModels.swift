@@ -46,6 +46,7 @@ public enum ModelPickerModels: Sendable {
         async let opencodeZen = opencodeZenRows(cfg: cfg, routing: routing, secrets: secrets)
         async let cursor = cursorRows(cfg: cfg, routing: routing, secrets: secrets)
         async let mlx = mlxRows(cfg: cfg, user: user)
+        async let omlx = omlxRows(cfg: cfg, user: user, secrets: secrets)
         async let custom = customRows(cfg: cfg, user: user, secrets: secrets)
 
         var out: [String: [Row]] = [:]
@@ -58,6 +59,7 @@ public enum ModelPickerModels: Sendable {
         out["opencode_zen"] = await opencodeZen
         out["cursor"] = await cursor
         out["mlx"] = await mlx
+        out["omlx"] = await omlx
         out["custom"] = await custom
         return out
     }
@@ -165,6 +167,19 @@ public enum ModelPickerModels: Sendable {
             ids = CachedMLXHubRepoIds.listRepoIds(downloadRoot: root)
         }
         if ids.isEmpty { ids = [user.mlxModel] }
+        return ids.map { Row(modelId: $0, displayName: $0) }
+    }
+
+    private static func omlxRows(cfg: JSONValue?, user: UserConfigSnapshot, secrets: UserConfigSecrets) async -> [Row] {
+        let base: String = {
+            if let s = cfg?.string(forKey: "omlx_url"),
+               !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return s }
+            return user.omlxUrl
+        }()
+        let key = workspaceOrGlobalApiKey(cfg: cfg, secrets: secrets, workspaceKey: "omlx_api_key", global: secrets.omlxApiKey)
+        var ids = await ModelListFetch.openAIStyleModelIdsOptionalAuth(baseURL: base, apiKey: key)
+        let fallback = user.omlxModel.trimmingCharacters(in: .whitespacesAndNewlines)
+        if ids.isEmpty { ids = fallback.isEmpty ? [] : [fallback] }
         return ids.map { Row(modelId: $0, displayName: $0) }
     }
 

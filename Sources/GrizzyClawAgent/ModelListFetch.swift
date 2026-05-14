@@ -196,6 +196,11 @@ public enum ModelListFetch: Sendable {
 
     /// OpenAI-compatible `GET {baseURL}/models` with Bearer — `baseURL` must include `/v1` (e.g. `https://api.openai.com/v1`).
     public static func openAIStyleModelIds(baseURL: String, apiKey: String) async -> [String] {
+        await openAIStyleModelIdsOptionalAuth(baseURL: baseURL, apiKey: apiKey)
+    }
+
+    /// Same as ``openAIStyleModelIds(baseURL:apiKey:)`` but omits `Authorization` when `apiKey` is nil or blank (local OpenAI-compatible servers such as [oMLX](https://github.com/jundot/omlx)).
+    public static func openAIStyleModelIdsOptionalAuth(baseURL: String, apiKey: String?) async -> [String] {
         var b = baseURL.trimmingCharacters(in: .whitespacesAndNewlines)
         if b.isEmpty { return [] }
         if !b.hasPrefix("http://"), !b.hasPrefix("https://") {
@@ -209,7 +214,9 @@ public enum ModelListFetch: Sendable {
         do {
             var req = URLRequest(url: url)
             req.timeoutInterval = 60
-            req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+            if let k = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines), !k.isEmpty {
+                req.setValue("Bearer \(k)", forHTTPHeaderField: "Authorization")
+            }
             let (data, resp) = try await URLSession.shared.data(for: req)
             if let http = resp as? HTTPURLResponse, http.statusCode != 200 { return [] }
             let parsed = try JSONDecoder().decode(OpenAIModelsEnvelope.self, from: data)
