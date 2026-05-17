@@ -28,6 +28,7 @@ public struct PreferencesMainView: View {
     @State private var llmFetchCursor: [String]?
     @State private var llmFetchZen: [String]?
     @State private var llmFetchOmlx: [String]?
+    @State private var llmFetchVmlx: [String]?
     #if arch(arm64)
     @State private var llmFetchMLX: [String]?
     @State private var mlxDownloadRepoID = ""
@@ -277,9 +278,11 @@ public struct PreferencesMainView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     TextField("URL:", text: doc.bindingString("omlx_url", default: "http://localhost:8000/v1"))
-                    Text("Default: http://localhost:8000/v1 (override if you changed OMLX_PORT or bind address).")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(
+                        "This Mac: http://localhost:8000/v1. Another Mac on your network: http://<ip>:<port>/v1 (oMLX must listen on 0.0.0.0, not only localhost)."
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                     LLMModelField(
                         doc: doc,
                         modelKey: "omlx_model",
@@ -288,14 +291,16 @@ public struct PreferencesMainView: View {
                         fetched: $llmFetchOmlx,
                         isRefreshing: $llmRefreshBusy
                     ) {
-                        let r = await ModelListFetch.openAIStyleModelIdsOptionalAuth(
-                            baseURL: doc.string("omlx_url", default: "http://localhost:8000/v1"),
+                        let result = await ModelListFetch.omlxOpenAICompatModelFetch(
+                            omlxOpenAICompatURL: doc.string("omlx_url", default: "http://localhost:8000/v1"),
                             apiKey: doc.optionalString("omlx_api_key")
                         )
-                        if r.isEmpty {
-                            await MainActor.run { llmModelFetchAlert = "No models found for this provider." }
+                        if result.ids.isEmpty {
+                            await MainActor.run {
+                                llmModelFetchAlert = result.diagnostic ?? "No models found for this provider."
+                            }
                         }
-                        return r
+                        return result.ids
                     }
                     SecureField("API Key:", text: doc.bindingOptionalStringNull("omlx_api_key"))
                         .textContentType(.password)
@@ -305,6 +310,47 @@ public struct PreferencesMainView: View {
                         set: { doc.setWorkspaceProviderEnabled(id: "omlx", enabled: $0) }
                     ))
                     .help("If checked, workspaces can override the API key for oMLX.")
+                }
+
+                Section("vMLX (local, Apple Silicon)") {
+                    Text(
+                        "Provider id: vmlx — OpenAI-compatible HTTP API from [vMLX](https://github.com/jjang-ai/vmlx) (`vmlx serve`). Default listen URL is http://localhost:8000/v1."
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    TextField("URL:", text: doc.bindingString("vmlx_url", default: "http://localhost:8000/v1"))
+                    Text(
+                        "This Mac: http://localhost:8000/v1. Another Mac: http://<ip>:<port>/v1 — run `vmlx serve --host 0.0.0.0` there. Use `--port 8001` if oMLX uses 8000."
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    LLMModelField(
+                        doc: doc,
+                        modelKey: "vmlx_model",
+                        defaultModel: "local",
+                        seeds: ["local"],
+                        fetched: $llmFetchVmlx,
+                        isRefreshing: $llmRefreshBusy
+                    ) {
+                        let result = await ModelListFetch.vmlxOpenAICompatModelFetch(
+                            vmlxOpenAICompatURL: doc.string("vmlx_url", default: "http://localhost:8000/v1"),
+                            apiKey: doc.optionalString("vmlx_api_key")
+                        )
+                        if result.ids.isEmpty {
+                            await MainActor.run {
+                                llmModelFetchAlert = result.diagnostic ?? "No models found for this provider."
+                            }
+                        }
+                        return result.ids
+                    }
+                    SecureField("API Key:", text: doc.bindingOptionalStringNull("vmlx_api_key"))
+                        .textContentType(.password)
+                    Text("Optional — set if you started vMLX with `--api-key`.").font(.caption).foregroundStyle(.secondary)
+                    Toggle("Show in Workspace API Keys", isOn: Binding(
+                        get: { doc.isWorkspaceProviderEnabled(id: "vmlx") },
+                        set: { doc.setWorkspaceProviderEnabled(id: "vmlx", enabled: $0) }
+                    ))
+                    .help("If checked, workspaces can override the API key for vMLX.")
                 }
 
                 Section("LM Studio v1 (native API)") {

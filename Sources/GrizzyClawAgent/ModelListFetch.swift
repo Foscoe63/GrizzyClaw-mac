@@ -3,6 +3,32 @@ import GrizzyClawCore
 
 /// Fetches model id lists from local and remote providers (parity with Python `settings_dialog` + `grizzyclaw/llm/*`).
 public enum ModelListFetch: Sendable {
+    public struct FetchResult: Sendable {
+        public var ids: [String]
+        public var diagnostic: String?
+
+        public init(ids: [String], diagnostic: String? = nil) {
+            self.ids = ids
+            self.diagnostic = diagnostic
+        }
+    }
+
+    /// Collapses mistaken `http://host:PORT:PORT` (duplicate numeric port) to `http://host:PORT`.
+    public static func collapseDuplicateLmStudioAuthorityPort(_ raw: String) -> String {
+        var t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let re = try? NSRegularExpression(
+            pattern: #"^(?i)(https?://)([^/:?\[\]]+):(\d{1,5}):\3(?=/|$)"#,
+            options: []
+        ) else { return t }
+        for _ in 0..<6 {
+            let fullRange = NSRange(t.startIndex..., in: t)
+            let next = re.stringByReplacingMatches(in: t, options: [], range: fullRange, withTemplate: "$1$2:$3")
+            if next == t { break }
+            t = next
+        }
+        return t
+    }
+
     /// Parses LM Studio native `GET /api/v1/models` body. Uses per-element iteration so a mixed or oddly-bridged
     /// `models` array does not cause a failed `as? [[String: Any]]` cast (which would yield **no** ids despite HTTP 200).
     static func parseLmStudioNativeModelsJSON(_ data: Data) -> [String] {
@@ -28,8 +54,10 @@ public enum ModelListFetch: Sendable {
     /// For loopback hosts, `URLSession` / resolution can behave differently for `localhost` vs `127.0.0.1` vs `::1`.
     /// Remote LAN URLs use a single candidate. Order: preserve configured host first, then IPv4 literal, then the other loopback name.
     static func lmStudioNativeModelListBaseCandidates(_ base: String) -> [String] {
-        let b = base.trimmingCharacters(in: .whitespacesAndNewlines)
-            .trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let b = collapseDuplicateLmStudioAuthorityPort(
+            base.trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        )
         guard let u = URL(string: b), let host = u.host?.lowercased() else {
             return [LocalHTTPSession.preferIPv4LoopbackString(b)]
         }
@@ -56,7 +84,7 @@ public enum ModelListFetch: Sendable {
 
     /// Strips OpenAI-compat `/v1` suffix only — does **not** rewrite `localhost` → `127.0.0.1` (see ``lmStudioNativeModelListBaseCandidates``).
     private static func lmStudioNativeApiBaseFromOpenAICompatURL(_ raw: String) -> String {
-        var base = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        var base = collapseDuplicateLmStudioAuthorityPort(raw.trimmingCharacters(in: .whitespacesAndNewlines))
         if base.isEmpty { return "http://localhost:1234" }
         if !base.hasPrefix("http://"), !base.hasPrefix("https://") {
             base = "http://\(base)"
@@ -194,37 +222,124 @@ public enum ModelListFetch: Sendable {
         ]
     }
 
+    /// Normalizes an OpenAI-compat base to `http(s)://host:port/v1` for `GET …/v1/models`.
+    public static func normalizeLmStudioOpenAICompatBaseForModelsList(_ raw: String) -> String? {
+        var b = collapseDuplicateLmStudioAuthorityPort(raw.trimmingCharacters(in: .whitespacesAndNewlines))
+        if b.isEmpty { return nil }
+        if !b.hasPrefix("http://"), !b.hasPrefix("https://") {
+            b = "http://\(b)"
+        }
+        b = b.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        if !b.lowercased().hasSuffix("/v1") {
+            b += "/v1"
+        }
+        return b
+    }
+
+    /// OpenAI-compatible **`GET …/v1/models`** (oMLX, vMLX, LM Studio OpenAI-compat, workspace custom URLs).
+    public static func openAICompatV1ModelsFetch(
+        openAICompatURL: String,
+        apiKey: String?,
+        unauthorizedRetry: Bool = false,
+        serverLabel: String
+    ) async -> FetchResult {
+        guard let base = normalizeLmStudioOpenAICompatBaseForModelsList(openAICompatURL) else {
+            return FetchResult(ids: [], diagnostic: "\(serverLabel) OpenAI-compat URL is empty.")
+        }
+        guard let rawUrl = URL(string: base + "/models") else {
+            return FetchResult(ids: [], diagnostic: "Invalid \(serverLabel) OpenAI-compat models URL: \(base)/models")
+        }
+        let url = LocalHTTPSession.preferIPv4Loopback(rawUrl)
+        var req = URLRequest(url: url)
+        req.timeoutInterval = 15
+        let trimmedKey = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if !trimmedKey.isEmpty {
+            req.setValue("Bearer \(trimmedKey)", forHTTPHeaderField: "Authorization")
+        }
+        GrizzyClawLog.debug("\(serverLabel) model refresh: GET \(url.absoluteString)")
+        do {
+            let (data, resp) = try await LocalHTTPSession.modelProbe.data(for: req)
+            if let http = resp as? HTTPURLResponse, http.statusCode == 401, !trimmedKey.isEmpty, !unauthorizedRetry {
+                GrizzyClawLog.debug("\(serverLabel) OpenAI-compat /v1/models: retrying without Authorization (401 with non-empty API key)")
+                return await openAICompatV1ModelsFetch(
+                    openAICompatURL: openAICompatURL,
+                    apiKey: nil,
+                    unauthorizedRetry: true,
+                    serverLabel: serverLabel
+                )
+            }
+            guard let http = resp as? HTTPURLResponse else {
+                return FetchResult(ids: [], diagnostic: "\(serverLabel) returned a non-HTTP response at \(url.absoluteString).")
+            }
+            guard http.statusCode == 200 else {
+                let body = String(data: data, encoding: .utf8) ?? ""
+                let snippet = body.prefix(500)
+                return FetchResult(
+                    ids: [],
+                    diagnostic:
+                        "\(serverLabel) OpenAI-compat GET /v1/models returned HTTP \(http.statusCode) at \(url.absoluteString).\n\(snippet)"
+                )
+            }
+            let parsed = try JSONDecoder().decode(OpenAIModelsEnvelope.self, from: data)
+            let ids = (parsed.data ?? []).compactMap { $0.id?.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+            if ids.isEmpty {
+                return FetchResult(
+                    ids: [],
+                    diagnostic:
+                        "\(serverLabel) returned HTTP 200 at \(url.absoluteString) but no model ids in the OpenAI `data` array (wrong server or schema?)."
+                )
+            }
+            GrizzyClawLog.debug("\(serverLabel) model refresh: \(ids.count) model(s) from \(url.absoluteString)")
+            return FetchResult(ids: Array(Set(ids)).sorted())
+        } catch {
+            let formatted = LLMErrorHints.formattedMessage(for: error)
+            return FetchResult(
+                ids: [],
+                diagnostic: "\(serverLabel) OpenAI-compat request failed at \(url.absoluteString).\n\n\(formatted)"
+            )
+        }
+    }
+
+    /// [oMLX](https://github.com/jundot/omlx) OpenAI-compat model list (`GET …/v1/models`).
+    public static func omlxOpenAICompatModelFetch(
+        omlxOpenAICompatURL: String,
+        apiKey: String?,
+        unauthorizedRetry: Bool = false
+    ) async -> FetchResult {
+        await openAICompatV1ModelsFetch(
+            openAICompatURL: omlxOpenAICompatURL,
+            apiKey: apiKey,
+            unauthorizedRetry: unauthorizedRetry,
+            serverLabel: "oMLX"
+        )
+    }
+
+    /// [vMLX](https://github.com/jjang-ai/vmlx) OpenAI-compat model list (`GET …/v1/models`).
+    public static func vmlxOpenAICompatModelFetch(
+        vmlxOpenAICompatURL: String,
+        apiKey: String?,
+        unauthorizedRetry: Bool = false
+    ) async -> FetchResult {
+        await openAICompatV1ModelsFetch(
+            openAICompatURL: vmlxOpenAICompatURL,
+            apiKey: apiKey,
+            unauthorizedRetry: unauthorizedRetry,
+            serverLabel: "vMLX"
+        )
+    }
+
     /// OpenAI-compatible `GET {baseURL}/models` with Bearer — `baseURL` must include `/v1` (e.g. `https://api.openai.com/v1`).
     public static func openAIStyleModelIds(baseURL: String, apiKey: String) async -> [String] {
         await openAIStyleModelIdsOptionalAuth(baseURL: baseURL, apiKey: apiKey)
     }
 
-    /// Same as ``openAIStyleModelIds(baseURL:apiKey:)`` but omits `Authorization` when `apiKey` is nil or blank (local OpenAI-compatible servers such as [oMLX](https://github.com/jundot/omlx)).
+    /// Same as ``openAIStyleModelIds(baseURL:apiKey:)`` but omits `Authorization` when `apiKey` is nil or blank (local OpenAI-compatible servers such as oMLX and vMLX).
     public static func openAIStyleModelIdsOptionalAuth(baseURL: String, apiKey: String?) async -> [String] {
-        var b = baseURL.trimmingCharacters(in: .whitespacesAndNewlines)
-        if b.isEmpty { return [] }
-        if !b.hasPrefix("http://"), !b.hasPrefix("https://") {
-            b = "https://\(b)"
-        }
-        b = b.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        if !b.hasSuffix("/v1") {
-            b += "/v1"
-        }
-        guard let url = URL(string: b + "/models") else { return [] }
-        do {
-            var req = URLRequest(url: url)
-            req.timeoutInterval = 60
-            if let k = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines), !k.isEmpty {
-                req.setValue("Bearer \(k)", forHTTPHeaderField: "Authorization")
-            }
-            let (data, resp) = try await URLSession.shared.data(for: req)
-            if let http = resp as? HTTPURLResponse, http.statusCode != 200 { return [] }
-            let parsed = try JSONDecoder().decode(OpenAIModelsEnvelope.self, from: data)
-            let ids = (parsed.data ?? []).compactMap { $0.id?.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
-            return Array(Set(ids)).sorted()
-        } catch {
-            return []
-        }
+        await openAICompatV1ModelsFetch(
+            openAICompatURL: baseURL,
+            apiKey: apiKey,
+            serverLabel: "OpenAI-compatible"
+        ).ids
     }
 
     /// OpenCode Zen — `OpencodeZenProvider` / `https://opencode.ai/zen/v1/models`.

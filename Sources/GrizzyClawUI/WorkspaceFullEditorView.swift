@@ -1,4 +1,5 @@
 import AppKit
+import GrizzyClawAgent
 import GrizzyClawCore
 import GrizzyClawWorkspaceUI
 import SwiftUI
@@ -79,6 +80,7 @@ struct WorkspaceFullEditorView: View {
     @State private var ollamaUrl: String
     @State private var lmstudioUrl: String
     @State private var omlxUrl: String
+    @State private var vmlxUrl: String
     @State private var temperatureText: String
     @State private var maxTokensText: String
 
@@ -122,6 +124,7 @@ struct WorkspaceFullEditorView: View {
     @State private var apiKeyLMStudio: String
     @State private var apiKeyLMStudioV1: String
     @State private var apiKeyOmlx: String
+    @State private var apiKeyVmlx: String
 
     @State private var saveError: String?
     @State private var saveSuccessVisible = false
@@ -140,6 +143,11 @@ struct WorkspaceFullEditorView: View {
     @State private var marketplaceLoadError: String?
     @State private var workspaceSkillsOverrideEnabled: Bool
     @State private var workspaceSkillIDs: [String]
+
+    @State private var availableModelsByProvider: [String: [ModelPickerModels.Row]] = [:]
+    @State private var llmModelsLoading = false
+    @State private var llmModelsMessage: String?
+    @State private var llmModelsMessageIsError = false
 
     @State private var benchmarkBusy = false
     @State private var benchmarkResult = ""
@@ -182,6 +190,7 @@ struct WorkspaceFullEditorView: View {
         _ollamaUrl = State(initialValue: cfg?.string(forKey: "ollama_url") ?? defaultOllamaUrl)
         _lmstudioUrl = State(initialValue: cfg?.string(forKey: "lmstudio_url") ?? "http://localhost:1234/v1")
         _omlxUrl = State(initialValue: cfg?.string(forKey: "omlx_url") ?? "http://localhost:8000/v1")
+        _vmlxUrl = State(initialValue: cfg?.string(forKey: "vmlx_url") ?? "http://localhost:8000/v1")
         if let t = cfg?.double(forKey: "temperature") {
             _temperatureText = State(initialValue: String(t))
         } else {
@@ -253,6 +262,7 @@ struct WorkspaceFullEditorView: View {
         _apiKeyLMStudio = State(initialValue: cfg?.string(forKey: "lmstudio_api_key") ?? "")
         _apiKeyLMStudioV1 = State(initialValue: cfg?.string(forKey: "lmstudio_v1_api_key") ?? "")
         _apiKeyOmlx = State(initialValue: cfg?.string(forKey: "omlx_api_key") ?? "")
+        _apiKeyVmlx = State(initialValue: cfg?.string(forKey: "vmlx_api_key") ?? "")
         _workspaceSkillsOverrideEnabled = State(initialValue: cfg?.stringArrayIfPresent(forKey: "enabled_skills") != nil)
         _workspaceSkillIDs = State(initialValue: cfg?.stringArray(forKey: "enabled_skills") ?? [])
 
@@ -655,7 +665,7 @@ struct WorkspaceFullEditorView: View {
     }
 
     private static let llmProviderOptions = [
-        "ollama", "lmstudio", "lmstudio_v1", "mlx", "omlx", "openai", "anthropic", "openrouter", "cursor", "opencode_zen",
+        "ollama", "lmstudio", "lmstudio_v1", "mlx", "omlx", "vmlx", "openai", "anthropic", "openrouter", "cursor", "opencode_zen",
     ]
 
     /// Includes current `llm_provider` if it is a custom id not in the default list (Python combo is editable).
@@ -668,6 +678,20 @@ struct WorkspaceFullEditorView: View {
         return o
     }
 
+    private func normalizedProviderKey(_ provider: String) -> String {
+        provider.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    }
+
+    private var availableModelsForSelectedProvider: [ModelPickerModels.Row] {
+        let providerKey = normalizedProviderKey(llmProvider)
+        var rows = availableModelsByProvider[providerKey] ?? []
+        let trimmedCurrentModel = llmModel.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedCurrentModel.isEmpty, !rows.contains(where: { $0.modelId == trimmedCurrentModel }) {
+            rows.insert(.init(modelId: trimmedCurrentModel, displayName: trimmedCurrentModel), at: 0)
+        }
+        return rows
+    }
+
     private var llmForm: some View {
         Form {
             Section {
@@ -676,15 +700,51 @@ struct WorkspaceFullEditorView: View {
                         Text(p).tag(p)
                     }
                 }
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    TextField("Select or type model name", text: $llmModel)
+                .pickerStyle(.menu)
+
+                TextField("Select or type model name", text: $llmModel)
+
+                HStack(alignment: .center, spacing: 8) {
                     Button {
-                        // No-op: refresh requires Python router / HTTP; parity affordance.
+                        Task { await refreshWorkspaceModelList() }
                     } label: {
-                        Image(systemName: "arrow.clockwise")
+                        Label("Refresh model list", systemImage: "arrow.clockwise")
                     }
-                    .help("Refresh models from provider (full discovery runs in the Python app.)")
-                    .disabled(true)
+                    .disabled(llmModelsLoading)
+                    .help("Refresh models from configured providers and update suggestions for this workspace.")
+
+                    if llmModelsLoading {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("Loading models…")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                if !availableModelsForSelectedProvider.isEmpty {
+                    Picker("Suggested model:", selection: $llmModel) {
+                        ForEach(availableModelsForSelectedProvider, id: \.modelId) { row in
+                            Text(row.displayName).tag(row.modelId)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                }
+
+                Text(
+                    availableModelsForSelectedProvider.isEmpty
+                        ? "Type a model manually or refresh to load provider-backed suggestions."
+                        : "Pick a suggested model or keep typing a custom model id in the field above."
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                if let llmModelsMessage {
+                    Text(llmModelsMessage)
+                        .font(.caption)
+                        .foregroundStyle(llmModelsMessageIsError ? .red : .secondary)
+                        .textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 LabeledContent("Temperature:") {
                     TextField("", text: $temperatureText)
@@ -721,9 +781,16 @@ struct WorkspaceFullEditorView: View {
                 )
             }
             Section("Custom provider URLs (optional overrides)") {
+                Text(
+                    "Use http://<lan-ip>:<port>/v1 to reach oMLX or vMLX on another Mac; the server must bind 0.0.0.0 (vMLX: `vmlx serve --host 0.0.0.0`)."
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
                 TextField("Ollama URL", text: $ollamaUrl)
                 TextField("LM Studio URL", text: $lmstudioUrl)
                 TextField("oMLX URL (OpenAI /v1 base)", text: $omlxUrl)
+                TextField("vMLX URL (OpenAI /v1 base)", text: $vmlxUrl)
             }
             Section("Memory") {
                 Text(
@@ -742,6 +809,16 @@ struct WorkspaceFullEditorView: View {
             }
         }
         .formStyle(.grouped)
+        .task(id: workspace.id) {
+            await refreshWorkspaceModelList()
+        }
+        .onChange(of: llmProvider) { _, _ in
+            llmModelsMessage = nil
+            let key = normalizedProviderKey(llmProvider)
+            if availableModelsByProvider[key] == nil {
+                Task { await refreshWorkspaceModelList() }
+            }
+        }
     }
 
     private var promptForm: some View {
@@ -778,6 +855,7 @@ struct WorkspaceFullEditorView: View {
                 apiKeyRow(label: "LM Studio Key:", text: $apiKeyLMStudio)
                 apiKeyRow(label: "LM Studio v1 Key:", text: $apiKeyLMStudioV1)
                 apiKeyRow(label: "oMLX Key:", text: $apiKeyOmlx)
+                apiKeyRow(label: "vMLX Key:", text: $apiKeyVmlx)
             }
         }
         .formStyle(.grouped)
@@ -990,6 +1068,109 @@ struct WorkspaceFullEditorView: View {
         )
     }
 
+    @MainActor
+    private func refreshWorkspaceModelList() async {
+        guard !llmModelsLoading else { return }
+        llmModelsLoading = true
+        llmModelsMessage = nil
+        llmModelsMessageIsError = false
+
+        let failsafe = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 60_000_000_000)
+            guard llmModelsLoading else { return }
+            llmModelsLoading = false
+            llmModelsMessage = "Model refresh timed out after 60 seconds."
+            llmModelsMessageIsError = true
+        }
+        defer { failsafe.cancel() }
+
+        let storedCfg = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?.config ?? workspace.config
+        var overlay: [String: JSONValue] = {
+            if case .object(let dict) = storedCfg { return dict }
+            return [:]
+        }()
+
+        let trimmedProvider = llmProvider.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedProvider.isEmpty {
+            overlay["llm_provider"] = .string(trimmedProvider)
+        }
+
+        let trimmedOllama = ollamaUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedOllama.isEmpty {
+            overlay["ollama_url"] = .string(trimmedOllama)
+        }
+
+        let trimmedLmUrl = lmstudioUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedLmUrl.isEmpty {
+            overlay["lmstudio_url"] = .string(trimmedLmUrl)
+        }
+
+        let trimmedOmlx = omlxUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedOmlx.isEmpty {
+            overlay["omlx_url"] = .string(trimmedOmlx)
+        }
+
+        let trimmedVmlx = vmlxUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedVmlx.isEmpty {
+            overlay["vmlx_url"] = .string(trimmedVmlx)
+        }
+
+        func applyKey(_ key: String, value: String) {
+            let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty {
+                overlay.removeValue(forKey: key)
+            } else {
+                overlay[key] = .string(trimmed)
+            }
+        }
+        applyKey("openai_api_key", value: apiKeyOpenAI)
+        applyKey("anthropic_api_key", value: apiKeyAnthropic)
+        applyKey("openrouter_api_key", value: apiKeyOpenRouter)
+        applyKey("cursor_api_key", value: apiKeyCursor)
+        applyKey("opencode_zen_api_key", value: apiKeyOpenCodeZen)
+        applyKey("lmstudio_api_key", value: apiKeyLMStudio)
+        applyKey("lmstudio_v1_api_key", value: apiKeyLMStudioV1)
+        applyKey("omlx_api_key", value: apiKeyOmlx)
+        applyKey("vmlx_api_key", value: apiKeyVmlx)
+
+        let cfg: JSONValue = .object(overlay)
+        let user = configStore.snapshot
+        let routing = configStore.routingExtras
+
+        let secrets: UserConfigSecrets
+        do {
+            secrets = try UserConfigLoader.loadSecretsWithKeychain()
+        } catch {
+            secrets = .empty
+        }
+
+        let data = await ModelPickerModels.fetch(
+            workspaceConfig: cfg,
+            user: user,
+            routing: routing,
+            secrets: secrets
+        )
+
+        var normalized: [String: [ModelPickerModels.Row]] = [:]
+        normalized.reserveCapacity(data.count)
+        for (key, rows) in data {
+            normalized[key.lowercased()] = rows
+        }
+        availableModelsByProvider = normalized
+        llmModelsLoading = false
+
+        let providerKey = normalizedProviderKey(llmProvider)
+        let count = normalized[providerKey]?.count ?? 0
+        if count > 0 {
+            llmModelsMessage = "Loaded \(count) model suggestion\(count == 1 ? "" : "s") for \(providerKey)."
+            llmModelsMessageIsError = false
+        } else {
+            llmModelsMessage =
+                "No provider-backed suggestions were returned for \(providerKey); manual model entry still works."
+            llmModelsMessageIsError = false
+        }
+    }
+
     private func refreshMcpTools() {
         toolsRefreshing = true
         toolsDiscoveryMessage = nil
@@ -1113,6 +1294,7 @@ struct WorkspaceFullEditorView: View {
         patch["ollama_url"] = .string(ollamaUrl)
         patch["lmstudio_url"] = .string(lmstudioUrl)
         patch["omlx_url"] = .string(omlxUrl)
+        patch["vmlx_url"] = .string(vmlxUrl)
         if let t = tempParsed {
             patch["temperature"] = .double(t)
         }
@@ -1137,6 +1319,7 @@ struct WorkspaceFullEditorView: View {
         putOptionalApiKey("lmstudio_api_key", apiKeyLMStudio)
         putOptionalApiKey("lmstudio_v1_api_key", apiKeyLMStudioV1)
         putOptionalApiKey("omlx_api_key", apiKeyOmlx)
+        putOptionalApiKey("vmlx_api_key", apiKeyVmlx)
 
         patch["memory_enabled"] = .bool(memoryEnabled)
         let mf = memoryFile.trimmingCharacters(in: .whitespacesAndNewlines)

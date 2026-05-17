@@ -14,7 +14,7 @@ public enum ChatResolutionError: LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .unsupportedProvider(let p):
-            return "Provider \"\(p)\" is not supported by the macOS client yet. Supported: ollama, lmstudio, lmstudio_v1, omlx, mlx, openai, openrouter, opencode_zen, cursor, custom, anthropic."
+            return "Provider \"\(p)\" is not supported by the macOS client yet. Supported: ollama, lmstudio, lmstudio_v1, omlx, vmlx, mlx, openai, openrouter, opencode_zen, cursor, custom, anthropic."
         case .missingAPIKey(let provider):
             return "No API key configured for provider \"\(provider)\" in workspace config or ~/.grizzyclaw/config.yaml."
         case .invalidURL(let s):
@@ -45,6 +45,12 @@ public enum ChatResolutionError: LocalizedError, Sendable {
             if s.contains("custom_provider_url") {
                 return "Set custom_provider_url in the workspace config (Workspaces → Edit)."
             }
+            if s.contains("omlx_url") {
+                return "Set omlx_url in ~/.grizzyclaw/config.yaml or the workspace (default http://localhost:8000/v1). For another Mac on your LAN use http://<ip>:<port>/v1; the server must listen on 0.0.0.0."
+            }
+            if s.contains("vmlx_url") {
+                return "Set vmlx_url in ~/.grizzyclaw/config.yaml or the workspace (default http://localhost:8000/v1). For another Mac on your LAN use http://<ip>:<port>/v1; run `vmlx serve --host 0.0.0.0` on that machine."
+            }
             return "Check URLs in workspace config and ~/.grizzyclaw/config.yaml."
         case .workspaceRequired:
             return "Open the Workspaces tab, select a row, then return to Chat."
@@ -62,6 +68,7 @@ public enum ChatResolutionError: LocalizedError, Sendable {
         case "anthropic": key = "anthropic_api_key"
         case "lmstudio_v1": key = "lmstudio_v1_api_key (optional for local)"
         case "omlx": key = "omlx_api_key (optional for local)"
+        case "vmlx": key = "vmlx_api_key (optional for local)"
         default: key = "\(provider)_api_key"
         }
         return "Add \(key) under ~/.grizzyclaw/config.yaml (see Config tab for the path), reload Config, then retry."
@@ -260,6 +267,23 @@ public enum ChatParameterResolver {
             let key = pickKey("omlx_api_key", secrets.omlxApiKey)
             return openAIParams(providerId: provider, chatCompletionsURL: url, apiKey: key, model: trimmedModel)
 
+        case "vmlx":
+            let base: String = {
+                if let s = cfg?.string(forKey: "vmlx_url"),
+                   !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return s }
+                return user.vmlxUrl
+            }()
+            let url = try openAICompatURL(hostBase: base)
+            let model = pickModel(cfg?.string(forKey: "llm_model"), user.vmlxModel)
+            let trimmedModel = model.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmedModel.isEmpty else {
+                throw ChatResolutionError.invalidURL(
+                    "vmlx: set llm_model (workspace) or vmlx_model in ~/.grizzyclaw/config.yaml to a model id served by vMLX (often \"local\")."
+                )
+            }
+            let key = pickKey("vmlx_api_key", secrets.vmlxApiKey)
+            return openAIParams(providerId: provider, chatCompletionsURL: url, apiKey: key, model: trimmedModel)
+
         case "lmstudio_v1":
             let rawBase: String = {
                 if let s = cfg?.string(forKey: "lmstudio_v1_url"),
@@ -413,16 +437,14 @@ public enum ChatParameterResolver {
         return url.isEmpty ? "http://localhost:1234" : url
     }
 
-    /// `hostBase` is e.g. `http://localhost:11434` or `http://localhost:1234/v1`.
+    /// `hostBase` is e.g. `http://localhost:11434`, `http://192.168.1.10:8000/v1`, or `192.168.1.10:8000/v1`.
     static func openAICompatURL(hostBase: String) throws -> URL {
-        var t = hostBase.trimmingCharacters(in: .whitespacesAndNewlines)
-        t = t.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        if !t.hasSuffix("/v1") {
-            t += "/v1"
-        }
-        guard let url = URL(string: t + "/chat/completions") else {
+        guard let base = ModelListFetch.normalizeLmStudioOpenAICompatBaseForModelsList(hostBase) else {
             throw ChatResolutionError.invalidURL(hostBase)
         }
-        return url
+        guard let url = URL(string: base + "/chat/completions") else {
+            throw ChatResolutionError.invalidURL(hostBase)
+        }
+        return LocalHTTPSession.preferIPv4Loopback(url)
     }
 }

@@ -13,6 +13,7 @@ public enum WorkspaceBootstrap {
             "ollama_url": .string("http://localhost:11434"),
             "lmstudio_url": .string("http://localhost:1234/v1"),
             "omlx_url": .string("http://localhost:8000/v1"),
+            "vmlx_url": .string("http://localhost:8000/v1"),
             "system_prompt": .string(defaultSystemPrompt),
             "memory_enabled": .bool(true),
             "max_context_length": .int(4000),

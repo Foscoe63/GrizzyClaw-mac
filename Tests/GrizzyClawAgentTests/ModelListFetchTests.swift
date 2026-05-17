@@ -66,4 +66,31 @@ final class ModelListFetchTests: XCTestCase {
         let c = ModelListFetch.lmStudioNativeModelListBaseCandidates("http://192.168.1.10:1234")
         XCTAssertEqual(c, ["http://192.168.1.10:1234"])
     }
+
+    func testNormalizeLmStudioOpenAICompatBaseForModelsList() {
+        XCTAssertEqual(
+            ModelListFetch.normalizeLmStudioOpenAICompatBaseForModelsList("http://localhost:1234"),
+            "http://localhost:1234/v1"
+        )
+        XCTAssertEqual(
+            ModelListFetch.normalizeLmStudioOpenAICompatBaseForModelsList("http://192.168.1.10:8000/v1/"),
+            "http://192.168.1.10:8000/v1"
+        )
+        XCTAssertEqual(
+            ModelListFetch.normalizeLmStudioOpenAICompatBaseForModelsList("192.168.1.10:8000/v1"),
+            "http://192.168.1.10:8000/v1"
+        )
+        XCTAssertNil(ModelListFetch.normalizeLmStudioOpenAICompatBaseForModelsList("   "))
+    }
+
+    func testCollapseDuplicateLmStudioPort() {
+        XCTAssertEqual(
+            ModelListFetch.collapseDuplicateLmStudioAuthorityPort("http://localhost:1234:1234"),
+            "http://localhost:1234"
+        )
+        XCTAssertEqual(
+            ModelListFetch.collapseDuplicateLmStudioAuthorityPort("http://192.168.1.10:8000:8000/v1"),
+            "http://192.168.1.10:8000/v1"
+        )
+    }
 }
