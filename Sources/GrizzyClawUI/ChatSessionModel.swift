@@ -511,9 +511,24 @@ public final class ChatSessionModel: ObservableObject {
                     continue
                 }
 
+                let bundledServer: String
+                let bundledTool: String
+                if canonMcp == GrizzyClawAirFirstPartyToolCatalog.airServerName,
+                    let delegated = GrizzyClawAirFirstPartyToolCatalog.osaurusDelegation(
+                        server: canonMcp,
+                        tool: canonTool
+                    )
+                {
+                    bundledServer = delegated.0
+                    bundledTool = delegated.1
+                } else {
+                    bundledServer = canonMcp
+                    bundledTool = canonTool
+                }
+
                 if let bundled = await OsaurusBundledPluginToolHandlers.bundledResultIfApplicableFromMainActor(
-                    server: canonMcp,
-                    tool: canonTool,
+                    server: bundledServer,
+                    tool: bundledTool,
                     arguments: args
                 ) {
                     parts.append("[Tool result \(canonMcp).\(canonTool)]\n\(bundled)")

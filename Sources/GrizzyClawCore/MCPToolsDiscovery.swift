@@ -426,23 +426,24 @@ extension MCPToolsDiscoveryResult {
         pythonInternalTools + OsaurusParityToolDescriptors.tools
         + OsaurusBundledPluginToolRegistry.internalTools
 
-    /// Flat merge: internal pairs first, then discovered (stable), deduped by (server, tool).
+    /// Flat merge: first-party `grizzyclaw` + `grizzyclaw_air` catalog, then external MCP servers (no per-plugin `osaurus.*` rows).
     public func mergingPythonInternalTools() -> MCPToolsDiscoveryResult {
+        let firstParty = GrizzyClawAirFirstPartyToolCatalog.iPadChatDiscovery()
         var seen = Set<String>()
         var flat: [(String, MCPToolDescriptor)] = []
         func pairKey(_ s: String, _ n: String) -> String { s + "\u{1E}" + n }
-        for t in Self.allBundledInternalTools {
-            let k = pairKey(t.server, t.name)
-            guard !seen.contains(k) else { continue }
-            seen.insert(k)
-            flat.append(
-                (
-                    t.server,
-                    MCPToolDescriptor(
-                        name: t.name, description: t.description, inputSchema: t.inputSchema)
-                ))
+
+        for (srv, tools) in firstParty.servers {
+            for t in tools {
+                let k = pairKey(srv, t.name)
+                guard !seen.contains(k) else { continue }
+                seen.insert(k)
+                flat.append((srv, t))
+            }
         }
+
         for srv in servers.keys.sorted() {
+            if srv.hasPrefix("osaurus.") { continue }
             guard let tools = servers[srv] else { continue }
             for t in tools {
                 let k = pairKey(srv, t.name)
@@ -451,6 +452,7 @@ extension MCPToolsDiscoveryResult {
                 flat.append((srv, t))
             }
         }
+
         var by: [String: [MCPToolDescriptor]] = [:]
         for (srv, tool) in flat {
             by[srv, default: []].append(tool)
@@ -464,12 +466,13 @@ extension MCPToolsDiscoveryResult {
     public func filteredByWorkspaceAllowlist(_ allow: [(String, String)]) -> MCPToolsDiscoveryResult
     {
         guard !allow.isEmpty else { return self }
+        let expanded = GrizzyClawAirFirstPartyToolCatalog.allowlistPairsIncludingAirAliases(allow)
         let knownServers = Array(servers.keys)
         var ok = Set<String>()
-        for (a, b) in allow {
+        for (a, b) in expanded {
             ok.insert(a + "\u{1E}" + b)
         }
-        for (asrv, atool) in allow {
+        for (asrv, atool) in expanded {
             let canonSrv = MCPIdentityResolution.canonicalServerName(
                 modelOutput: asrv, knownServers: knownServers)
             guard let toolList = servers[canonSrv] else { continue }

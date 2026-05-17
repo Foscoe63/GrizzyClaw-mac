@@ -50,13 +50,6 @@ private enum WorkspaceEditorPane: Hashable {
     case aux(WorkspaceEditorAuxTab)
 }
 
-/// Keeps last MCP tool discovery per workspace while the app runs so the Tools tab survives
-/// view recreation (save/reload, split view updates, tab switches that drop `tabContent` branches).
-@MainActor
-private enum WorkspaceEditorMCPCache {
-    static var discovery: [String: [String: [MCPToolDescriptor]]] = [:]
-}
-
 /// Full settings + tabs for one workspace (Python Workspaces dialog right pane).
 struct WorkspaceFullEditorView: View {
     let workspace: WorkspaceRecord
@@ -268,13 +261,13 @@ struct WorkspaceFullEditorView: View {
         let initialDisc: [String: [MCPToolDescriptor]] = {
             if !cachedDisc.isEmpty { return cachedDisc }
             if let pairs = capPairs, !pairs.isEmpty {
-                return Self.discoveredToolsFromAllowlistPairs(pairs)
+                return WorkspaceToolAllowlistKey.discoveredToolsFromAllowlistPairs(pairs)
             }
-            return [:]
+            return GrizzyClawAirFirstPartyToolCatalog.iPadChatDiscovery().servers
         }()
         _discoveredTools = State(initialValue: initialDisc)
         _enforceToolAllowlist = State(initialValue: !(capPairs ?? []).isEmpty)
-        _toolSwitchOn = State(initialValue: Self.toolSwitchMap(discovered: initialDisc, capPairs: capPairs))
+        _toolSwitchOn = State(initialValue: WorkspaceToolAllowlistKey.toolSwitchMap(discovered: initialDisc, capPairs: capPairs))
     }
 
     var body: some View {
@@ -981,172 +974,21 @@ struct WorkspaceFullEditorView: View {
     }
 
     private var workspaceToolsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Workspace tool allowlist (hard cap)")
-                .font(.headline)
-            Text(
-                "When enabled, this workspace can only call the tools you select here. "
-                    + "The chat Tools dropdown can still filter further, but cannot enable anything outside this list. "
-                    + "Discovery uses the same MCP config as the Python app (`mcp_servers_file` → JSON), "
-                    + "via a bundled helper that requires Python 3 with `pip install mcp httpx`."
-            )
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .fixedSize(horizontal: false, vertical: true)
-
-            Text("MCP file: \(configStore.snapshot.mcpServersFile)")
-                .font(.caption2.monospaced())
-                .foregroundStyle(.tertiary)
-                .textSelection(.enabled)
-
-            Toggle("Enforce allowlist for this workspace", isOn: $enforceToolAllowlist)
-
-            HStack {
-                Button("Enable all") {
-                    var next = toolSwitchOn
-                    for (srv, pairs) in discoveredTools {
-                        for p in pairs {
-                            next[Self.toolKey(server: srv, tool: p.name)] = true
-                        }
-                    }
-                    toolSwitchOn = next
-                }
-                .disabled(discoveredTools.isEmpty)
-                Button("Disable all") {
-                    var next = toolSwitchOn
-                    for (srv, pairs) in discoveredTools {
-                        for p in pairs {
-                            next[Self.toolKey(server: srv, tool: p.name)] = false
-                        }
-                    }
-                    toolSwitchOn = next
-                }
-                .disabled(discoveredTools.isEmpty)
-                Spacer()
-                Button {
-                    refreshMcpTools()
-                } label: {
-                    if toolsRefreshing {
-                        ProgressView().controlSize(.small)
-                    } else {
-                        Text("Refresh")
-                    }
-                }
-                .disabled(toolsRefreshing)
-            }
-
-            if let toolsDiscoveryMessage {
-                Text(toolsDiscoveryMessage)
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            if discoveredTools.isEmpty {
-                Text("Click Refresh to discover tools from your MCP servers.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            } else {
-                let sortedServers = discoveredTools.keys.sorted()
-                ForEach(sortedServers, id: \.self) { srv in
-                    DisclosureGroup(
-                        isExpanded: Binding(
-                            get: { expandedToolServers.contains(srv) },
-                            set: { on in
-                                if on { expandedToolServers.insert(srv) } else { expandedToolServers.remove(srv) }
-                            }
-                        ),
-                        content: {
-                            let pairs = discoveredTools[srv] ?? []
-                            ForEach(Array(pairs.enumerated()), id: \.offset) { _, pair in
-                                let key = Self.toolKey(server: srv, tool: pair.name)
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(pair.name)
-                                            .font(.body)
-                                        if !pair.description.isEmpty {
-                                            Text(pair.description)
-                                                .font(.caption2)
-                                                .foregroundStyle(.secondary)
-                                                .lineLimit(3)
-                                        }
-                                    }
-                                    Spacer()
-                                    Toggle(
-                                        "",
-                                        isOn: toolToggleBinding(key: key)
-                                    )
-                                    .labelsHidden()
-                                }
-                                .padding(.vertical, 4)
-                            }
-                        },
-                        label: {
-                            HStack {
-                                Text(srv)
-                                    .font(.subheadline.weight(.medium))
-                                Spacer()
-                                Text("\(discoveredTools[srv]?.count ?? 0)")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    )
-                }
-            }
-        }
-        .frame(maxWidth: 560, alignment: .leading)
-        .onAppear {
-            guard discoveredTools.isEmpty else { return }
-            // In-session cache (survives tab switches); lost on quit.
-            if let cached = WorkspaceEditorMCPCache.discovery[workspace.id], !cached.isEmpty {
-                discoveredTools = cached
-                let cap = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?
-                    .config?
-                    .mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
-                rebuildToolSwitches(cap: cap)
-                return
-            }
-            // After relaunch: rebuild tool rows from saved allowlist so toggles aren’t blank.
-            let cap = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?
+        WorkspaceToolsEditorContent(
+            workspaceId: workspace.id,
+            enforceToolAllowlist: $enforceToolAllowlist,
+            discoveredTools: $discoveredTools,
+            toolSwitchOn: $toolSwitchOn,
+            expandedToolServers: $expandedToolServers,
+            toolsRefreshing: toolsRefreshing,
+            toolsDiscoveryMessage: toolsDiscoveryMessage,
+            mcpServersFileDisplay: configStore.snapshot.mcpServersFile,
+            persistedAllowlistCap: workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?
                 .config?
-                .mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
-            if let pairs = cap, !pairs.isEmpty {
-                discoveredTools = Self.discoveredToolsFromAllowlistPairs(pairs)
-                rebuildToolSwitches(cap: pairs)
-                refreshMcpTools()
-                return
-            }
-            refreshMcpTools()
-        }
-    }
-
-    private func toolToggleBinding(key: String) -> Binding<Bool> {
-        Binding(
-            get: {
-                toolSwitchOn[key] ?? true
-            },
-            set: { newVal in
-                toolSwitchOn[key] = newVal
-            }
+                .mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist"),
+            onRefresh: { refreshMcpTools() },
+            showsLongFormHelp: true
         )
-    }
-
-    private static func toolKey(server: String, tool: String) -> String {
-        "\(server)\u{1D}\(tool)"
-    }
-
-    /// Builds a minimal discovery map from persisted `mcp_tool_allowlist` (descriptions empty until Refresh).
-    private static func discoveredToolsFromAllowlistPairs(_ pairs: [(String, String)]) -> [String: [MCPToolDescriptor]] {
-        var dict: [String: [MCPToolDescriptor]] = [:]
-        for (srv, tool) in pairs {
-            guard !srv.isEmpty, !tool.isEmpty else { continue }
-            dict[srv, default: []].append(MCPToolDescriptor(name: tool, description: ""))
-        }
-        for srv in dict.keys {
-            dict[srv]?.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-        }
-        return dict
     }
 
     private func refreshMcpTools() {
@@ -1157,10 +999,11 @@ struct WorkspaceFullEditorView: View {
         Task {
             do {
                 let result = try await MCPToolsDiscovery.discover(mcpServersFile: mcpPath)
+                let merged = result.mergingPythonInternalTools()
                 await MainActor.run {
                     toolsRefreshing = false
-                    discoveredTools = result.servers
-                    WorkspaceEditorMCPCache.discovery[wid] = result.servers
+                    discoveredTools = merged.servers
+                    WorkspaceEditorMCPCache.discovery[wid] = merged.servers
                     toolsDiscoveryMessage = result.errorMessage
                     let cap = workspaceStore.index?.workspaces.first(where: { $0.id == wid })?
                         .config?
@@ -1177,28 +1020,7 @@ struct WorkspaceFullEditorView: View {
     }
 
     private func rebuildToolSwitches(cap: [(String, String)]?) {
-        toolSwitchOn = Self.toolSwitchMap(discovered: discoveredTools, capPairs: cap)
-    }
-
-    private static func toolSwitchMap(
-        discovered: [String: [MCPToolDescriptor]],
-        capPairs: [(String, String)]?
-    ) -> [String: Bool] {
-        let capSet: Set<String>? = capPairs.map { pairs in
-            Set(pairs.map { Self.toolKey(server: $0.0, tool: $0.1) })
-        }
-        var next: [String: Bool] = [:]
-        for (srv, pairs) in discovered {
-            for p in pairs {
-                let key = Self.toolKey(server: srv, tool: p.name)
-                if let s = capSet {
-                    next[key] = s.contains(key)
-                } else {
-                    next[key] = true
-                }
-            }
-        }
-        return next
+        toolSwitchOn = WorkspaceToolAllowlistKey.toolSwitchMap(discovered: discoveredTools, capPairs: cap)
     }
 
     private func browseAvatarPath() {
@@ -1347,7 +1169,7 @@ struct WorkspaceFullEditorView: View {
                 var rows: [JSONValue] = []
                 for (srv, pairs) in discoveredTools {
                     for p in pairs {
-                        let key = Self.toolKey(server: srv, tool: p.name)
+                        let key = WorkspaceToolAllowlistKey.composite(server: srv, tool: p.name)
                         if toolSwitchOn[key] == true {
                             rows.append(.array([.string(srv), .string(p.name)]))
                         }

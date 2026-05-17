@@ -54,6 +54,46 @@ final class MCPIdentityResolutionTests: XCTestCase {
         )
     }
 
+    func testSearchAliasesPreferOsaurusSearchWhenBundled() {
+        let known = ["osaurus.search", "ddg-search"]
+        XCTAssertEqual(
+            MCPIdentityResolution.canonicalServerName(modelOutput: "web-search", knownServers: known),
+            "osaurus.search"
+        )
+        XCTAssertEqual(
+            MCPIdentityResolution.canonicalServerName(modelOutput: "google-search", knownServers: known),
+            "osaurus.search"
+        )
+        XCTAssertEqual(
+            MCPIdentityResolution.canonicalServerName(modelOutput: "search", knownServers: known),
+            "osaurus.search"
+        )
+    }
+
+    func testSearchAliasesOsaurusOnly() {
+        let known = ["osaurus.search"]
+        XCTAssertEqual(
+            MCPIdentityResolution.canonicalServerName(modelOutput: "web-search", knownServers: known),
+            "osaurus.search"
+        )
+    }
+
+    func testSearchAliasesPreferGrizzyclawAirWhenPresent() {
+        let known = ["grizzyclaw_air", "ddg-search"]
+        XCTAssertEqual(
+            MCPIdentityResolution.canonicalServerName(modelOutput: "web-search", knownServers: known),
+            "grizzyclaw_air"
+        )
+    }
+
+    func testLegacyOsaurusServerMapsToGrizzyclawAirWhenOsaurusKeyAbsent() {
+        let known = ["grizzyclaw_air", "grizzyclaw"]
+        XCTAssertEqual(
+            MCPIdentityResolution.canonicalServerName(modelOutput: "osaurus.search", knownServers: known),
+            "grizzyclaw_air"
+        )
+    }
+
     func testServerUnknownReturnsOriginal() {
         let known = ["a"]
         XCTAssertEqual(

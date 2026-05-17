@@ -152,7 +152,14 @@ public final class GuiChatPrefsStore: ObservableObject {
             knownServers: Array(merged.servers.keys)
         )
         let toolList = merged.servers[canonSrv]?.map(\.name) ?? []
-        let canonTool = MCPIdentityResolution.canonicalToolName(modelOutput: t, knownTools: toolList)
+        var canonTool = MCPIdentityResolution.canonicalToolName(modelOutput: t, knownTools: toolList)
+        if canonSrv == GrizzyClawAirFirstPartyToolCatalog.airServerName {
+            canonTool = GrizzyClawAirFirstPartyToolCatalog.canonicalAirToolName(
+                modelTool: t,
+                knownTools: toolList,
+                genericCanonical: canonTool
+            )
+        }
         return (canonSrv, canonTool)
     }
 

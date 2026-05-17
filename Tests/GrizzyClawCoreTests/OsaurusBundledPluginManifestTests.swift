@@ -13,7 +13,9 @@ final class OsaurusBundledPluginManifestTests: XCTestCase {
     func testMergedDiscoveryIncludesBundledServers() {
         let empty = MCPToolsDiscoveryResult(servers: [:], errorMessage: nil)
         let merged = empty.mergingPythonInternalTools()
-        XCTAssertNotNil(merged.servers["osaurus.time"])
+        XCTAssertNotNil(merged.servers["grizzyclaw_air"])
+        XCTAssertGreaterThanOrEqual(merged.servers["grizzyclaw_air"]?.count ?? 0, 100)
         XCTAssertTrue(merged.servers["grizzyclaw"]?.contains(where: { $0.name == "get_status" }) == true)
+        XCTAssertNil(merged.servers["osaurus.time"], "Bundled plugins surface under grizzyclaw_air, not per-osaurus servers")
     }
 }

@@ -30,7 +30,13 @@ public enum MCPSystemPromptAugmentor {
         lines.append(
             "Do not invent server names like `mcp.events` or tool names like `events`; use only exact discovered names from the list below."
         )
-        if discovery.servers["osaurus.search"] != nil {
+        if discovery.servers[GrizzyClawAirFirstPartyToolCatalog.airServerName]?.contains(where: {
+            $0.name == "search.search"
+        }) == true {
+            lines.append(
+                "For web search / internet lookup, prefer `\(GrizzyClawAirFirstPartyToolCatalog.airServerName)` tool `search.search` (and related `search.search_news`, `search.search_images`, `search.search_and_extract`) when listed below — built in; no separate DuckDuckGo MCP."
+            )
+        } else if discovery.servers["osaurus.search"] != nil {
             lines.append(
                 "For web search / internet lookup, prefer `osaurus.search` (tools `search`, `search_news`, `search_images`, `search_and_extract`) when listed below — built in and does not require a separate DuckDuckGo MCP."
             )
