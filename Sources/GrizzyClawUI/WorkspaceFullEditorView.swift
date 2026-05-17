@@ -1,5 +1,6 @@
 import AppKit
 import GrizzyClawCore
+import GrizzyClawWorkspaceUI
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -144,6 +145,8 @@ struct WorkspaceFullEditorView: View {
     // Skills marketplace rows
     @State private var marketplaceEntries: [SkillMarketplaceEntry] = []
     @State private var marketplaceLoadError: String?
+    @State private var workspaceSkillsOverrideEnabled: Bool
+    @State private var workspaceSkillIDs: [String]
 
     @State private var benchmarkBusy = false
     @State private var benchmarkResult = ""
@@ -257,6 +260,8 @@ struct WorkspaceFullEditorView: View {
         _apiKeyLMStudio = State(initialValue: cfg?.string(forKey: "lmstudio_api_key") ?? "")
         _apiKeyLMStudioV1 = State(initialValue: cfg?.string(forKey: "lmstudio_v1_api_key") ?? "")
         _apiKeyOmlx = State(initialValue: cfg?.string(forKey: "omlx_api_key") ?? "")
+        _workspaceSkillsOverrideEnabled = State(initialValue: cfg?.stringArrayIfPresent(forKey: "enabled_skills") != nil)
+        _workspaceSkillIDs = State(initialValue: cfg?.stringArray(forKey: "enabled_skills") ?? [])
 
         let capPairs = cfg?.mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
         let cachedDisc = WorkspaceEditorMCPCache.discovery[workspace.id] ?? [:]
@@ -573,7 +578,13 @@ struct WorkspaceFullEditorView: View {
             case .tools:
                 workspaceToolsSection
             case .skills:
-                workspaceSkillsSection
+                WorkspaceSkillEditorSection(
+                    usesWorkspaceOverride: $workspaceSkillsOverrideEnabled,
+                    workspaceSkillIDs: $workspaceSkillIDs,
+                    inheritedSkillIDs: ClawHubSkillResolver.defaultSkillIDs(user: configStore.snapshot),
+                    marketplaceEntries: marketplaceEntries,
+                    marketplaceLoadError: marketplaceLoadError
+                )
             }
         }
     }
@@ -1190,83 +1201,6 @@ struct WorkspaceFullEditorView: View {
         return next
     }
 
-    private var enabledSkillSet: Set<String> {
-        let cfg = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?.config
-        return Set(cfg?.stringArray(forKey: "enabled_skills") ?? [])
-    }
-
-    private var workspaceSkillsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Add curated skills to this workspace")
-                .font(.headline)
-            Text(
-                "Marketplace bundles add entries to `enabled_skills` in this workspace’s config. "
-                    + "Add/Remove saves immediately (same as the Python app). Override the catalog with "
-                    + "`skill_marketplace_path` in config.yaml or `~/.grizzyclaw/skill_marketplace.json`."
-            )
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .fixedSize(horizontal: false, vertical: true)
-
-            if let marketplaceLoadError {
-                Text(marketplaceLoadError)
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-            }
-
-            if marketplaceEntries.isEmpty {
-                Text("No marketplace entries loaded.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(marketplaceEntries) { entry in
-                    let added = entry.enabledSkillsAdd.contains { enabledSkillSet.contains($0) }
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(entry.name)
-                                .font(.subheadline.weight(.medium))
-                            if !entry.description.isEmpty {
-                                Text(entry.description)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                        }
-                        Spacer(minLength: 12)
-                        Button(added ? "Remove" : "Add") {
-                            toggleMarketplaceSkill(id: entry.id, remove: added)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(added ? Color(red: 0.75, green: 0.22, blue: 0.17) : nil)
-                    }
-                    .padding(.vertical, 6)
-                }
-            }
-        }
-        .frame(maxWidth: 560, alignment: .leading)
-    }
-
-    private func toggleMarketplaceSkill(id: String, remove: Bool) {
-        saveError = nil
-        do {
-            if remove {
-                try workspaceStore.removeMarketplaceSkillFromWorkspace(
-                    workspaceId: workspace.id,
-                    marketplaceId: id,
-                    skillMarketplacePathFromConfig: configStore.snapshot.skillMarketplacePath
-                )
-            } else {
-                try workspaceStore.addMarketplaceSkillToWorkspace(
-                    workspaceId: workspace.id,
-                    marketplaceId: id,
-                    skillMarketplacePathFromConfig: configStore.snapshot.skillMarketplacePath
-                )
-            }
-        } catch {
-            saveError = error.localizedDescription
-        }
-    }
-
     private func browseAvatarPath() {
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
@@ -1423,6 +1357,12 @@ struct WorkspaceFullEditorView: View {
             }
         } else {
             patch["mcp_tool_allowlist"] = .null
+        }
+
+        if workspaceSkillsOverrideEnabled {
+            patch["enabled_skills"] = .array(workspaceSkillIDs.map { .string($0) })
+        } else {
+            patch["enabled_skills"] = .null
         }
 
         do {

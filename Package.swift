@@ -12,6 +12,7 @@ let package = Package(
         .library(name: "GrizzyClawCore", targets: ["GrizzyClawCore"]),
         .library(name: "GrizzyClawAgent", targets: ["GrizzyClawAgent"]),
         .library(name: "GrizzyClawMLX", targets: ["GrizzyClawMLX"]),
+        .library(name: "GrizzyClawWorkspaceUI", targets: ["GrizzyClawWorkspaceUI"]),
         .library(name: "GrizzyClawUI", targets: ["GrizzyClawUI"]),
     ],
     dependencies: [
@@ -69,8 +70,16 @@ let package = Package(
             ]
         ),
         .target(
+            name: "GrizzyClawWorkspaceUI",
+            dependencies: ["GrizzyClawCore"],
+            path: "Sources/GrizzyClawWorkspaceUI",
+            swiftSettings: [
+                .unsafeFlags(["-strict-concurrency=minimal"]),
+            ]
+        ),
+        .target(
             name: "GrizzyClawUI",
-            dependencies: ["GrizzyClawCore", "GrizzyClawAgent", "GrizzyClawMLX"],
+            dependencies: ["GrizzyClawCore", "GrizzyClawAgent", "GrizzyClawMLX", "GrizzyClawWorkspaceUI"],
             path: "Sources/GrizzyClawUI",
             swiftSettings: [
                 .unsafeFlags(["-strict-concurrency=minimal"]),

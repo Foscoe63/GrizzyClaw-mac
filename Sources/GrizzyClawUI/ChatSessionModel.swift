@@ -356,7 +356,10 @@ public final class ChatSessionModel: ObservableObject {
             guiChatPrefs.isToolOn(server: srv, tool: tool)
         }
         let skillSuffix = SkillPromptAugmentor.skillsSuffix(
-            enabledSkillIDs: ws.config?.stringArray(forKey: "enabled_skills") ?? []
+            enabledSkillIDs: ClawHubSkillResolver.resolvedSkillIDs(
+                user: userSnap,
+                workspace: ws
+            )
         )
         let canvasSuffix = CanvasPromptAugmentor.suffix()
         let combinedPromptSuffix = [mcpSuffix, skillSuffix, canvasSuffix]
