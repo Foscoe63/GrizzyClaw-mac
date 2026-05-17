@@ -56,12 +56,12 @@ The chat composer includes controls to reduce context size for long-running sess
 - OpenAI-compatible providers
 - Anthropic support
 - Ollama support
-- LM Studio support
-- LM Studio v1 support
-- OpenRouter support
-- Cursor and OpenCode Zen provider support in preferences
-- Apple silicon MLX local inference support
-- Hugging Face-backed MLX model download/cache handling
+- LM Studio support (OpenAI-compat and native v1)
+- **[oMLX](https://github.com/jundot/omlx)** — OpenAI-compatible MLX server (`omlx_url`, default `http://localhost:8000/v1`)
+- **[vMLX](https://github.com/jjang-ai/vmlx)** — OpenAI-compatible MLX server (`vmlx_url`, default `http://localhost:8000/v1`; model id often `local`)
+- OpenRouter, Cursor, and OpenCode Zen provider support in preferences
+- Apple silicon **bundled MLX** inference (`llm_provider: mlx`) with Hugging Face model download/cache under `~/.grizzyclaw/mlx_models/`
+- Workspace **Refresh model list** probes the configured provider (including oMLX/vMLX on the LAN)
 
 ### Automation and orchestration
 
@@ -73,11 +73,13 @@ The chat composer includes controls to reduce context size for long-running sess
 
 ### MCP and integration surfaces
 
-- MCP server configuration and discovery
+- MCP server configuration and discovery (including Bonjour browse in Preferences)
 - Local MCP process control and autostart
 - MCP marketplace catalog support
 - Native MCP tool calling and identity resolution
 - GUI MCP transcript filtering/preferences
+- Bundled **Osaurus** plugin manifests and built-in skills (registry parity; native time/reminders tools where supported)
+- In-process **`grizzyclaw_air`** tool catalog in the workspace **Tools** tab (Air parity for workspace chat)
 
 ### Diagnostics and control plane
 
@@ -213,6 +215,29 @@ The ClawHub preferences pane manages global/default `enabled_skills`. The worksp
 ## MLX Notes
 
 On Apple silicon, you can use MLX-backed local inference with `llm_provider: mlx`. MLX models are cached under `~/.grizzyclaw/mlx_models/` by default, or you can override the model download root with `mlx_models_directory` in `~/.grizzyclaw/config.yaml` or workspace config.
+
+### oMLX and vMLX (OpenAI-compatible HTTP)
+
+Both providers speak the OpenAI `/v1` API. Configure them under **Preferences → LLM Providers** or per-workspace in the editor (**LLM** and **Custom provider URLs**).
+
+| Key | Purpose |
+|-----|---------|
+| `omlx_url` / `vmlx_url` | Base URL including `/v1` (default `http://localhost:8000/v1`) |
+| `omlx_model` / `vmlx_model` | Model id returned by the server’s `GET /v1/models` |
+| `omlx_api_key` / `vmlx_api_key` | Optional Bearer token when the server requires auth |
+
+**This Mac:** use `http://localhost:8000/v1` (or another port if you changed it).
+
+**Another Mac on your network:** set the URL to `http://<lan-ip>:<port>/v1`. The remote server must listen on all interfaces, not only localhost — for example:
+
+```bash
+# vMLX on the machine that runs inference
+vmlx serve --host 0.0.0.0 --port 8000
+```
+
+Use a different port for vMLX if oMLX already uses 8000 (e.g. `vmlx serve --port 8001`). GrizzyClaw normalizes schemeless hosts as `http://` and uses the local-network session for model discovery and chat.
+
+macOS may prompt for **Local Network** access the first time you reach a LAN server; the app’s Info.plist includes `NSLocalNetworkUsageDescription` for LLM and MCP traffic.
 
 ## Documentation
 
