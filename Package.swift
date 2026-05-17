@@ -35,7 +35,15 @@ let package = Package(
                 .product(name: "NIOPosix", package: "swift-nio"),
             ],
             path: "Sources/GrizzyClawCore",
-            resources: [.copy("Resources")],
+            // Explicit copies so Xcode embeds Osaurus plugin manifests (`.copy("Resources")` alone can omit new subfolders).
+            resources: [
+                .copy("Resources/OsaurusPlugins"),
+                .copy("Resources/BundledSkills"),
+                .copy("Resources/builtin_mcp_marketplace.json"),
+                .copy("Resources/swarm_workspace_templates.json"),
+                .copy("Resources/mcp_discover.py"),
+                .copy("Resources/mcp_call_tool.py"),
+            ],
             swiftSettings: [
                 .unsafeFlags(["-strict-concurrency=minimal"]),
             ],

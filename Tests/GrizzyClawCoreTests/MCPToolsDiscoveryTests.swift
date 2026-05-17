@@ -60,6 +60,21 @@ final class MCPToolsDiscoveryTests: XCTestCase {
         XCTAssertTrue(expanded.contains { $0.0 == "grizzyclaw_air" && $0.1 == "search.search" })
     }
 
+    func testWorkspaceEditorServersAlwaysIncludesAirDespiteLegacyOsaurusCache() {
+        let staleCache: [String: [MCPToolDescriptor]] = [
+            "osaurus.search": [MCPToolDescriptor(name: "search", description: "legacy")],
+            "ddg-search": [MCPToolDescriptor(name: "search", description: "remote")],
+        ]
+        let servers = GrizzyClawAirFirstPartyToolCatalog.workspaceEditorServers(
+            cached: staleCache,
+            allowlistSeed: nil
+        )
+        XCTAssertNotNil(servers[GrizzyClawAirFirstPartyToolCatalog.airServerName])
+        XCTAssertGreaterThanOrEqual(servers[GrizzyClawAirFirstPartyToolCatalog.airServerName]?.count ?? 0, 100)
+        XCTAssertNil(servers["osaurus.search"])
+        XCTAssertNotNil(servers["ddg-search"])
+    }
+
     func testBundledManifestMapsNotesSlugToAppleNotesTitle() {
         XCTAssertEqual(
             OsaurusBundledPluginToolRegistry.bundledAirSlugDisplayTitles["notes"],

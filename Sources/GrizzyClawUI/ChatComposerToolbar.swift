@@ -366,7 +366,7 @@ struct ChatComposerToolbar: View {
 
     /// Raw discovery + internal grizzyclaw tools + optional workspace `mcp_tool_allowlist` cap.
     private func discoveryForToolsUI() -> MCPToolsDiscoveryResult? {
-        guard let raw = guiPrefs.lastDiscovery else { return nil }
+        let raw = guiPrefs.lastDiscovery ?? GrizzyClawAirFirstPartyToolCatalog.iPadChatDiscovery()
         var m = raw.mergingPythonInternalTools()
         if let cap = workspaceAllowlistCap(), !cap.isEmpty {
             m = m.filteredByWorkspaceAllowlist(cap)
@@ -541,7 +541,7 @@ struct ChatComposerToolbar: View {
                 try await GrizzyAsyncTimeout.run(seconds: 20, timeoutError: GrizzyMCPNativeError.timeout) {
                     let r = try await MCPToolsDiscovery.discover(mcpServersFile: path)
                     await MainActor.run {
-                        guiPrefs.applyDiscovery(r)
+                        guiPrefs.applyDiscoveryPreservingPreviousOnFailure(r)
                     }
                 }
             } catch {

@@ -257,17 +257,16 @@ struct WorkspaceFullEditorView: View {
         _workspaceSkillIDs = State(initialValue: cfg?.stringArray(forKey: "enabled_skills") ?? [])
 
         let capPairs = cfg?.mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
-        let cachedDisc = WorkspaceEditorMCPCache.discovery[workspace.id] ?? [:]
-        let initialDisc: [String: [MCPToolDescriptor]] = {
-            if !cachedDisc.isEmpty { return cachedDisc }
-            if let pairs = capPairs, !pairs.isEmpty {
-                return WorkspaceToolAllowlistKey.discoveredToolsFromAllowlistPairs(pairs)
-            }
-            return GrizzyClawAirFirstPartyToolCatalog.iPadChatDiscovery().servers
-        }()
+        let cachedDisc = WorkspaceEditorMCPCache.discovery[workspace.id]
+        let initialDisc = GrizzyClawAirFirstPartyToolCatalog.workspaceEditorServers(
+            cached: (cachedDisc?.isEmpty == false) ? cachedDisc : nil,
+            allowlistSeed: capPairs
+        )
         _discoveredTools = State(initialValue: initialDisc)
         _enforceToolAllowlist = State(initialValue: !(capPairs ?? []).isEmpty)
-        _toolSwitchOn = State(initialValue: WorkspaceToolAllowlistKey.toolSwitchMap(discovered: initialDisc, capPairs: capPairs))
+        let expandedCap = capPairs.map { GrizzyClawAirFirstPartyToolCatalog.allowlistPairsIncludingAirAliases($0) }
+        _toolSwitchOn = State(initialValue: WorkspaceToolAllowlistKey.toolSwitchMap(
+            discovered: initialDisc, capPairs: expandedCap))
     }
 
     var body: some View {
@@ -999,11 +998,14 @@ struct WorkspaceFullEditorView: View {
         Task {
             do {
                 let result = try await MCPToolsDiscovery.discover(mcpServersFile: mcpPath)
-                let merged = result.mergingPythonInternalTools()
+                let servers = GrizzyClawAirFirstPartyToolCatalog.workspaceEditorServers(
+                    cached: result.servers,
+                    allowlistSeed: nil
+                )
                 await MainActor.run {
                     toolsRefreshing = false
-                    discoveredTools = merged.servers
-                    WorkspaceEditorMCPCache.discovery[wid] = merged.servers
+                    discoveredTools = servers
+                    WorkspaceEditorMCPCache.discovery[wid] = servers
                     toolsDiscoveryMessage = result.errorMessage
                     let cap = workspaceStore.index?.workspaces.first(where: { $0.id == wid })?
                         .config?
@@ -1011,16 +1013,28 @@ struct WorkspaceFullEditorView: View {
                     rebuildToolSwitches(cap: cap)
                 }
             } catch {
+                let fallback = GrizzyClawAirFirstPartyToolCatalog.workspaceEditorServers(
+                    cached: nil,
+                    allowlistSeed: nil
+                )
                 await MainActor.run {
                     toolsRefreshing = false
+                    discoveredTools = fallback
+                    WorkspaceEditorMCPCache.discovery[wid] = fallback
                     toolsDiscoveryMessage = error.localizedDescription
+                    let cap = workspaceStore.index?.workspaces.first(where: { $0.id == wid })?
+                        .config?
+                        .mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
+                    rebuildToolSwitches(cap: cap)
                 }
             }
         }
     }
 
     private func rebuildToolSwitches(cap: [(String, String)]?) {
-        toolSwitchOn = WorkspaceToolAllowlistKey.toolSwitchMap(discovered: discoveredTools, capPairs: cap)
+        let expanded = cap.map { GrizzyClawAirFirstPartyToolCatalog.allowlistPairsIncludingAirAliases($0) }
+        toolSwitchOn = WorkspaceToolAllowlistKey.toolSwitchMap(
+            discovered: discoveredTools, capPairs: expanded)
     }
 
     private func browseAvatarPath() {

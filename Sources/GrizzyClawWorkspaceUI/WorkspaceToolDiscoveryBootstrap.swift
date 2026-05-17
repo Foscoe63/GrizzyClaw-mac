@@ -12,28 +12,33 @@ public enum WorkspaceToolDiscoveryBootstrap {
         expandedToolServers: inout Set<String>,
         scheduleFullRefresh: @escaping () -> Void
     ) {
-        guard discoveredTools.isEmpty else { return }
-
-        if let cached = WorkspaceEditorMCPCache.discovery[workspaceId], !cached.isEmpty {
-            discoveredTools = cached
-            toolSwitchOn = WorkspaceToolAllowlistKey.toolSwitchMap(discovered: cached, capPairs: persistedCap)
-            if !cached.isEmpty {
-                expandedToolServers = Set(cached.keys.sorted().prefix(1))
-            }
+        if !discoveredTools.isEmpty,
+            GrizzyClawAirFirstPartyToolCatalog.cacheIncludesFirstPartyCatalog(discoveredTools)
+        {
             return
         }
 
-        if let pairs = persistedCap, !pairs.isEmpty {
-            let seeded = WorkspaceToolAllowlistKey.discoveredToolsFromAllowlistPairs(pairs)
-            discoveredTools = seeded
-            toolSwitchOn = WorkspaceToolAllowlistKey.toolSwitchMap(discovered: seeded, capPairs: pairs)
-            if !seeded.isEmpty {
-                expandedToolServers = Set(seeded.keys.sorted().prefix(1))
-            }
+        let cached = WorkspaceEditorMCPCache.discovery[workspaceId]
+        let seeded = GrizzyClawAirFirstPartyToolCatalog.workspaceEditorServers(
+            cached: (cached?.isEmpty == false) ? cached : nil,
+            allowlistSeed: persistedCap
+        )
+        discoveredTools = seeded
+        let expandedCap = persistedCap.map {
+            GrizzyClawAirFirstPartyToolCatalog.allowlistPairsIncludingAirAliases($0)
+        }
+        toolSwitchOn = WorkspaceToolAllowlistKey.toolSwitchMap(
+            discovered: seeded, capPairs: expandedCap)
+        if !seeded.isEmpty {
+            expandedToolServers = Set(seeded.keys.sorted().prefix(1))
+        }
+
+        let needsRemoteProbe =
+            cached == nil
+            || (cached?.isEmpty == true)
+            || !GrizzyClawAirFirstPartyToolCatalog.cacheIncludesFirstPartyCatalog(cached ?? [:])
+        if needsRemoteProbe {
             scheduleFullRefresh()
-            return
         }
-
-        scheduleFullRefresh()
     }
 }

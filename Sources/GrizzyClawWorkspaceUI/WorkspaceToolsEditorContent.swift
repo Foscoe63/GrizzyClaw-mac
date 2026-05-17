@@ -154,10 +154,13 @@ public struct WorkspaceToolsEditorContent: View {
                     .foregroundStyle(.secondary)
             } else {
                 let sorted = discoveredTools.keys.sorted()
-                let grizzly = sorted.filter { $0.lowercased() == "grizzyclaw" }
+                let air = GrizzyClawAirFirstPartyToolCatalog.airServerName
+                let grizzly = sorted.filter {
+                    $0.lowercased() == "grizzyclaw" || $0 == air
+                }
                 let macuse = sorted.filter { $0.lowercased() == "macuse" }
                 let others = sorted.filter {
-                    $0.lowercased() != "grizzyclaw" && $0.lowercased() != "macuse"
+                    $0.lowercased() != "grizzyclaw" && $0.lowercased() != "macuse" && $0 != air
                 }
 
                 if !grizzly.isEmpty {

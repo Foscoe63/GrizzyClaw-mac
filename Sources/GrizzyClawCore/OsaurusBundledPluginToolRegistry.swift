@@ -15,6 +15,12 @@ public enum OsaurusBundledPluginToolRegistry {
         airSlugDisplayTitles: [String: String]
     ) = {
         let loaded = loadAllManifestToolsAndSlugTitles()
+        if loaded.tools.isEmpty {
+            GrizzyClawLog.error(
+                "OsaurusBundledPluginToolRegistry: loaded 0 plugin manifests — grizzyclaw_air will be empty. "
+                    + "Rebuild the app (Product → Clean Build Folder) so OsaurusPlugins/*.json are embedded."
+            )
+        }
         return (loaded.tools, Set(loaded.tools.map(\.server)), loaded.airSlugDisplayTitles)
     }()
 
@@ -30,29 +36,75 @@ public enum OsaurusBundledPluginToolRegistry {
         return cache.servers.contains(s)
     }
 
+    private static var resourceBundles: [Bundle] {
+        [Bundle.module, Bundle.main, Bundle(for: _OsaurusBundledPluginsBundleAnchor.self)]
+    }
+
+    /// Subdirectory names used by SwiftPM vs Xcode nested `Resources/` copies.
+    private static let osaurusPluginSubdirectories = [
+        "OsaurusPlugins",
+        "Resources/OsaurusPlugins",
+        "Resources/Resources/OsaurusPlugins",
+    ]
+
     private static func manifestJSONURLs() -> [URL] {
         var urls: [URL] = []
-        if let batch = Bundle.module.urls(forResourcesWithExtension: "json", subdirectory: "OsaurusPlugins") {
-            urls.append(contentsOf: batch)
+        var seen = Set<String>()
+
+        func appendUnique(_ batch: [URL]) {
+            for u in batch {
+                let key = u.standardizedFileURL.path
+                guard seen.insert(key).inserted else { continue }
+                urls.append(u)
+            }
         }
-        if urls.isEmpty {
-            for base in Self.manifestResourceBasenames {
-                if let u = Bundle.module.url(
-                    forResource: base, withExtension: "json", subdirectory: "OsaurusPlugins")
-                {
-                    urls.append(u)
-                } else if let u = Bundle.main.url(
-                    forResource: base, withExtension: "json", subdirectory: "OsaurusPlugins")
-                {
-                    urls.append(u)
-                } else if let u = Bundle(for: _OsaurusBundledPluginsBundleAnchor.self).url(
-                    forResource: base, withExtension: "json", subdirectory: "OsaurusPlugins")
-                {
-                    urls.append(u)
+
+        for bundle in resourceBundles {
+            for sub in osaurusPluginSubdirectories {
+                if let batch = bundle.urls(forResourcesWithExtension: "json", subdirectory: sub) {
+                    appendUnique(batch)
+                }
+                let dir = bundle.resourceURL?.appendingPathComponent(sub, isDirectory: true)
+                if let dir, let items = try? FileManager.default.contentsOfDirectory(
+                    at: dir,
+                    includingPropertiesForKeys: nil
+                ) {
+                    appendUnique(items.filter { $0.pathExtension == "json" })
                 }
             }
         }
+
+        if urls.isEmpty {
+            for bundle in resourceBundles {
+                for base in manifestResourceBasenames {
+                    for sub in osaurusPluginSubdirectories {
+                        if let u = bundle.url(
+                            forResource: base, withExtension: "json", subdirectory: sub)
+                        {
+                            appendUnique([u])
+                        }
+                    }
+                }
+            }
+        }
+
+        if urls.isEmpty {
+            appendUnique(sourceTreeManifestJSONURLs())
+        }
+
         return urls
+    }
+
+    /// When the Xcode app bundle omits `OsaurusPlugins`, load manifests from the package source tree (same paths as the repo).
+    private static func sourceTreeManifestJSONURLs() -> [URL] {
+        let dir = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .appendingPathComponent("Resources/OsaurusPlugins", isDirectory: true)
+        guard let items = try? FileManager.default.contentsOfDirectory(
+            at: dir,
+            includingPropertiesForKeys: nil
+        ) else { return [] }
+        return items.filter { $0.pathExtension == "json" }
     }
 
     private static func loadAllManifestToolsAndSlugTitles() -> (

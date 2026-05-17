@@ -36,6 +36,37 @@ public enum GrizzyClawAirFirstPartyToolCatalog {
         return ("osaurus.\(slug)", rest)
     }
 
+    /// True when a cached workspace discovery map includes the grouped first-party air catalog.
+    public static func cacheIncludesFirstPartyCatalog(_ cached: [String: [MCPToolDescriptor]]) -> Bool {
+        !(cached[airServerName]?.isEmpty ?? true)
+    }
+
+    /// Workspace Tools tab: always `grizzyclaw` + ``airServerName``; layer external MCP from cache or allowlist seed (drops legacy `osaurus.*` rows).
+    public static func workspaceEditorServers(
+        cached: [String: [MCPToolDescriptor]]?,
+        allowlistSeed: [(String, String)]?
+    ) -> [String: [MCPToolDescriptor]] {
+        var out = iPadChatDiscovery().servers
+        func overlayExternal(_ extra: [String: [MCPToolDescriptor]]) {
+            for (srv, tools) in extra {
+                let s = srv.trimmingCharacters(in: .whitespacesAndNewlines)
+                if s.isEmpty || s.hasPrefix("osaurus.") { continue }
+                if s == airServerName || s.lowercased() == "grizzyclaw" { continue }
+                out[s] = tools
+            }
+        }
+        if let cached, !cached.isEmpty {
+            overlayExternal(cached)
+        } else if let pairs = allowlistSeed, !pairs.isEmpty {
+            var fromPairs: [String: [MCPToolDescriptor]] = [:]
+            for (srv, tool) in pairs where !srv.isEmpty && !tool.isEmpty {
+                fromPairs[srv, default: []].append(MCPToolDescriptor(name: tool, description: ""))
+            }
+            overlayExternal(fromPairs)
+        }
+        return out
+    }
+
     /// Chat / picker discovery: `grizzyclaw` + ``airServerName`` only (no `osaurus.*` keys).
     public static func iPadChatDiscovery() -> MCPToolsDiscoveryResult {
         var by: [String: [MCPToolDescriptor]] = [:]
