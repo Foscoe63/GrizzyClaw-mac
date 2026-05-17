@@ -161,6 +161,8 @@ Press `Enter` to stop the server.
 
 ## Build the Xcode App
 
+The GrizzyClaw Mac app icon lives in `App/MacHost/Assets.xcassets` (`AppIcon` set, sourced from the bundled claw artwork).
+
 1. Open `GrizzyClawMac.xcodeproj`
 2. Select the `GrizzyClawMac` scheme
 3. Run with `Cmd+R`
