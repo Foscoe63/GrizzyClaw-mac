@@ -27,6 +27,15 @@ public struct MCPServerRow: Identifiable {
 
 extension MCPServerRow: @unchecked Sendable {}
 
+extension MCPServerRow {
+    /// True when the server is configured with an MCP `url` whose scheme is `http` or `https`.
+    public var usesHTTPOrHTTPSMCPURL: Bool {
+        guard let u = dictionary["url"] as? String else { return false }
+        let t = u.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return t.hasPrefix("https://") || t.hasPrefix("http://")
+    }
+}
+
 public enum MCPServersFileIOError: Error, LocalizedError {
     case invalidJSON
     case cannotCreateParentDirectory
@@ -131,5 +140,14 @@ public enum MCPServersFileIO {
             }
         }
         return ["name": derivedName, "command": cmd, "args": args]
+    }
+
+    /// On iOS, only HTTP(S) MCP transports are supported; on macOS all configured rows are kept.
+    public static func filterMCPRowsForRuntimePlatform(_ rows: [MCPServerRow]) -> [MCPServerRow] {
+#if os(iOS)
+        rows.filter(\.usesHTTPOrHTTPSMCPURL)
+#else
+        rows
+#endif
     }
 }

@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "cli-anything-adguardhome",
+      "folder": "adguardhome",
+      "title": "Adguardhome"
+    },
+    {
+      "id": "cli-anything-anygen",
+      "folder": "anygen",
+      "title": "Anygen"
+    },
+    {
+      "id": "cli-anything-audacity",
+      "folder": "audacity",
+      "title": "Audacity"
+    },
+    {
+      "id": "cli-anything-blender",
+      "folder": "blender",
+      "title": "Blender"
+    },
+    {
+      "id": "cli-anything-browser",
+      "folder": "browser",
+      "title": "Browser"
+    },
+    {
+      "id": "cli-anything-cli-hub-meta-skill",
+      "folder": "cli-hub-meta-skill",
+      "title": "Cli Hub Meta Skill"
+    },
+    {
+      "id": "cli-anything-codex-skill",
+      "folder": "codex-skill",
+      "title": "Codex Skill"
+    },
+    {
+      "id": "cli-anything-comfyui",
+      "folder": "comfyui",
+      "title": "Comfyui"
+    },
+    {
+      "id": "cli-anything-docs-hub",
+      "folder": "docs-hub",
+      "title": "Docs Hub"
+    },
+    {
+      "id": "cli-anything-drawio",
+      "folder": "drawio",
+      "title": "Drawio"
+    },
+    {
+      "id": "cli-anything-gimp",
+      "folder": "gimp",
+      "title": "Gimp"
+    },
+    {
+      "id": "cli-anything-inkscape",
+      "folder": "inkscape",
+      "title": "Inkscape"
+    },
+    {
+      "id": "cli-anything-iterm2_ctl",
+      "folder": "iterm2_ctl",
+      "title": "Iterm2 Ctl"
+    },
+    {
+      "id": "cli-anything-kdenlive",
+      "folder": "kdenlive",
+      "title": "Kdenlive"
+    },
+    {
+      "id": "cli-anything-krita",
+      "folder": "krita",
+      "title": "Krita"
+    },
+    {
+      "id": "cli-anything-libreoffice",
+      "folder": "libreoffice",
+      "title": "Libreoffice"
+    },
+    {
+      "id": "cli-anything-mermaid",
+      "folder": "mermaid",
+      "title": "Mermaid"
+    },
+    {
+      "id": "cli-anything-mubu",
+      "folder": "mubu",
+      "title": "Mubu"
+    },
+    {
+      "id": "cli-anything-musescore",
+      "folder": "musescore",
+      "title": "Musescore"
+    },
+    {
+      "id": "cli-anything-notebooklm",
+      "folder": "notebooklm",
+      "title": "Notebooklm"
+    },
+    {
+      "id": "cli-anything-novita",
+      "folder": "novita",
+      "title": "Novita"
+    },
+    {
+      "id": "cli-anything-obs_studio",
+      "folder": "obs_studio",
+      "title": "Obs Studio"
+    },
+    {
+      "id": "cli-anything-ollama",
+      "folder": "ollama",
+      "title": "Ollama"
+    },
+    {
+      "id": "cli-anything-openclaw-skill",
+      "folder": "openclaw-skill",
+      "title": "Openclaw Skill"
+    },
+    {
+      "id": "cli-anything-shotcut",
+      "folder": "shotcut",
+      "title": "Shotcut"
+    },
+    {
+      "id": "cli-anything-zoom",
+      "folder": "zoom",
+      "title": "Zoom"
+    }
+  ]
+}

@@ -630,7 +630,7 @@ struct ChatComposerToolbar: View {
         .buttonStyle(.borderless)
     }
 
-    private func toolServerSection(server: String, tools: [(name: String, description: String)]) -> some View {
+    private func toolServerSection(server: String, tools: [MCPToolDescriptor]) -> some View {
         let expanded = expandedToolServers.contains(server)
         let bgHead = isDark ? Color(red: 0.17, green: 0.17, blue: 0.18) : Color(red: 0.95, green: 0.95, blue: 0.97)
         return VStack(alignment: .leading, spacing: 0) {

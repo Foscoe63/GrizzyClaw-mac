@@ -48,6 +48,11 @@ let package = Package(
             path: "Sources/GrizzyClawAgent",
             swiftSettings: [
                 .unsafeFlags(["-strict-concurrency=minimal"]),
+            ],
+            linkerSettings: [
+                .linkedFramework("EventKit"),
+                .linkedFramework("Contacts"),
+                .linkedFramework("Vision"),
             ]
         ),
         .target(

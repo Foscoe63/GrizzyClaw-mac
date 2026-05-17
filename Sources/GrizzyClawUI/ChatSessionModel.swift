@@ -508,6 +508,15 @@ public final class ChatSessionModel: ObservableObject {
                     continue
                 }
 
+                if let bundled = await OsaurusBundledPluginToolHandlers.bundledResultIfApplicableFromMainActor(
+                    server: canonMcp,
+                    tool: canonTool,
+                    arguments: args
+                ) {
+                    parts.append("[Tool result \(canonMcp).\(canonTool)]\n\(bundled)")
+                    continue
+                }
+
                 do {
                     let r = try await MCPToolCaller.call(
                         mcpServersFile: userSnap.mcpServersFile,

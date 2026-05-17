@@ -11,7 +11,7 @@ final class PromptAugmentorTests: XCTestCase {
 
     func testMcpSuffixIncludesAllEnabledToolsWithoutCap() {
         let tools = (1...60).map { i in
-            (name: "tool_\(i)", description: "Description \(i)")
+            MCPToolDescriptor(name: "tool_\(i)", description: "Description \(i)")
         }
         let discovery = MCPToolsDiscoveryResult(
             servers: ["demo": tools],
@@ -57,7 +57,7 @@ final class PromptAugmentorTests: XCTestCase {
 
     func testMcpSuffixWarnsAgainstInventedEventsToolNames() {
         let discovery = MCPToolsDiscoveryResult(
-            servers: ["grizzyclaw": [(name: "create_scheduled_task", description: "Create task")]],
+            servers: ["grizzyclaw": [MCPToolDescriptor(name: "create_scheduled_task", description: "Create task")]],
             errorMessage: nil
         )
         let suffix = MCPSystemPromptAugmentor.mcpSuffix(discovery: discovery) { _, _ in true }

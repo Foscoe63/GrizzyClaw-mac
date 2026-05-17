@@ -53,7 +53,7 @@ private enum WorkspaceEditorPane: Hashable {
 /// view recreation (save/reload, split view updates, tab switches that drop `tabContent` branches).
 @MainActor
 private enum WorkspaceEditorMCPCache {
-    static var discovery: [String: [String: [(name: String, description: String)]]] = [:]
+    static var discovery: [String: [String: [MCPToolDescriptor]]] = [:]
 }
 
 /// Full settings + tabs for one workspace (Python Workspaces dialog right pane).
@@ -135,7 +135,7 @@ struct WorkspaceFullEditorView: View {
 
     // Tools (Python WorkspaceDialog → Tools tab)
     @State private var enforceToolAllowlist: Bool
-    @State private var discoveredTools: [String: [(name: String, description: String)]]
+    @State private var discoveredTools: [String: [MCPToolDescriptor]]
     @State private var toolSwitchOn: [String: Bool]
     @State private var expandedToolServers: Set<String> = []
     @State private var toolsRefreshing = false
@@ -260,7 +260,7 @@ struct WorkspaceFullEditorView: View {
 
         let capPairs = cfg?.mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
         let cachedDisc = WorkspaceEditorMCPCache.discovery[workspace.id] ?? [:]
-        let initialDisc: [String: [(name: String, description: String)]] = {
+        let initialDisc: [String: [MCPToolDescriptor]] = {
             if !cachedDisc.isEmpty { return cachedDisc }
             if let pairs = capPairs, !pairs.isEmpty {
                 return Self.discoveredToolsFromAllowlistPairs(pairs)
@@ -1126,11 +1126,11 @@ struct WorkspaceFullEditorView: View {
     }
 
     /// Builds a minimal discovery map from persisted `mcp_tool_allowlist` (descriptions empty until Refresh).
-    private static func discoveredToolsFromAllowlistPairs(_ pairs: [(String, String)]) -> [String: [(name: String, description: String)]] {
-        var dict: [String: [(name: String, description: String)]] = [:]
+    private static func discoveredToolsFromAllowlistPairs(_ pairs: [(String, String)]) -> [String: [MCPToolDescriptor]] {
+        var dict: [String: [MCPToolDescriptor]] = [:]
         for (srv, tool) in pairs {
             guard !srv.isEmpty, !tool.isEmpty else { continue }
-            dict[srv, default: []].append((name: tool, description: ""))
+            dict[srv, default: []].append(MCPToolDescriptor(name: tool, description: ""))
         }
         for srv in dict.keys {
             dict[srv]?.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
@@ -1170,7 +1170,7 @@ struct WorkspaceFullEditorView: View {
     }
 
     private static func toolSwitchMap(
-        discovered: [String: [(name: String, description: String)]],
+        discovered: [String: [MCPToolDescriptor]],
         capPairs: [(String, String)]?
     ) -> [String: Bool] {
         let capSet: Set<String>? = capPairs.map { pairs in

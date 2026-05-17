@@ -5,7 +5,7 @@ final class WorkspaceAllowlistFilterTests: XCTestCase {
     func testAllowlistNormalizesUserPrefixedServer() {
         let disc = MCPToolsDiscoveryResult(
             servers: [
-                "ddg-search": [(name: "search", description: "Web search")],
+                "ddg-search": [MCPToolDescriptor(name: "search", description: "Web search")],
             ],
             errorMessage: nil
         )
@@ -16,7 +16,7 @@ final class WorkspaceAllowlistFilterTests: XCTestCase {
     func testAllowlistFallsBackWhenNothingMatches() {
         let disc = MCPToolsDiscoveryResult(
             servers: [
-                "ddg-search": [(name: "ddg_web_search", description: "x")],
+                "ddg-search": [MCPToolDescriptor(name: "ddg_web_search", description: "x")],
             ],
             errorMessage: nil
         )

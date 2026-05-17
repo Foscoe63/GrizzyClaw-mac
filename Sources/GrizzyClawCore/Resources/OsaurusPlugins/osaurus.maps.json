@@ -1,0 +1,105 @@
+{
+  "plugin_id": "osaurus.maps",
+  "name": "Maps",
+  "description": "Interact with Apple Maps - search locations, get directions, and manage guides",
+  "homepage": "https://github.com/osaurus-ai/osaurus-maps",
+  "license": "MIT",
+  "authors": [
+    "osaurus-ai"
+  ],
+  "capabilities": {
+    "tools": [
+      {
+        "description": "Search for locations on Apple Maps",
+        "name": "maps_search_locations"
+      },
+      {
+        "description": "Save a location to favorites in Apple Maps",
+        "name": "maps_save_location"
+      },
+      {
+        "description": "Get directions between two locations",
+        "name": "maps_get_directions"
+      },
+      {
+        "description": "Drop a pin at a specific location",
+        "name": "maps_drop_pin"
+      },
+      {
+        "widget": true,
+        "description": "List guides (opens Guides view)",
+        "name": "maps_list_guides"
+      },
+      {
+        "description": "Add a location to a guide",
+        "name": "maps_add_to_guide"
+      },
+      {
+        "description": "Create a new guide",
+        "name": "maps_create_guide"
+      },
+      {
+        "widget": true,
+        "description": "Get the user's current location (Location access required)",
+        "name": "maps_get_current_location"
+      }
+    ]
+  },
+  "public_keys": {
+    "minisign": "RWQ7C4tF5waprfR0UQX75MwYAahE9M74SuaZxGgBtXOhguN9v41fj+IU"
+  },
+  "versions": [
+    {
+      "version": "1.0.1",
+      "release_date": "2025-12-22",
+      "artifacts": [
+        {
+          "os": "macos",
+          "arch": "arm64",
+          "min_macos": "13.0",
+          "url": "https://github.com/osaurus-ai/osaurus-maps/releases/download/1.0.1/osaurus.maps-1.0.1.zip",
+          "sha256": "e749958ca06daedf2013c7f6a0f3479f4e43af55f2d65d47a07145f187d5b414",
+          "size": 90450,
+          "minisign": {
+            "signature": "untrusted comment: signature from minisign secret key\nRWQ7C4tF5waprZ9h42deHNLT4s0TFEiA/J8IPB+nlKqlQRzGTQQKjCe17CQSuTNzmY0Bx1D2eyQ6SXIzr48wSVU4XOcvcVe8Xw8=\ntrusted comment: timestamp:1766437323\tfile:osaurus.maps-1.0.1.zip\nNXkTIn0uzribTrT1Ilrj32QRcsDfVzZJHc4t4FHmH86/puElQteX0q9dSxgTMyQ5kD9YaRq6kXTjWNru0ZkLAw=="
+          }
+        }
+      ]
+    },
+    {
+      "version": "1.0.2",
+      "release_date": "2026-01-27",
+      "artifacts": [
+        {
+          "os": "macos",
+          "arch": "arm64",
+          "url": "https://github.com/osaurus-ai/osaurus-maps/releases/download/1.0.2/osaurus.maps-1.0.2-macos-arm64.zip",
+          "sha256": "11d845bf36b33a93f507486ac05d3f1c9e0d3534e0b892781f59ef8c231df794",
+          "min_macos": "13.0",
+          "minisign": {
+            "signature": "untrusted comment: signature from minisign secret key\nRWQ7C4tF5waprcITlE4+WTbwnbyqfOhlBxDPBov+BddiZoCYbFehlXjPAJzXQHEWmnwrovx4vveqDjuI5yuctQ0jhhItR9BKgQY=\ntrusted comment: timestamp:1769504366\tfile:osaurus.maps-1.0.2-macos-arm64.zip\naRgqyaTrFVlkkGO9Hlg89YqFE6aGmyWEkEuepeeQYC4fRIEKF4CPGiaJND1pnnHn06UHMjjkwaHgIqFnpuLLCA=="
+          }
+        }
+      ]
+    },
+    {
+      "version": "1.0.4",
+      "release_date": "2026-05-11",
+      "artifacts": [
+        {
+          "os": "macos",
+          "arch": "arm64",
+          "url": "https://github.com/osaurus-ai/osaurus-maps/releases/download/1.0.4/osaurus.maps-1.0.4-macos-arm64.zip",
+          "sha256": "7cb27c9c6287797015d093f8d3610c0e74186e4dc03c4765d3002cae36af9513",
+          "min_macos": "13.0",
+          "minisign": {
+            "signature": "untrusted comment: signature from minisign secret key\nRWQ7C4tF5waprRE6la4gk+UoMa0l402/ld4Xy3SGUWjC66ivRU44883GX3nsMXKuKEgLAvi+5fYx4ddgh1UMXD5BjgRvRV6EZwA=\ntrusted comment: timestamp:1778494992\tfile:osaurus.maps-1.0.4-macos-arm64.zip\nMixIYOiN7v/Ub/K2PP5VPHvRczgo+VpQ2SFFylC2WfrZICqtc55SvnWdC2H+VpcJMyF1IYfrg1J3S7gP0IJwBQ=="
+          }
+        }
+      ]
+    }
+  ],
+  "docs": {
+    "readme": "README.md"
+  }
+}

@@ -35,47 +35,63 @@ public enum GrizzyMCPNativeError: LocalizedError {
 public final class GrizzyMCPNativeRuntime: ObservableObject {
     public static let shared = GrizzyMCPNativeRuntime()
 
-    private struct LocalSession {
-        let process: Process
-        let stdinPipe: Pipe
-        let stdoutPipe: Pipe
-    }
+    #if !os(iOS)
+        private struct LocalSession {
+            let process: Process
+            let stdinPipe: Pipe
+            let stdoutPipe: Pipe
+        }
+        private var localSessions: [String: LocalSession] = [:]
+    #endif
 
     private var clients: [String: Client] = [:]
-    private var localSessions: [String: LocalSession] = [:]
 
     private init() {}
 
     private static let clientName = "GrizzyClaw"
-    private static let clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+    private static let clientVersion =
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
 
     // MARK: - Discovery (list tools for all enabled servers)
 
     public func discoverTools(servers: [MCPServerRow]) async throws -> MCPToolsDiscoveryResult {
-        var serversMap: [String: [(name: String, description: String)]] = [:]
+        var serversMap: [String: [MCPToolDescriptor]] = [:]
         var errs: [String] = []
 
-        await withTaskGroup(of: (String, Result<[(String, String)], Error>).self) { group in
-            for row in servers where row.enabled {
-                group.addTask {
-                    do {
-                        let pairs = try await Self.discoverToolsForRow(row)
-                        return (row.name, .success(pairs))
-                    } catch {
-                        return (row.name, .failure(error))
-                    }
-                }
+        for row in servers where row.enabled {
+            do {
+                let pairs = try await Self.discoverToolsForRow(row)
+                serversMap[row.name] = pairs
+            } catch {
+                GrizzyClawLog.error("MCP discovery [\(row.name)]: \(error.localizedDescription)")
+                errs.append("\(row.name): \(error.localizedDescription)")
+                // Keep going so one broken server does not erase working ones.
+                continue
             }
+        }
 
-            for await (name, result) in group {
-                switch result {
-                case .success(let pairs):
-                    serversMap[name] = pairs
-                case .failure(let error):
-                    GrizzyClawLog.error("MCP discovery [\(name)]: \(error.localizedDescription)")
-                    errs.append("\(name): \(error.localizedDescription)")
+        // Normalize discovery keys: some models (and sometimes copy/pasted docs) append `[id=…]` to server names.
+        // Keeping that suffix in the discovery map causes tool validation mismatches (e.g. tool call uses `ddg-search`
+        // but discovery key is `ddg-search[id=ABC123]`). Strip bracket suffixes to make discovery consistent.
+        if !serversMap.isEmpty {
+            let knownServerNames = servers.map(\.name)
+            var normalized: [String: [MCPToolDescriptor]] = [:]
+            for (srv, tools) in serversMap {
+                let canon = MCPIdentityResolution.canonicalServerName(
+                    modelOutput: srv, knownServers: knownServerNames)
+                if normalized[canon] == nil {
+                    normalized[canon] = tools
+                } else {
+                    // Collision is unlikely; if it happens, keep stable order and de-dupe by tool name.
+                    var merged = normalized[canon] ?? []
+                    let existing = Set(merged.map(\.name))
+                    for t in tools where !existing.contains(t.name) {
+                        merged.append(t)
+                    }
+                    normalized[canon] = merged
                 }
             }
+            serversMap = normalized
         }
 
         let errMsg: String?
@@ -87,20 +103,49 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
         return MCPToolsDiscoveryResult(servers: serversMap, errorMessage: errMsg)
     }
 
-    private nonisolated static func discoverToolsForRow(_ row: MCPServerRow) async throws -> [(String, String)] {
+    private nonisolated static func discoverToolsForRow(_ row: MCPServerRow) async throws
+        -> [MCPToolDescriptor]
+    {
         let discT = discoveryTimeout(from: row)
         let tools: [Tool]
         if row.dictionary["url"] != nil {
+            #if os(iOS)
+                guard row.usesHTTPOrHTTPSMCPURL else {
+                    throw GrizzyMCPNativeError.invalidURL(
+                        "On iPad, MCP server URLs must use http:// or https://.")
+                }
+            #endif
             let client = try await connectRemoteDiscoveryClient(row: row)
             defer { Task { await client.disconnect() } }
-            tools = try await GrizzyAsyncTimeout.run(seconds: discT, timeoutError: GrizzyMCPNativeError.timeout) {
+            tools = try await GrizzyAsyncTimeout.run(
+                seconds: discT, timeoutError: GrizzyMCPNativeError.timeout
+            ) {
                 try await listAllTools(client: client)
             }
         } else {
-            tools = try await discoverLocalTools(row: row, timeout: discT)
+            #if os(iOS)
+                throw GrizzyMCPNativeError.localExecutableInvalid(
+                    "Local MCP servers are not supported on iOS.")
+            #else
+                tools = try await discoverLocalTools(row: row, timeout: discT)
+            #endif
         }
         return tools.map { t in
-            (t.name, String((t.description ?? "").prefix(400)))
+            MCPToolDescriptor(
+                name: t.name,
+                description: String((t.description ?? "").prefix(400)),
+                inputSchema: mcpSchemaJSONValue(t.inputSchema)
+            )
+        }
+    }
+
+    private nonisolated static func mcpSchemaJSONValue(_ schema: Value) -> JSONValue? {
+        do {
+            let data = try JSONEncoder().encode(schema)
+            return try JSONDecoder().decode(JSONValue.self, from: data)
+        } catch {
+            GrizzyClawLog.error("MCP schema conversion failed: \(error.localizedDescription)")
+            return nil
         }
     }
 
@@ -115,9 +160,11 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
         return all
     }
 
-    private nonisolated static func connectRemoteDiscoveryClient(row: MCPServerRow) async throws -> Client {
+    private nonisolated static func connectRemoteDiscoveryClient(row: MCPServerRow) async throws
+        -> Client
+    {
         guard let urlStr = row.dictionary["url"] as? String,
-              let endpoint = URL(string: urlStr.trimmingCharacters(in: .whitespacesAndNewlines))
+            let endpoint = URL(string: urlStr.trimmingCharacters(in: .whitespacesAndNewlines))
         else {
             throw GrizzyMCPNativeError.invalidURL((row.dictionary["url"] as? String) ?? "")
         }
@@ -135,55 +182,73 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
             streaming: false
         )
         let client = Client(name: "GrizzyClaw", version: "1.0.0")
-        _ = try await GrizzyAsyncTimeout.run(seconds: disc, timeoutError: GrizzyMCPNativeError.timeout) {
+        _ = try await GrizzyAsyncTimeout.run(
+            seconds: disc, timeoutError: GrizzyMCPNativeError.timeout
+        ) {
             try await client.connect(transport: transport)
         }
         return client
     }
 
-    private nonisolated static func discoverLocalTools(row: MCPServerRow, timeout: TimeInterval) async throws -> [Tool] {
-        guard let cmd = row.dictionary["command"] as? String,
-              !cmd.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        else {
-            throw GrizzyMCPNativeError.localExecutableInvalid("No command for local MCP server \(row.name)")
-        }
-        guard let resolved = MCPLocalMCPProcessController.resolveExecutable(cmd) else {
-            throw GrizzyMCPNativeError.localExecutableInvalid("Command not found: \(cmd)")
-        }
-        let args = MCPServerRuntimeStatus.normalizeMCPArgs(row.dictionary["args"])
-        let stdinPipe = Pipe()
-        let stdoutPipe = Pipe()
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: resolved)
-        process.arguments = args
-        if let env = row.dictionary["env"] as? [String: Any] {
-            process.environment = MCPLocalMCPProcessController.expandedEnvironmentForMCP(merging: env)
-        } else {
-            process.environment = MCPLocalMCPProcessController.expandedEnvironmentForMCP(merging: nil)
-        }
-        process.standardInput = stdinPipe
-        process.standardOutput = stdoutPipe
-        process.standardError = FileHandle.nullDevice
-        do {
-            try process.run()
-        } catch {
-            throw GrizzyMCPNativeError.localSpawnFailed(error.localizedDescription)
-        }
-        let readFd = FileDescriptor(rawValue: stdoutPipe.fileHandleForReading.fileDescriptor)
-        let writeFd = FileDescriptor(rawValue: stdinPipe.fileHandleForWriting.fileDescriptor)
-        let transport = StdioTransport(input: readFd, output: writeFd)
-        let client = Client(name: "GrizzyClaw", version: "1.0.0")
-        defer {
-            Task { await client.disconnect() }
-            if process.isRunning { process.terminate() }
-            process.waitUntilExit()
-        }
-        _ = try await GrizzyAsyncTimeout.run(seconds: timeout, timeoutError: GrizzyMCPNativeError.timeout) {
-            try await client.connect(transport: transport)
-        }
-        return try await GrizzyAsyncTimeout.run(seconds: timeout, timeoutError: GrizzyMCPNativeError.timeout) {
-            try await listAllTools(client: client)
-        }
+    private nonisolated static func discoverLocalTools(row: MCPServerRow, timeout: TimeInterval)
+        async throws -> [Tool]
+    {
+        #if os(iOS)
+            _ = row
+            _ = timeout
+            throw GrizzyMCPNativeError.localExecutableInvalid(
+                "Local MCP servers are not supported on iOS.")
+        #else
+            guard let cmd = row.dictionary["command"] as? String,
+                !cmd.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            else {
+                throw GrizzyMCPNativeError.localExecutableInvalid(
+                    "No command for local MCP server \(row.name)")
+            }
+            guard let resolved = MCPLocalMCPProcessController.resolveExecutable(cmd) else {
+                throw GrizzyMCPNativeError.localExecutableInvalid("Command not found: \(cmd)")
+            }
+            let args = MCPServerRuntimeStatus.normalizeMCPArgs(row.dictionary["args"])
+            let stdinPipe = Pipe()
+            let stdoutPipe = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: resolved)
+            process.arguments = args
+            if let env = row.dictionary["env"] as? [String: Any] {
+                process.environment = MCPLocalMCPProcessController.expandedEnvironmentForMCP(
+                    merging: env)
+            } else {
+                process.environment = MCPLocalMCPProcessController.expandedEnvironmentForMCP(
+                    merging: nil)
+            }
+            process.standardInput = stdinPipe
+            process.standardOutput = stdoutPipe
+            process.standardError = FileHandle.nullDevice
+            do {
+                try process.run()
+            } catch {
+                throw GrizzyMCPNativeError.localSpawnFailed(error.localizedDescription)
+            }
+            let readFd = FileDescriptor(rawValue: stdoutPipe.fileHandleForReading.fileDescriptor)
+            let writeFd = FileDescriptor(rawValue: stdinPipe.fileHandleForWriting.fileDescriptor)
+            let transport = StdioTransport(input: readFd, output: writeFd)
+            let client = Client(name: "GrizzyClaw", version: "1.0.0")
+            defer {
+                Task { await client.disconnect() }
+                if process.isRunning { process.terminate() }
+                process.waitUntilExit()
+            }
+            _ = try await GrizzyAsyncTimeout.run(
+                seconds: timeout, timeoutError: GrizzyMCPNativeError.timeout
+            ) {
+                try await client.connect(transport: transport)
+            }
+            return try await GrizzyAsyncTimeout.run(
+                seconds: timeout, timeoutError: GrizzyMCPNativeError.timeout
+            ) {
+                try await listAllTools(client: client)
+            }
+        #endif
     }
 
     // MARK: - Tool call
@@ -194,7 +259,8 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
         tool: String,
         arguments: [String: Any]
     ) async throws -> String {
-        let expanded = (mcpServersFile.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        let expanded =
+            (mcpServersFile.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             ? "~/.grizzyclaw/grizzyclaw.json" : mcpServersFile) as NSString
         let path = expanded.expandingTildeInPath
         let url = URL(fileURLWithPath: path)
@@ -204,15 +270,25 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
             modelOutput: server,
             knownServers: knownServers
         )
-        guard let row = rows.first(where: {
-            MCPIdentityResolution.canonicalServerName(modelOutput: $0.name, knownServers: knownServers)
-                == canonicalRequestedServer
-        }) else {
+        guard
+            let row = rows.first(where: {
+                MCPIdentityResolution.canonicalServerName(
+                    modelOutput: $0.name, knownServers: knownServers)
+                    == canonicalRequestedServer
+            })
+        else {
             throw GrizzyMCPNativeError.serverNotFound(canonicalRequestedServer)
         }
         guard row.enabled else {
             throw GrizzyMCPNativeError.serverDisabled(canonicalRequestedServer)
         }
+        #if os(iOS)
+            guard row.usesHTTPOrHTTPSMCPURL else {
+                throw GrizzyMCPNativeError.localExecutableInvalid(
+                    "On iPad, only MCP servers with http:// or https:// URLs can run. Remove stdio/command servers from this file or use them on Mac."
+                )
+            }
+        #endif
 
         if clients[row.name] == nil {
             _ = try await connectClient(for: row)
@@ -232,7 +308,8 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
         )
         if let isError, isError {
             let errorText = GrizzyMCPValueConversion.string(from: content)
-            throw GrizzyMCPNativeError.toolExecutionFailed(errorText.isEmpty ? "Tool returned error" : errorText)
+            throw GrizzyMCPNativeError.toolExecutionFailed(
+                errorText.isEmpty ? "Tool returned error" : errorText)
         }
         return GrizzyMCPValueConversion.string(from: content)
     }
@@ -243,7 +320,9 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
         arguments: [String: Value],
         timeout: TimeInterval
     ) async throws -> ([Tool.Content], Bool?) {
-        try await GrizzyAsyncTimeout.run(seconds: timeout, timeoutError: GrizzyMCPNativeError.timeout) {
+        try await GrizzyAsyncTimeout.run(
+            seconds: timeout, timeoutError: GrizzyMCPNativeError.timeout
+        ) {
             try await client.callTool(name: toolName, arguments: arguments)
         }
     }
@@ -251,7 +330,8 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
     // MARK: - Validate (add / edit sheet)
 
     public func testRemote(urlString: String, headers: [String: String]) async throws -> Int {
-        guard let endpoint = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)) else {
+        guard let endpoint = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines))
+        else {
             throw GrizzyMCPNativeError.invalidURL(urlString)
         }
         let configuration = URLSessionConfiguration.default
@@ -277,46 +357,51 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
         args: [String],
         env: [String: String]
     ) async throws -> Int {
-        let exe = command.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let resolved = MCPLocalMCPProcessController.resolveExecutable(exe) else {
-            throw GrizzyMCPNativeError.localExecutableInvalid("Command not found: \(exe)")
-        }
-        let stdinPipe = Pipe()
-        let stdoutPipe = Pipe()
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: resolved)
-        process.arguments = args
-        let merged = MCPLocalMCPProcessController.expandedEnvironmentForMCP(merging: env)
-        process.environment = merged
-        process.standardInput = stdinPipe
-        process.standardOutput = stdoutPipe
-        process.standardError = FileHandle.nullDevice
-        do {
-            try process.run()
-        } catch {
-            throw GrizzyMCPNativeError.localSpawnFailed(error.localizedDescription)
-        }
-        let readHandle = stdoutPipe.fileHandleForReading
-        let writeHandle = stdinPipe.fileHandleForWriting
-        let readFd = FileDescriptor(rawValue: readHandle.fileDescriptor)
-        let writeFd = FileDescriptor(rawValue: writeHandle.fileDescriptor)
-        let transport = StdioTransport(input: readFd, output: writeFd)
-        let client = Client(name: Self.clientName, version: Self.clientVersion)
-        do {
-            _ = try await client.connect(transport: transport)
-            let n = try await withTimeout(seconds: 25) {
-                try await Self.listAllTools(client: client)
-            }.count
-            await client.disconnect()
-            if process.isRunning { process.terminate() }
-            process.waitUntilExit()
-            return n
-        } catch {
-            await client.disconnect()
-            if process.isRunning { process.terminate() }
-            process.waitUntilExit()
-            throw error
-        }
+        #if os(iOS)
+            throw GrizzyMCPNativeError.localExecutableInvalid(
+                "Local MCP servers are not supported on iOS.")
+        #else
+            let exe = command.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard let resolved = MCPLocalMCPProcessController.resolveExecutable(exe) else {
+                throw GrizzyMCPNativeError.localExecutableInvalid("Command not found: \(exe)")
+            }
+            let stdinPipe = Pipe()
+            let stdoutPipe = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: resolved)
+            process.arguments = args
+            let merged = MCPLocalMCPProcessController.expandedEnvironmentForMCP(merging: env)
+            process.environment = merged
+            process.standardInput = stdinPipe
+            process.standardOutput = stdoutPipe
+            process.standardError = FileHandle.nullDevice
+            do {
+                try process.run()
+            } catch {
+                throw GrizzyMCPNativeError.localSpawnFailed(error.localizedDescription)
+            }
+            let readHandle = stdoutPipe.fileHandleForReading
+            let writeHandle = stdinPipe.fileHandleForWriting
+            let readFd = FileDescriptor(rawValue: readHandle.fileDescriptor)
+            let writeFd = FileDescriptor(rawValue: writeHandle.fileDescriptor)
+            let transport = StdioTransport(input: readFd, output: writeFd)
+            let client = Client(name: Self.clientName, version: Self.clientVersion)
+            do {
+                _ = try await client.connect(transport: transport)
+                let n = try await withTimeout(seconds: 25) {
+                    try await Self.listAllTools(client: client)
+                }.count
+                await client.disconnect()
+                if process.isRunning { process.terminate() }
+                process.waitUntilExit()
+                return n
+            } catch {
+                await client.disconnect()
+                if process.isRunning { process.terminate() }
+                process.waitUntilExit()
+                throw error
+            }
+        #endif
     }
 
     // MARK: - Connect / disconnect
@@ -326,14 +411,25 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
             return existing
         }
         if row.dictionary["url"] != nil {
+            #if os(iOS)
+                guard row.usesHTTPOrHTTPSMCPURL else {
+                    throw GrizzyMCPNativeError.invalidURL(
+                        "On iPad, MCP server URLs must use http:// or https://.")
+                }
+            #endif
             return try await connectRemote(row: row)
         }
-        return try await connectLocal(row: row)
+        #if os(iOS)
+            throw GrizzyMCPNativeError.localExecutableInvalid(
+                "Local MCP servers are not supported on iOS.")
+        #else
+            return try await connectLocal(row: row)
+        #endif
     }
 
     private func connectRemote(row: MCPServerRow) async throws -> Client {
         guard let urlStr = row.dictionary["url"] as? String,
-              let endpoint = URL(string: urlStr.trimmingCharacters(in: .whitespacesAndNewlines))
+            let endpoint = URL(string: urlStr.trimmingCharacters(in: .whitespacesAndNewlines))
         else {
             throw GrizzyMCPNativeError.invalidURL((row.dictionary["url"] as? String) ?? "")
         }
@@ -358,54 +454,68 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
     }
 
     private func connectLocal(row: MCPServerRow) async throws -> Client {
-        guard let cmd = row.dictionary["command"] as? String,
-              !cmd.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        else {
-            throw GrizzyMCPNativeError.localExecutableInvalid("No command for local MCP server \(row.name)")
-        }
-        guard let resolved = MCPLocalMCPProcessController.resolveExecutable(cmd) else {
-            throw GrizzyMCPNativeError.localExecutableInvalid("Command not found: \(cmd)")
-        }
-        let args = MCPServerRuntimeStatus.normalizeMCPArgs(row.dictionary["args"])
-        let stdinPipe = Pipe()
-        let stdoutPipe = Pipe()
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: resolved)
-        process.arguments = args
-        if let env = row.dictionary["env"] as? [String: Any] {
-            process.environment = MCPLocalMCPProcessController.expandedEnvironmentForMCP(merging: env)
-        } else {
-            process.environment = MCPLocalMCPProcessController.expandedEnvironmentForMCP(merging: nil)
-        }
-        process.standardInput = stdinPipe
-        process.standardOutput = stdoutPipe
-        process.standardError = FileHandle.nullDevice
-        do {
-            try process.run()
-        } catch {
-            throw GrizzyMCPNativeError.localSpawnFailed(error.localizedDescription)
-        }
-        localSessions[row.name] = LocalSession(process: process, stdinPipe: stdinPipe, stdoutPipe: stdoutPipe)
-        let readFd = FileDescriptor(rawValue: stdoutPipe.fileHandleForReading.fileDescriptor)
-        let writeFd = FileDescriptor(rawValue: stdinPipe.fileHandleForWriting.fileDescriptor)
-        let transport = StdioTransport(input: readFd, output: writeFd)
-        let client = Client(name: Self.clientName, version: Self.clientVersion)
-        do {
-            _ = try await client.connect(transport: transport)
-        } catch {
-            cleanupFailedLocal(name: row.name)
-            throw error
-        }
-        clients[row.name] = client
-        return client
+        #if os(iOS)
+            _ = row
+            throw GrizzyMCPNativeError.localExecutableInvalid(
+                "Local MCP servers are not supported on iOS.")
+        #else
+            guard let cmd = row.dictionary["command"] as? String,
+                !cmd.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            else {
+                throw GrizzyMCPNativeError.localExecutableInvalid(
+                    "No command for local MCP server \(row.name)")
+            }
+            guard let resolved = MCPLocalMCPProcessController.resolveExecutable(cmd) else {
+                throw GrizzyMCPNativeError.localExecutableInvalid("Command not found: \(cmd)")
+            }
+            let args = MCPServerRuntimeStatus.normalizeMCPArgs(row.dictionary["args"])
+            let stdinPipe = Pipe()
+            let stdoutPipe = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: resolved)
+            process.arguments = args
+            if let env = row.dictionary["env"] as? [String: Any] {
+                process.environment = MCPLocalMCPProcessController.expandedEnvironmentForMCP(
+                    merging: env)
+            } else {
+                process.environment = MCPLocalMCPProcessController.expandedEnvironmentForMCP(
+                    merging: nil)
+            }
+            process.standardInput = stdinPipe
+            process.standardOutput = stdoutPipe
+            process.standardError = FileHandle.nullDevice
+            do {
+                try process.run()
+            } catch {
+                throw GrizzyMCPNativeError.localSpawnFailed(error.localizedDescription)
+            }
+            localSessions[row.name] = LocalSession(
+                process: process, stdinPipe: stdinPipe, stdoutPipe: stdoutPipe)
+            let readFd = FileDescriptor(rawValue: stdoutPipe.fileHandleForReading.fileDescriptor)
+            let writeFd = FileDescriptor(rawValue: stdinPipe.fileHandleForWriting.fileDescriptor)
+            let transport = StdioTransport(input: readFd, output: writeFd)
+            let client = Client(name: Self.clientName, version: Self.clientVersion)
+            do {
+                _ = try await client.connect(transport: transport)
+            } catch {
+                cleanupFailedLocal(name: row.name)
+                throw error
+            }
+            clients[row.name] = client
+            return client
+        #endif
     }
 
     private func cleanupFailedLocal(name: String) {
-        clients.removeValue(forKey: name)
-        if let session = localSessions.removeValue(forKey: name) {
-            if session.process.isRunning { session.process.terminate() }
-            session.process.waitUntilExit()
-        }
+        #if os(iOS)
+            clients.removeValue(forKey: name)
+        #else
+            clients.removeValue(forKey: name)
+            if let session = localSessions.removeValue(forKey: name) {
+                if session.process.isRunning { session.process.terminate() }
+                session.process.waitUntilExit()
+            }
+        #endif
     }
 
     public func disconnect(name: String) {
@@ -413,10 +523,12 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
             if let c = clients.removeValue(forKey: name) {
                 await c.disconnect()
             }
-            if let session = localSessions.removeValue(forKey: name) {
-                if session.process.isRunning { session.process.terminate() }
-                session.process.waitUntilExit()
-            }
+            #if !os(iOS)
+                if let session = localSessions.removeValue(forKey: name) {
+                    if session.process.isRunning { session.process.terminate() }
+                    session.process.waitUntilExit()
+                }
+            #endif
         }
     }
 
@@ -447,7 +559,10 @@ public final class GrizzyMCPNativeRuntime: ObservableObject {
         return out
     }
 
-    private func withTimeout<T: Sendable>(seconds: TimeInterval, _ op: @escaping @Sendable () async throws -> T) async throws -> T {
-        try await GrizzyAsyncTimeout.run(seconds: seconds, timeoutError: GrizzyMCPNativeError.timeout, operation: op)
+    private func withTimeout<T: Sendable>(
+        seconds: TimeInterval, _ op: @escaping @Sendable () async throws -> T
+    ) async throws -> T {
+        try await GrizzyAsyncTimeout.run(
+            seconds: seconds, timeoutError: GrizzyMCPNativeError.timeout, operation: op)
     }
 }

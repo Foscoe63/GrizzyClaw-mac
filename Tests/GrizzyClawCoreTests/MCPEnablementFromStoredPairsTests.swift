@@ -4,7 +4,7 @@ import GrizzyClawCore
 final class MCPEnablementFromStoredPairsTests: XCTestCase {
     func testNilStoredMeansAllEnabled() {
         let merged = MCPToolsDiscoveryResult(
-            servers: ["ddg-search": [(name: "search", description: "")]],
+            servers: ["ddg-search": [MCPToolDescriptor(name: "search", description: "")]],
             errorMessage: nil
         ).mergingPythonInternalTools()
         XCTAssertTrue(
@@ -19,7 +19,7 @@ final class MCPEnablementFromStoredPairsTests: XCTestCase {
 
     func testStaleToolNameSingleToolServerInheritsEnabled() {
         let merged = MCPToolsDiscoveryResult(
-            servers: ["ddg-search": [(name: "ddg_web_search", description: "")]],
+            servers: ["ddg-search": [MCPToolDescriptor(name: "ddg_web_search", description: "")]],
             errorMessage: nil
         ).mergingPythonInternalTools()
         let stored: [[String]] = [["ddg-search", "search"]]
@@ -35,7 +35,7 @@ final class MCPEnablementFromStoredPairsTests: XCTestCase {
 
     func testExactMatchStillWorks() {
         let merged = MCPToolsDiscoveryResult(
-            servers: ["ddg-search": [(name: "search", description: "")]],
+            servers: ["ddg-search": [MCPToolDescriptor(name: "search", description: "")]],
             errorMessage: nil
         ).mergingPythonInternalTools()
         let stored: [[String]] = [["ddg-search", "search"]]

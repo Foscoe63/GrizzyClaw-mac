@@ -38,6 +38,24 @@ public enum GrizzyClawPaths {
         userDataDirectory.appendingPathComponent("skills.json", isDirectory: false)
     }
 
+    /// `~/.grizzyclaw/skills/` — locally installed custom skills (`SKILL.md` bundles).
+    public static var skillsDirectory: URL {
+        userDataDirectory.appendingPathComponent("skills", isDirectory: true)
+    }
+
+    /// `~/.grizzyclaw/osaurus_parity/` — persistence for Osaurus-ported tools (methods, todos, memory stubs).
+    public static var osaurusParityDirectory: URL {
+        userDataDirectory.appendingPathComponent("osaurus_parity", isDirectory: true)
+    }
+
+    /// Creates `osaurus_parity/` if needed.
+    @discardableResult
+    public static func ensureOsaurusParityDirectoryExists() throws -> URL {
+        let url = osaurusParityDirectory
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
     /// `~/.grizzyclaw/watchers/` — per-file watcher JSON (Python `watcher_store`).
     public static var watchersDirectory: URL {
         userDataDirectory.appendingPathComponent("watchers", isDirectory: true)
@@ -75,6 +93,14 @@ public enum GrizzyClawPaths {
     @discardableResult
     public static func ensureSessionsDirectoryExists() throws -> URL {
         let url = sessionsDirectory
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    /// Ensures `skills/` exists for imported custom skills.
+    @discardableResult
+    public static func ensureSkillsDirectoryExists() throws -> URL {
+        let url = skillsDirectory
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         return url
     }

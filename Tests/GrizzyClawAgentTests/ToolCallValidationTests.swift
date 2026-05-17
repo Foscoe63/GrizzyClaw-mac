@@ -5,7 +5,7 @@ import GrizzyClawCore
 final class ToolCallValidationTests: XCTestCase {
     func testKnownToolPassesValidation() {
         let discovery = MCPToolsDiscoveryResult(
-            servers: ["ddg-search": [(name: "search", description: "Web search")]],
+            servers: ["ddg-search": [MCPToolDescriptor(name: "search", description: "Web search")]],
             errorMessage: nil
         )
         XCTAssertTrue(ToolCallValidation.isKnownTool(server: "ddg-search", tool: "search", discovery: discovery))
@@ -13,7 +13,7 @@ final class ToolCallValidationTests: XCTestCase {
 
     func testInventedEventsToolFailsValidation() {
         let discovery = MCPToolsDiscoveryResult(
-            servers: ["grizzyclaw": [(name: "create_scheduled_task", description: "Create task")]],
+            servers: ["grizzyclaw": [MCPToolDescriptor(name: "create_scheduled_task", description: "Create task")]],
             errorMessage: nil
         )
         XCTAssertFalse(ToolCallValidation.isKnownTool(server: "mcp.events", tool: "events", discovery: discovery))
@@ -21,7 +21,7 @@ final class ToolCallValidationTests: XCTestCase {
 
     func testInvalidToolMessageGuidesSchedulerPath() {
         let discovery = MCPToolsDiscoveryResult(
-            servers: ["grizzyclaw": [(name: "create_scheduled_task", description: "Create task")]],
+            servers: ["grizzyclaw": [MCPToolDescriptor(name: "create_scheduled_task", description: "Create task")]],
             errorMessage: nil
         )
         let msg = ToolCallValidation.invalidToolMessage(
