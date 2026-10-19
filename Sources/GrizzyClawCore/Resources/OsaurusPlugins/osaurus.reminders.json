@@ -1,0 +1,93 @@
+{
+  "plugin_id": "osaurus.reminders",
+  "name": "Reminders",
+  "description": "Interact with macOS Reminders.app - get reminders, search, create reminders, and manage lists",
+  "homepage": "https://github.com/osaurus-ai/osaurus-reminders",
+  "license": "MIT",
+  "authors": [
+    "osaurus-ai"
+  ],
+  "capabilities": {
+    "tools": [
+      {
+        "description": "Create a new reminder.",
+        "name": "create_reminder"
+      },
+      {
+        "widget": true,
+        "description": "Get all reminder lists.",
+        "name": "get_lists"
+      },
+      {
+        "description": "Search reminders by title or notes.",
+        "name": "search_reminders"
+      },
+      {
+        "description": "Open the Reminders app, optionally to a specific reminder.",
+        "name": "open_reminder"
+      },
+      {
+        "widget": true,
+        "description": "Get reminders, optionally filtering by list, status, or date range.",
+        "name": "get_reminders"
+      }
+    ]
+  },
+  "public_keys": {
+    "minisign": "RWREzUdfZma6Lk52oRbPU9Z1N0lOWWYHoJOzOcl3sb3IomH7WBIj3gVN"
+  },
+  "versions": [
+    {
+      "version": "1.0.0",
+      "release_date": "2025-12-22",
+      "artifacts": [
+        {
+          "os": "macos",
+          "arch": "arm64",
+          "min_macos": "13.0",
+          "url": "https://github.com/osaurus-ai/osaurus-reminders/releases/download/1.0.0/osaurus.reminders-1.0.0.zip",
+          "sha256": "8a3af449cdd3a8dfdfa9a1a3861680c001ad34b7dd824889cbb9d480e80bbab6",
+          "size": 63397,
+          "minisign": {
+            "signature": "untrusted comment: signature from minisign secret key\nRWREzUdfZma6LonyjI+flcQAE6iBBm6xAhffXN7pPEN99cWy0ZiBe42y+ukw5HAF34Mqoszm/HkMvUnFfTSU8xB9Gp41pIMt5Ao=\ntrusted comment: timestamp:1766433183\tfile:osaurus.reminders-1.0.0.zip\navTs27ts4/rzNYPub7r/m0aOZ0ifWZoVf697qjo9vXzaxcSXso16cL558tui3XBQTXXXyBxLEb6/C7qsO5QLDQ=="
+          }
+        }
+      ]
+    },
+    {
+      "version": "1.0.1",
+      "release_date": "2026-01-27",
+      "artifacts": [
+        {
+          "os": "macos",
+          "arch": "arm64",
+          "url": "https://github.com/osaurus-ai/osaurus-reminders/releases/download/1.0.1/osaurus.reminders-1.0.1-macos-arm64.zip",
+          "sha256": "3a34c50eb2bfe00d5a3989722c65c7ce9943cf963f5010181515672c7961474e",
+          "min_macos": "13.0",
+          "minisign": {
+            "signature": "untrusted comment: signature from minisign secret key\nRWREzUdfZma6LqkwSXmOwqX2j0BJFZeWqURhMm+IzN15shz1ENkI4oUjb90e7vZFqdO/zpzmVLZgT0+i3NkURdnro97OEC18vQ8=\ntrusted comment: timestamp:1769501560\tfile:osaurus.reminders-1.0.1-macos-arm64.zip\npR4VhJDYfXf1BOtLb4FvsUiTekZhiulVwfnCSemNet6cp6V3fX/cmm++WlyRt3tLtrubDPkFSb0ojTNMUeotBg=="
+          }
+        }
+      ]
+    },
+    {
+      "version": "1.0.3",
+      "release_date": "2026-05-11",
+      "artifacts": [
+        {
+          "os": "macos",
+          "arch": "arm64",
+          "url": "https://github.com/osaurus-ai/osaurus-reminders/releases/download/1.0.3/osaurus.reminders-1.0.3-macos-arm64.zip",
+          "sha256": "8ff23e62948746bfe545615900150f24c435e60540a272ec78a812b445b76900",
+          "min_macos": "13.0",
+          "minisign": {
+            "signature": "untrusted comment: signature from minisign secret key\nRWREzUdfZma6Lp7ztY3Oaj93VaVNGyGoQqhyEMHbeDfTC+Y/QCi19A6t9h5hjBrVh0aK4hXtUJcKWvYLVf5r3izirF2NSBS2lgo=\ntrusted comment: timestamp:1778495184\tfile:osaurus.reminders-1.0.3-macos-arm64.zip\nThsOCGRE1fFzlgxzCQddPVHhZRm6jRlBBDih+dVI15rFtLcKp9cirxunlSOsrre8v2Rs4f3b6BWVaWOyiTZtBQ=="
+          }
+        }
+      ]
+    }
+  ],
+  "docs": {
+    "readme": "README.md"
+  }
+}

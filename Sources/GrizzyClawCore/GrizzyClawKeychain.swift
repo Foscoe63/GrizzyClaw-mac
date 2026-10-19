@@ -14,6 +14,7 @@ public enum GrizzyClawKeychain {
         case lmstudioApiKey = "lmstudio_api_key"
         case lmstudioV1ApiKey = "lmstudio_v1_api_key"
         case omlxApiKey = "omlx_api_key"
+        case vmlxApiKey = "vmlx_api_key"
         case customProviderApiKey = "custom_provider_api_key"
     }
 

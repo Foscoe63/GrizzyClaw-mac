@@ -62,6 +62,17 @@ extension JSONValue {
         }
     }
 
+    /// `enabled_skills` with override detection support: missing/`null` means inherit, array means explicit override.
+    public func stringArrayIfPresent(forKey key: String) -> [String]? {
+        guard case .object(let d) = self, let v = d[key] else { return nil }
+        if case .null = v { return nil }
+        guard case .array(let arr) = v else { return nil }
+        return arr.compactMap { item in
+            if case .string(let s) = item { return s }
+            return nil
+        }
+    }
+
     /// `mcp_tool_allowlist`: `null` or `[[server, tool], ...]` (Python tuple list).
     public func mcpToolAllowlistPairs(forKey key: String = "mcp_tool_allowlist") -> [(String, String)]? {
         guard case .object(let d) = self, let v = d[key] else { return nil }

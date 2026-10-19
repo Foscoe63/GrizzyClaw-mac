@@ -12,6 +12,7 @@ let package = Package(
         .library(name: "GrizzyClawCore", targets: ["GrizzyClawCore"]),
         .library(name: "GrizzyClawAgent", targets: ["GrizzyClawAgent"]),
         .library(name: "GrizzyClawMLX", targets: ["GrizzyClawMLX"]),
+        .library(name: "GrizzyClawWorkspaceUI", targets: ["GrizzyClawWorkspaceUI"]),
         .library(name: "GrizzyClawUI", targets: ["GrizzyClawUI"]),
     ],
     dependencies: [
@@ -34,7 +35,15 @@ let package = Package(
                 .product(name: "NIOPosix", package: "swift-nio"),
             ],
             path: "Sources/GrizzyClawCore",
-            resources: [.copy("Resources")],
+            // Explicit copies so Xcode embeds Osaurus plugin manifests (`.copy("Resources")` alone can omit new subfolders).
+            resources: [
+                .copy("Resources/OsaurusPlugins"),
+                .copy("Resources/BundledSkills"),
+                .copy("Resources/builtin_mcp_marketplace.json"),
+                .copy("Resources/swarm_workspace_templates.json"),
+                .copy("Resources/mcp_discover.py"),
+                .copy("Resources/mcp_call_tool.py"),
+            ],
             swiftSettings: [
                 .unsafeFlags(["-strict-concurrency=minimal"]),
             ],
@@ -48,6 +57,11 @@ let package = Package(
             path: "Sources/GrizzyClawAgent",
             swiftSettings: [
                 .unsafeFlags(["-strict-concurrency=minimal"]),
+            ],
+            linkerSettings: [
+                .linkedFramework("EventKit"),
+                .linkedFramework("Contacts"),
+                .linkedFramework("Vision"),
             ]
         ),
         .target(
@@ -64,8 +78,16 @@ let package = Package(
             ]
         ),
         .target(
+            name: "GrizzyClawWorkspaceUI",
+            dependencies: ["GrizzyClawCore"],
+            path: "Sources/GrizzyClawWorkspaceUI",
+            swiftSettings: [
+                .unsafeFlags(["-strict-concurrency=minimal"]),
+            ]
+        ),
+        .target(
             name: "GrizzyClawUI",
-            dependencies: ["GrizzyClawCore", "GrizzyClawAgent", "GrizzyClawMLX"],
+            dependencies: ["GrizzyClawCore", "GrizzyClawAgent", "GrizzyClawMLX", "GrizzyClawWorkspaceUI"],
             path: "Sources/GrizzyClawUI",
             swiftSettings: [
                 .unsafeFlags(["-strict-concurrency=minimal"]),

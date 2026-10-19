@@ -29,6 +29,10 @@ public struct UserConfigSnapshot: Sendable, Equatable {
     public var omlxUrl: String
     /// Model id as advertised by the oMLX server (`GET /v1/models`).
     public var omlxModel: String
+    /// OpenAI-compatible base for [vMLX](https://github.com/jjang-ai/vmlx) (default `http://localhost:8000/v1`).
+    public var vmlxUrl: String
+    /// Model id as advertised by the vMLX server (`GET /v1/models`; often `local`).
+    public var vmlxModel: String
     /// Hugging Face repo id for bundled MLX (e.g. `mlx-community/Llama-3.2-3B-Instruct-4bit`).
     public var mlxModel: String
     /// Revision / branch for MLX hub downloads (default `main`).
@@ -40,6 +44,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
     public var mcpServersFile: String
     /// Optional path to `skill_marketplace.json`; empty = use `~/.grizzyclaw/skill_marketplace.json` or built-in defaults (Python `skill_marketplace_path`).
     public var skillMarketplacePath: String
+    /// Global ClawHub defaults used when a workspace/agent does not override `enabled_skills`.
+    public var enabledSkills: [String]
 
     /// Whether non-empty API key strings appear in YAML (never expose raw secrets in UI).
     public var hasOpenaiApiKey: Bool
@@ -76,6 +82,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         lmstudioModel: "local-model",
         omlxUrl: "http://localhost:8000/v1",
         omlxModel: "",
+        vmlxUrl: "http://localhost:8000/v1",
+        vmlxModel: "local",
         mlxModel: "mlx-community/Llama-3.2-3B-Instruct-4bit",
         mlxRevision: "main",
         mlxModelsDirectory: "",
@@ -83,6 +91,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         anthropicModel: "claude-sonnet-4-5-20250929",
         mcpServersFile: "~/.grizzyclaw/grizzyclaw.json",
         skillMarketplacePath: "",
+        enabledSkills: [],
         hasOpenaiApiKey: false,
         hasAnthropicApiKey: false,
         hasOpenrouterApiKey: false,
@@ -115,6 +124,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             lmstudioModel: e.lmstudioModel,
             omlxUrl: e.omlxUrl,
             omlxModel: e.omlxModel,
+            vmlxUrl: e.vmlxUrl,
+            vmlxModel: e.vmlxModel,
             mlxModel: e.mlxModel,
             mlxRevision: e.mlxRevision,
             mlxModelsDirectory: e.mlxModelsDirectory,
@@ -122,6 +133,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             anthropicModel: e.anthropicModel,
             mcpServersFile: e.mcpServersFile,
             skillMarketplacePath: e.skillMarketplacePath,
+            enabledSkills: e.enabledSkills,
             hasOpenaiApiKey: false,
             hasAnthropicApiKey: false,
             hasOpenrouterApiKey: false,
@@ -152,6 +164,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         lmstudioModel: String,
         omlxUrl: String,
         omlxModel: String,
+        vmlxUrl: String,
+        vmlxModel: String,
         mlxModel: String,
         mlxRevision: String,
         mlxModelsDirectory: String,
@@ -159,6 +173,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         anthropicModel: String,
         mcpServersFile: String,
         skillMarketplacePath: String,
+        enabledSkills: [String],
         hasOpenaiApiKey: Bool,
         hasAnthropicApiKey: Bool,
         hasOpenrouterApiKey: Bool,
@@ -186,6 +201,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         self.lmstudioModel = lmstudioModel
         self.omlxUrl = omlxUrl
         self.omlxModel = omlxModel
+        self.vmlxUrl = vmlxUrl
+        self.vmlxModel = vmlxModel
         self.mlxModel = mlxModel
         self.mlxRevision = mlxRevision
         self.mlxModelsDirectory = mlxModelsDirectory
@@ -193,6 +210,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         self.anthropicModel = anthropicModel
         self.mcpServersFile = mcpServersFile
         self.skillMarketplacePath = skillMarketplacePath
+        self.enabledSkills = enabledSkills
         self.hasOpenaiApiKey = hasOpenaiApiKey
         self.hasAnthropicApiKey = hasAnthropicApiKey
         self.hasOpenrouterApiKey = hasOpenrouterApiKey
@@ -250,6 +268,8 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             lmstudioModel: str("lmstudio_model", "local-model"),
             omlxUrl: str("omlx_url", "http://localhost:8000/v1"),
             omlxModel: str("omlx_model", ""),
+            vmlxUrl: str("vmlx_url", "http://localhost:8000/v1"),
+            vmlxModel: str("vmlx_model", "local"),
             mlxModel: str("mlx_model", "mlx-community/Llama-3.2-3B-Instruct-4bit"),
             mlxRevision: str("mlx_revision", "main"),
             mlxModelsDirectory: str("mlx_models_directory", ""),
@@ -257,6 +277,7 @@ public struct UserConfigSnapshot: Sendable, Equatable {
             anthropicModel: str("anthropic_model", "claude-sonnet-4-5-20250929"),
             mcpServersFile: str("mcp_servers_file", "~/.grizzyclaw/grizzyclaw.json"),
             skillMarketplacePath: str("skill_marketplace_path", ""),
+            enabledSkills: Self.coerceStringArray(dict["enabled_skills"]),
             hasOpenaiApiKey: hasSecret("openai_api_key"),
             hasAnthropicApiKey: hasSecret("anthropic_api_key"),
             hasOpenrouterApiKey: hasSecret("openrouter_api_key"),
@@ -303,5 +324,16 @@ public struct UserConfigSnapshot: Sendable, Equatable {
         if let x = v as? Int { return Double(x) }
         if let s = v as? String, let x = Double(s) { return x }
         return d
+    }
+
+    internal static func coerceStringArray(_ v: Any?) -> [String] {
+        if let items = v as? [Any] {
+            return items.compactMap {
+                let s = Self.coerceString($0, default: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                return s.isEmpty ? nil : s
+            }
+        }
+        let single = Self.coerceString(v, default: "").trimmingCharacters(in: .whitespacesAndNewlines)
+        return single.isEmpty ? [] : [single]
     }
 }

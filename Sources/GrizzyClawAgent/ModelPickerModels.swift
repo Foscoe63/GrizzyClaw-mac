@@ -47,6 +47,7 @@ public enum ModelPickerModels: Sendable {
         async let cursor = cursorRows(cfg: cfg, routing: routing, secrets: secrets)
         async let mlx = mlxRows(cfg: cfg, user: user)
         async let omlx = omlxRows(cfg: cfg, user: user, secrets: secrets)
+        async let vmlx = vmlxRows(cfg: cfg, user: user, secrets: secrets)
         async let custom = customRows(cfg: cfg, user: user, secrets: secrets)
 
         var out: [String: [Row]] = [:]
@@ -60,6 +61,7 @@ public enum ModelPickerModels: Sendable {
         out["cursor"] = await cursor
         out["mlx"] = await mlx
         out["omlx"] = await omlx
+        out["vmlx"] = await vmlx
         out["custom"] = await custom
         return out
     }
@@ -177,9 +179,22 @@ public enum ModelPickerModels: Sendable {
             return user.omlxUrl
         }()
         let key = workspaceOrGlobalApiKey(cfg: cfg, secrets: secrets, workspaceKey: "omlx_api_key", global: secrets.omlxApiKey)
-        var ids = await ModelListFetch.openAIStyleModelIdsOptionalAuth(baseURL: base, apiKey: key)
+        var ids = await ModelListFetch.omlxOpenAICompatModelFetch(omlxOpenAICompatURL: base, apiKey: key).ids
         let fallback = user.omlxModel.trimmingCharacters(in: .whitespacesAndNewlines)
         if ids.isEmpty { ids = fallback.isEmpty ? [] : [fallback] }
+        return ids.map { Row(modelId: $0, displayName: $0) }
+    }
+
+    private static func vmlxRows(cfg: JSONValue?, user: UserConfigSnapshot, secrets: UserConfigSecrets) async -> [Row] {
+        let base: String = {
+            if let s = cfg?.string(forKey: "vmlx_url"),
+               !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return s }
+            return user.vmlxUrl
+        }()
+        let key = workspaceOrGlobalApiKey(cfg: cfg, secrets: secrets, workspaceKey: "vmlx_api_key", global: secrets.vmlxApiKey)
+        var ids = await ModelListFetch.vmlxOpenAICompatModelFetch(vmlxOpenAICompatURL: base, apiKey: key).ids
+        let fallback = user.vmlxModel.trimmingCharacters(in: .whitespacesAndNewlines)
+        if ids.isEmpty { ids = fallback.isEmpty ? ["local"] : [fallback] }
         return ids.map { Row(modelId: $0, displayName: $0) }
     }
 

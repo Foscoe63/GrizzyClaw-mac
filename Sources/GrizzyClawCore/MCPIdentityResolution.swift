@@ -26,8 +26,22 @@ public enum MCPIdentityResolution: Sendable {
                 cur = String(cur.dropFirst(5))
                 continue
             }
+            // First-party catalog: route generic search aliases to `grizzyclaw_air` when present.
             if lower == "web-search" || lower == "google-search" || lower == "search" {
+                if knownSet.contains(GrizzyClawAirFirstPartyToolCatalog.airServerName) {
+                    cur = GrizzyClawAirFirstPartyToolCatalog.airServerName
+                    continue
+                }
+                if knownSet.contains("osaurus.search") {
+                    cur = "osaurus.search"
+                    continue
+                }
                 cur = "ddg-search"
+                continue
+            }
+            // Legacy model output still uses `osaurus.*`; map to first-party air when that catalog is active.
+            if lower.hasPrefix("osaurus."), !knownSet.contains(cur), knownSet.contains(GrizzyClawAirFirstPartyToolCatalog.airServerName) {
+                cur = GrizzyClawAirFirstPartyToolCatalog.airServerName
                 continue
             }
             let hyphen = cur.replacingOccurrences(of: "_", with: "-")

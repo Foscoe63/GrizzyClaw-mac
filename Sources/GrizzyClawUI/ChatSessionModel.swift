@@ -356,7 +356,10 @@ public final class ChatSessionModel: ObservableObject {
             guiChatPrefs.isToolOn(server: srv, tool: tool)
         }
         let skillSuffix = SkillPromptAugmentor.skillsSuffix(
-            enabledSkillIDs: ws.config?.stringArray(forKey: "enabled_skills") ?? []
+            enabledSkillIDs: ClawHubSkillResolver.resolvedSkillIDs(
+                user: userSnap,
+                workspace: ws
+            )
         )
         let canvasSuffix = CanvasPromptAugmentor.suffix()
         let combinedPromptSuffix = [mcpSuffix, skillSuffix, canvasSuffix]
@@ -505,6 +508,30 @@ public final class ChatSessionModel: ObservableObject {
                         config: userSnap
                     )
                     parts.append("[Tool result \(canonMcp).\(canonTool)]\n\(r)")
+                    continue
+                }
+
+                let bundledServer: String
+                let bundledTool: String
+                if canonMcp == GrizzyClawAirFirstPartyToolCatalog.airServerName,
+                    let delegated = GrizzyClawAirFirstPartyToolCatalog.osaurusDelegation(
+                        server: canonMcp,
+                        tool: canonTool
+                    )
+                {
+                    bundledServer = delegated.0
+                    bundledTool = delegated.1
+                } else {
+                    bundledServer = canonMcp
+                    bundledTool = canonTool
+                }
+
+                if let bundled = await OsaurusBundledPluginToolHandlers.bundledResultIfApplicableFromMainActor(
+                    server: bundledServer,
+                    tool: bundledTool,
+                    arguments: args
+                ) {
+                    parts.append("[Tool result \(canonMcp).\(canonTool)]\n\(bundled)")
                     continue
                 }
 

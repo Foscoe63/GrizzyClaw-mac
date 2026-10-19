@@ -24,7 +24,7 @@ public struct SchedulerMainView: View {
 
     @State private var mcpServers: [String] = []
     @State private var mcpToolsForServer: [String] = []
-    @State private var mcpDiscoveryMap: [String: [(name: String, description: String)]] = [:]
+    @State private var mcpDiscoveryMap: [String: [MCPToolDescriptor]] = [:]
 
     @State private var infoAlertTitle = ""
     @State private var infoAlertMessage = ""

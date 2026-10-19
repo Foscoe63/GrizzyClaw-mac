@@ -1,5 +1,7 @@
 import AppKit
+import GrizzyClawAgent
 import GrizzyClawCore
+import GrizzyClawWorkspaceUI
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -49,13 +51,6 @@ private enum WorkspaceEditorPane: Hashable {
     case aux(WorkspaceEditorAuxTab)
 }
 
-/// Keeps last MCP tool discovery per workspace while the app runs so the Tools tab survives
-/// view recreation (save/reload, split view updates, tab switches that drop `tabContent` branches).
-@MainActor
-private enum WorkspaceEditorMCPCache {
-    static var discovery: [String: [String: [(name: String, description: String)]]] = [:]
-}
-
 /// Full settings + tabs for one workspace (Python Workspaces dialog right pane).
 struct WorkspaceFullEditorView: View {
     let workspace: WorkspaceRecord
@@ -85,6 +80,7 @@ struct WorkspaceFullEditorView: View {
     @State private var ollamaUrl: String
     @State private var lmstudioUrl: String
     @State private var omlxUrl: String
+    @State private var vmlxUrl: String
     @State private var temperatureText: String
     @State private var maxTokensText: String
 
@@ -128,6 +124,7 @@ struct WorkspaceFullEditorView: View {
     @State private var apiKeyLMStudio: String
     @State private var apiKeyLMStudioV1: String
     @State private var apiKeyOmlx: String
+    @State private var apiKeyVmlx: String
 
     @State private var saveError: String?
     @State private var saveSuccessVisible = false
@@ -135,7 +132,7 @@ struct WorkspaceFullEditorView: View {
 
     // Tools (Python WorkspaceDialog → Tools tab)
     @State private var enforceToolAllowlist: Bool
-    @State private var discoveredTools: [String: [(name: String, description: String)]]
+    @State private var discoveredTools: [String: [MCPToolDescriptor]]
     @State private var toolSwitchOn: [String: Bool]
     @State private var expandedToolServers: Set<String> = []
     @State private var toolsRefreshing = false
@@ -144,6 +141,13 @@ struct WorkspaceFullEditorView: View {
     // Skills marketplace rows
     @State private var marketplaceEntries: [SkillMarketplaceEntry] = []
     @State private var marketplaceLoadError: String?
+    @State private var workspaceSkillsOverrideEnabled: Bool
+    @State private var workspaceSkillIDs: [String]
+
+    @State private var availableModelsByProvider: [String: [ModelPickerModels.Row]] = [:]
+    @State private var llmModelsLoading = false
+    @State private var llmModelsMessage: String?
+    @State private var llmModelsMessageIsError = false
 
     @State private var benchmarkBusy = false
     @State private var benchmarkResult = ""
@@ -186,6 +190,7 @@ struct WorkspaceFullEditorView: View {
         _ollamaUrl = State(initialValue: cfg?.string(forKey: "ollama_url") ?? defaultOllamaUrl)
         _lmstudioUrl = State(initialValue: cfg?.string(forKey: "lmstudio_url") ?? "http://localhost:1234/v1")
         _omlxUrl = State(initialValue: cfg?.string(forKey: "omlx_url") ?? "http://localhost:8000/v1")
+        _vmlxUrl = State(initialValue: cfg?.string(forKey: "vmlx_url") ?? "http://localhost:8000/v1")
         if let t = cfg?.double(forKey: "temperature") {
             _temperatureText = State(initialValue: String(t))
         } else {
@@ -257,19 +262,21 @@ struct WorkspaceFullEditorView: View {
         _apiKeyLMStudio = State(initialValue: cfg?.string(forKey: "lmstudio_api_key") ?? "")
         _apiKeyLMStudioV1 = State(initialValue: cfg?.string(forKey: "lmstudio_v1_api_key") ?? "")
         _apiKeyOmlx = State(initialValue: cfg?.string(forKey: "omlx_api_key") ?? "")
+        _apiKeyVmlx = State(initialValue: cfg?.string(forKey: "vmlx_api_key") ?? "")
+        _workspaceSkillsOverrideEnabled = State(initialValue: cfg?.stringArrayIfPresent(forKey: "enabled_skills") != nil)
+        _workspaceSkillIDs = State(initialValue: cfg?.stringArray(forKey: "enabled_skills") ?? [])
 
         let capPairs = cfg?.mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
-        let cachedDisc = WorkspaceEditorMCPCache.discovery[workspace.id] ?? [:]
-        let initialDisc: [String: [(name: String, description: String)]] = {
-            if !cachedDisc.isEmpty { return cachedDisc }
-            if let pairs = capPairs, !pairs.isEmpty {
-                return Self.discoveredToolsFromAllowlistPairs(pairs)
-            }
-            return [:]
-        }()
+        let cachedDisc = WorkspaceEditorMCPCache.discovery[workspace.id]
+        let initialDisc = GrizzyClawAirFirstPartyToolCatalog.workspaceEditorServers(
+            cached: (cachedDisc?.isEmpty == false) ? cachedDisc : nil,
+            allowlistSeed: capPairs
+        )
         _discoveredTools = State(initialValue: initialDisc)
         _enforceToolAllowlist = State(initialValue: !(capPairs ?? []).isEmpty)
-        _toolSwitchOn = State(initialValue: Self.toolSwitchMap(discovered: initialDisc, capPairs: capPairs))
+        let expandedCap = capPairs.map { GrizzyClawAirFirstPartyToolCatalog.allowlistPairsIncludingAirAliases($0) }
+        _toolSwitchOn = State(initialValue: WorkspaceToolAllowlistKey.toolSwitchMap(
+            discovered: initialDisc, capPairs: expandedCap))
     }
 
     var body: some View {
@@ -573,7 +580,13 @@ struct WorkspaceFullEditorView: View {
             case .tools:
                 workspaceToolsSection
             case .skills:
-                workspaceSkillsSection
+                WorkspaceSkillEditorSection(
+                    usesWorkspaceOverride: $workspaceSkillsOverrideEnabled,
+                    workspaceSkillIDs: $workspaceSkillIDs,
+                    inheritedSkillIDs: ClawHubSkillResolver.defaultSkillIDs(user: configStore.snapshot),
+                    marketplaceEntries: marketplaceEntries,
+                    marketplaceLoadError: marketplaceLoadError
+                )
             }
         }
     }
@@ -652,7 +665,7 @@ struct WorkspaceFullEditorView: View {
     }
 
     private static let llmProviderOptions = [
-        "ollama", "lmstudio", "lmstudio_v1", "mlx", "omlx", "openai", "anthropic", "openrouter", "cursor", "opencode_zen",
+        "ollama", "lmstudio", "lmstudio_v1", "mlx", "omlx", "vmlx", "openai", "anthropic", "openrouter", "cursor", "opencode_zen",
     ]
 
     /// Includes current `llm_provider` if it is a custom id not in the default list (Python combo is editable).
@@ -665,6 +678,20 @@ struct WorkspaceFullEditorView: View {
         return o
     }
 
+    private func normalizedProviderKey(_ provider: String) -> String {
+        provider.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    }
+
+    private var availableModelsForSelectedProvider: [ModelPickerModels.Row] {
+        let providerKey = normalizedProviderKey(llmProvider)
+        var rows = availableModelsByProvider[providerKey] ?? []
+        let trimmedCurrentModel = llmModel.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedCurrentModel.isEmpty, !rows.contains(where: { $0.modelId == trimmedCurrentModel }) {
+            rows.insert(.init(modelId: trimmedCurrentModel, displayName: trimmedCurrentModel), at: 0)
+        }
+        return rows
+    }
+
     private var llmForm: some View {
         Form {
             Section {
@@ -673,15 +700,51 @@ struct WorkspaceFullEditorView: View {
                         Text(p).tag(p)
                     }
                 }
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    TextField("Select or type model name", text: $llmModel)
+                .pickerStyle(.menu)
+
+                TextField("Select or type model name", text: $llmModel)
+
+                HStack(alignment: .center, spacing: 8) {
                     Button {
-                        // No-op: refresh requires Python router / HTTP; parity affordance.
+                        Task { await refreshWorkspaceModelList() }
                     } label: {
-                        Image(systemName: "arrow.clockwise")
+                        Label("Refresh model list", systemImage: "arrow.clockwise")
                     }
-                    .help("Refresh models from provider (full discovery runs in the Python app.)")
-                    .disabled(true)
+                    .disabled(llmModelsLoading)
+                    .help("Refresh models from configured providers and update suggestions for this workspace.")
+
+                    if llmModelsLoading {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("Loading models…")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                if !availableModelsForSelectedProvider.isEmpty {
+                    Picker("Suggested model:", selection: $llmModel) {
+                        ForEach(availableModelsForSelectedProvider, id: \.modelId) { row in
+                            Text(row.displayName).tag(row.modelId)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                }
+
+                Text(
+                    availableModelsForSelectedProvider.isEmpty
+                        ? "Type a model manually or refresh to load provider-backed suggestions."
+                        : "Pick a suggested model or keep typing a custom model id in the field above."
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                if let llmModelsMessage {
+                    Text(llmModelsMessage)
+                        .font(.caption)
+                        .foregroundStyle(llmModelsMessageIsError ? .red : .secondary)
+                        .textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 LabeledContent("Temperature:") {
                     TextField("", text: $temperatureText)
@@ -718,9 +781,16 @@ struct WorkspaceFullEditorView: View {
                 )
             }
             Section("Custom provider URLs (optional overrides)") {
+                Text(
+                    "Use http://<lan-ip>:<port>/v1 to reach oMLX or vMLX on another Mac; the server must bind 0.0.0.0 (vMLX: `vmlx serve --host 0.0.0.0`)."
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
                 TextField("Ollama URL", text: $ollamaUrl)
                 TextField("LM Studio URL", text: $lmstudioUrl)
                 TextField("oMLX URL (OpenAI /v1 base)", text: $omlxUrl)
+                TextField("vMLX URL (OpenAI /v1 base)", text: $vmlxUrl)
             }
             Section("Memory") {
                 Text(
@@ -739,6 +809,16 @@ struct WorkspaceFullEditorView: View {
             }
         }
         .formStyle(.grouped)
+        .task(id: workspace.id) {
+            await refreshWorkspaceModelList()
+        }
+        .onChange(of: llmProvider) { _, _ in
+            llmModelsMessage = nil
+            let key = normalizedProviderKey(llmProvider)
+            if availableModelsByProvider[key] == nil {
+                Task { await refreshWorkspaceModelList() }
+            }
+        }
     }
 
     private var promptForm: some View {
@@ -775,6 +855,7 @@ struct WorkspaceFullEditorView: View {
                 apiKeyRow(label: "LM Studio Key:", text: $apiKeyLMStudio)
                 apiKeyRow(label: "LM Studio v1 Key:", text: $apiKeyLMStudioV1)
                 apiKeyRow(label: "oMLX Key:", text: $apiKeyOmlx)
+                apiKeyRow(label: "vMLX Key:", text: $apiKeyVmlx)
             }
         }
         .formStyle(.grouped)
@@ -970,172 +1051,124 @@ struct WorkspaceFullEditorView: View {
     }
 
     private var workspaceToolsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Workspace tool allowlist (hard cap)")
-                .font(.headline)
-            Text(
-                "When enabled, this workspace can only call the tools you select here. "
-                    + "The chat Tools dropdown can still filter further, but cannot enable anything outside this list. "
-                    + "Discovery uses the same MCP config as the Python app (`mcp_servers_file` → JSON), "
-                    + "via a bundled helper that requires Python 3 with `pip install mcp httpx`."
-            )
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .fixedSize(horizontal: false, vertical: true)
-
-            Text("MCP file: \(configStore.snapshot.mcpServersFile)")
-                .font(.caption2.monospaced())
-                .foregroundStyle(.tertiary)
-                .textSelection(.enabled)
-
-            Toggle("Enforce allowlist for this workspace", isOn: $enforceToolAllowlist)
-
-            HStack {
-                Button("Enable all") {
-                    var next = toolSwitchOn
-                    for (srv, pairs) in discoveredTools {
-                        for p in pairs {
-                            next[Self.toolKey(server: srv, tool: p.name)] = true
-                        }
-                    }
-                    toolSwitchOn = next
-                }
-                .disabled(discoveredTools.isEmpty)
-                Button("Disable all") {
-                    var next = toolSwitchOn
-                    for (srv, pairs) in discoveredTools {
-                        for p in pairs {
-                            next[Self.toolKey(server: srv, tool: p.name)] = false
-                        }
-                    }
-                    toolSwitchOn = next
-                }
-                .disabled(discoveredTools.isEmpty)
-                Spacer()
-                Button {
-                    refreshMcpTools()
-                } label: {
-                    if toolsRefreshing {
-                        ProgressView().controlSize(.small)
-                    } else {
-                        Text("Refresh")
-                    }
-                }
-                .disabled(toolsRefreshing)
-            }
-
-            if let toolsDiscoveryMessage {
-                Text(toolsDiscoveryMessage)
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            if discoveredTools.isEmpty {
-                Text("Click Refresh to discover tools from your MCP servers.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            } else {
-                let sortedServers = discoveredTools.keys.sorted()
-                ForEach(sortedServers, id: \.self) { srv in
-                    DisclosureGroup(
-                        isExpanded: Binding(
-                            get: { expandedToolServers.contains(srv) },
-                            set: { on in
-                                if on { expandedToolServers.insert(srv) } else { expandedToolServers.remove(srv) }
-                            }
-                        ),
-                        content: {
-                            let pairs = discoveredTools[srv] ?? []
-                            ForEach(Array(pairs.enumerated()), id: \.offset) { _, pair in
-                                let key = Self.toolKey(server: srv, tool: pair.name)
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(pair.name)
-                                            .font(.body)
-                                        if !pair.description.isEmpty {
-                                            Text(pair.description)
-                                                .font(.caption2)
-                                                .foregroundStyle(.secondary)
-                                                .lineLimit(3)
-                                        }
-                                    }
-                                    Spacer()
-                                    Toggle(
-                                        "",
-                                        isOn: toolToggleBinding(key: key)
-                                    )
-                                    .labelsHidden()
-                                }
-                                .padding(.vertical, 4)
-                            }
-                        },
-                        label: {
-                            HStack {
-                                Text(srv)
-                                    .font(.subheadline.weight(.medium))
-                                Spacer()
-                                Text("\(discoveredTools[srv]?.count ?? 0)")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    )
-                }
-            }
-        }
-        .frame(maxWidth: 560, alignment: .leading)
-        .onAppear {
-            guard discoveredTools.isEmpty else { return }
-            // In-session cache (survives tab switches); lost on quit.
-            if let cached = WorkspaceEditorMCPCache.discovery[workspace.id], !cached.isEmpty {
-                discoveredTools = cached
-                let cap = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?
-                    .config?
-                    .mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
-                rebuildToolSwitches(cap: cap)
-                return
-            }
-            // After relaunch: rebuild tool rows from saved allowlist so toggles aren’t blank.
-            let cap = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?
+        WorkspaceToolsEditorContent(
+            workspaceId: workspace.id,
+            enforceToolAllowlist: $enforceToolAllowlist,
+            discoveredTools: $discoveredTools,
+            toolSwitchOn: $toolSwitchOn,
+            expandedToolServers: $expandedToolServers,
+            toolsRefreshing: toolsRefreshing,
+            toolsDiscoveryMessage: toolsDiscoveryMessage,
+            mcpServersFileDisplay: configStore.snapshot.mcpServersFile,
+            persistedAllowlistCap: workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?
                 .config?
-                .mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
-            if let pairs = cap, !pairs.isEmpty {
-                discoveredTools = Self.discoveredToolsFromAllowlistPairs(pairs)
-                rebuildToolSwitches(cap: pairs)
-                refreshMcpTools()
-                return
-            }
-            refreshMcpTools()
-        }
-    }
-
-    private func toolToggleBinding(key: String) -> Binding<Bool> {
-        Binding(
-            get: {
-                toolSwitchOn[key] ?? true
-            },
-            set: { newVal in
-                toolSwitchOn[key] = newVal
-            }
+                .mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist"),
+            onRefresh: { refreshMcpTools() },
+            showsLongFormHelp: true
         )
     }
 
-    private static func toolKey(server: String, tool: String) -> String {
-        "\(server)\u{1D}\(tool)"
-    }
+    @MainActor
+    private func refreshWorkspaceModelList() async {
+        guard !llmModelsLoading else { return }
+        llmModelsLoading = true
+        llmModelsMessage = nil
+        llmModelsMessageIsError = false
 
-    /// Builds a minimal discovery map from persisted `mcp_tool_allowlist` (descriptions empty until Refresh).
-    private static func discoveredToolsFromAllowlistPairs(_ pairs: [(String, String)]) -> [String: [(name: String, description: String)]] {
-        var dict: [String: [(name: String, description: String)]] = [:]
-        for (srv, tool) in pairs {
-            guard !srv.isEmpty, !tool.isEmpty else { continue }
-            dict[srv, default: []].append((name: tool, description: ""))
+        let failsafe = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 60_000_000_000)
+            guard llmModelsLoading else { return }
+            llmModelsLoading = false
+            llmModelsMessage = "Model refresh timed out after 60 seconds."
+            llmModelsMessageIsError = true
         }
-        for srv in dict.keys {
-            dict[srv]?.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        defer { failsafe.cancel() }
+
+        let storedCfg = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?.config ?? workspace.config
+        var overlay: [String: JSONValue] = {
+            if case .object(let dict) = storedCfg { return dict }
+            return [:]
+        }()
+
+        let trimmedProvider = llmProvider.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedProvider.isEmpty {
+            overlay["llm_provider"] = .string(trimmedProvider)
         }
-        return dict
+
+        let trimmedOllama = ollamaUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedOllama.isEmpty {
+            overlay["ollama_url"] = .string(trimmedOllama)
+        }
+
+        let trimmedLmUrl = lmstudioUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedLmUrl.isEmpty {
+            overlay["lmstudio_url"] = .string(trimmedLmUrl)
+        }
+
+        let trimmedOmlx = omlxUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedOmlx.isEmpty {
+            overlay["omlx_url"] = .string(trimmedOmlx)
+        }
+
+        let trimmedVmlx = vmlxUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedVmlx.isEmpty {
+            overlay["vmlx_url"] = .string(trimmedVmlx)
+        }
+
+        func applyKey(_ key: String, value: String) {
+            let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty {
+                overlay.removeValue(forKey: key)
+            } else {
+                overlay[key] = .string(trimmed)
+            }
+        }
+        applyKey("openai_api_key", value: apiKeyOpenAI)
+        applyKey("anthropic_api_key", value: apiKeyAnthropic)
+        applyKey("openrouter_api_key", value: apiKeyOpenRouter)
+        applyKey("cursor_api_key", value: apiKeyCursor)
+        applyKey("opencode_zen_api_key", value: apiKeyOpenCodeZen)
+        applyKey("lmstudio_api_key", value: apiKeyLMStudio)
+        applyKey("lmstudio_v1_api_key", value: apiKeyLMStudioV1)
+        applyKey("omlx_api_key", value: apiKeyOmlx)
+        applyKey("vmlx_api_key", value: apiKeyVmlx)
+
+        let cfg: JSONValue = .object(overlay)
+        let user = configStore.snapshot
+        let routing = configStore.routingExtras
+
+        let secrets: UserConfigSecrets
+        do {
+            secrets = try UserConfigLoader.loadSecretsWithKeychain()
+        } catch {
+            secrets = .empty
+        }
+
+        let data = await ModelPickerModels.fetch(
+            workspaceConfig: cfg,
+            user: user,
+            routing: routing,
+            secrets: secrets
+        )
+
+        var normalized: [String: [ModelPickerModels.Row]] = [:]
+        normalized.reserveCapacity(data.count)
+        for (key, rows) in data {
+            normalized[key.lowercased()] = rows
+        }
+        availableModelsByProvider = normalized
+        llmModelsLoading = false
+
+        let providerKey = normalizedProviderKey(llmProvider)
+        let count = normalized[providerKey]?.count ?? 0
+        if count > 0 {
+            llmModelsMessage = "Loaded \(count) model suggestion\(count == 1 ? "" : "s") for \(providerKey)."
+            llmModelsMessageIsError = false
+        } else {
+            llmModelsMessage =
+                "No provider-backed suggestions were returned for \(providerKey); manual model entry still works."
+            llmModelsMessageIsError = false
+        }
     }
 
     private func refreshMcpTools() {
@@ -1146,10 +1179,14 @@ struct WorkspaceFullEditorView: View {
         Task {
             do {
                 let result = try await MCPToolsDiscovery.discover(mcpServersFile: mcpPath)
+                let servers = GrizzyClawAirFirstPartyToolCatalog.workspaceEditorServers(
+                    cached: result.servers,
+                    allowlistSeed: nil
+                )
                 await MainActor.run {
                     toolsRefreshing = false
-                    discoveredTools = result.servers
-                    WorkspaceEditorMCPCache.discovery[wid] = result.servers
+                    discoveredTools = servers
+                    WorkspaceEditorMCPCache.discovery[wid] = servers
                     toolsDiscoveryMessage = result.errorMessage
                     let cap = workspaceStore.index?.workspaces.first(where: { $0.id == wid })?
                         .config?
@@ -1157,114 +1194,28 @@ struct WorkspaceFullEditorView: View {
                     rebuildToolSwitches(cap: cap)
                 }
             } catch {
+                let fallback = GrizzyClawAirFirstPartyToolCatalog.workspaceEditorServers(
+                    cached: nil,
+                    allowlistSeed: nil
+                )
                 await MainActor.run {
                     toolsRefreshing = false
+                    discoveredTools = fallback
+                    WorkspaceEditorMCPCache.discovery[wid] = fallback
                     toolsDiscoveryMessage = error.localizedDescription
+                    let cap = workspaceStore.index?.workspaces.first(where: { $0.id == wid })?
+                        .config?
+                        .mcpToolAllowlistPairs(forKey: "mcp_tool_allowlist")
+                    rebuildToolSwitches(cap: cap)
                 }
             }
         }
     }
 
     private func rebuildToolSwitches(cap: [(String, String)]?) {
-        toolSwitchOn = Self.toolSwitchMap(discovered: discoveredTools, capPairs: cap)
-    }
-
-    private static func toolSwitchMap(
-        discovered: [String: [(name: String, description: String)]],
-        capPairs: [(String, String)]?
-    ) -> [String: Bool] {
-        let capSet: Set<String>? = capPairs.map { pairs in
-            Set(pairs.map { Self.toolKey(server: $0.0, tool: $0.1) })
-        }
-        var next: [String: Bool] = [:]
-        for (srv, pairs) in discovered {
-            for p in pairs {
-                let key = Self.toolKey(server: srv, tool: p.name)
-                if let s = capSet {
-                    next[key] = s.contains(key)
-                } else {
-                    next[key] = true
-                }
-            }
-        }
-        return next
-    }
-
-    private var enabledSkillSet: Set<String> {
-        let cfg = workspaceStore.index?.workspaces.first(where: { $0.id == workspace.id })?.config
-        return Set(cfg?.stringArray(forKey: "enabled_skills") ?? [])
-    }
-
-    private var workspaceSkillsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Add curated skills to this workspace")
-                .font(.headline)
-            Text(
-                "Marketplace bundles add entries to `enabled_skills` in this workspace’s config. "
-                    + "Add/Remove saves immediately (same as the Python app). Override the catalog with "
-                    + "`skill_marketplace_path` in config.yaml or `~/.grizzyclaw/skill_marketplace.json`."
-            )
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .fixedSize(horizontal: false, vertical: true)
-
-            if let marketplaceLoadError {
-                Text(marketplaceLoadError)
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-            }
-
-            if marketplaceEntries.isEmpty {
-                Text("No marketplace entries loaded.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(marketplaceEntries) { entry in
-                    let added = entry.enabledSkillsAdd.contains { enabledSkillSet.contains($0) }
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(entry.name)
-                                .font(.subheadline.weight(.medium))
-                            if !entry.description.isEmpty {
-                                Text(entry.description)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                        }
-                        Spacer(minLength: 12)
-                        Button(added ? "Remove" : "Add") {
-                            toggleMarketplaceSkill(id: entry.id, remove: added)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(added ? Color(red: 0.75, green: 0.22, blue: 0.17) : nil)
-                    }
-                    .padding(.vertical, 6)
-                }
-            }
-        }
-        .frame(maxWidth: 560, alignment: .leading)
-    }
-
-    private func toggleMarketplaceSkill(id: String, remove: Bool) {
-        saveError = nil
-        do {
-            if remove {
-                try workspaceStore.removeMarketplaceSkillFromWorkspace(
-                    workspaceId: workspace.id,
-                    marketplaceId: id,
-                    skillMarketplacePathFromConfig: configStore.snapshot.skillMarketplacePath
-                )
-            } else {
-                try workspaceStore.addMarketplaceSkillToWorkspace(
-                    workspaceId: workspace.id,
-                    marketplaceId: id,
-                    skillMarketplacePathFromConfig: configStore.snapshot.skillMarketplacePath
-                )
-            }
-        } catch {
-            saveError = error.localizedDescription
-        }
+        let expanded = cap.map { GrizzyClawAirFirstPartyToolCatalog.allowlistPairsIncludingAirAliases($0) }
+        toolSwitchOn = WorkspaceToolAllowlistKey.toolSwitchMap(
+            discovered: discoveredTools, capPairs: expanded)
     }
 
     private func browseAvatarPath() {
@@ -1343,6 +1294,7 @@ struct WorkspaceFullEditorView: View {
         patch["ollama_url"] = .string(ollamaUrl)
         patch["lmstudio_url"] = .string(lmstudioUrl)
         patch["omlx_url"] = .string(omlxUrl)
+        patch["vmlx_url"] = .string(vmlxUrl)
         if let t = tempParsed {
             patch["temperature"] = .double(t)
         }
@@ -1367,6 +1319,7 @@ struct WorkspaceFullEditorView: View {
         putOptionalApiKey("lmstudio_api_key", apiKeyLMStudio)
         putOptionalApiKey("lmstudio_v1_api_key", apiKeyLMStudioV1)
         putOptionalApiKey("omlx_api_key", apiKeyOmlx)
+        putOptionalApiKey("vmlx_api_key", apiKeyVmlx)
 
         patch["memory_enabled"] = .bool(memoryEnabled)
         let mf = memoryFile.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -1413,7 +1366,7 @@ struct WorkspaceFullEditorView: View {
                 var rows: [JSONValue] = []
                 for (srv, pairs) in discoveredTools {
                     for p in pairs {
-                        let key = Self.toolKey(server: srv, tool: p.name)
+                        let key = WorkspaceToolAllowlistKey.composite(server: srv, tool: p.name)
                         if toolSwitchOn[key] == true {
                             rows.append(.array([.string(srv), .string(p.name)]))
                         }
@@ -1423,6 +1376,12 @@ struct WorkspaceFullEditorView: View {
             }
         } else {
             patch["mcp_tool_allowlist"] = .null
+        }
+
+        if workspaceSkillsOverrideEnabled {
+            patch["enabled_skills"] = .array(workspaceSkillIDs.map { .string($0) })
+        } else {
+            patch["enabled_skills"] = .null
         }
 
         do {

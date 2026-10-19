@@ -34,4 +34,8 @@ public enum BuiltinClawHubSkills {
     public static func availableToAdd(enabledLowercased: Set<String>) -> [BuiltinClawHubSkill] {
         all.filter { !enabledLowercased.contains($0.id.lowercased()) }
     }
+
+    public static func skill(forID id: String) -> BuiltinClawHubSkill? {
+        all.first { $0.id.caseInsensitiveCompare(id) == .orderedSame }
+    }
 }

@@ -107,8 +107,10 @@ struct PreferencesGeneralForm: View {
         #if arch(arm64)
         base.insert("mlx", at: 2)
         base.insert("omlx", at: 3)
+        base.insert("vmlx", at: 4)
         #else
         base.insert("omlx", at: 2)
+        base.insert("vmlx", at: 3)
         #endif
         if doc.bool("lmstudio_v1_enabled", default: false) {
             base.append("lmstudio-v1")

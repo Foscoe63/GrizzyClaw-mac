@@ -152,7 +152,14 @@ public final class GuiChatPrefsStore: ObservableObject {
             knownServers: Array(merged.servers.keys)
         )
         let toolList = merged.servers[canonSrv]?.map(\.name) ?? []
-        let canonTool = MCPIdentityResolution.canonicalToolName(modelOutput: t, knownTools: toolList)
+        var canonTool = MCPIdentityResolution.canonicalToolName(modelOutput: t, knownTools: toolList)
+        if canonSrv == GrizzyClawAirFirstPartyToolCatalog.airServerName {
+            canonTool = GrizzyClawAirFirstPartyToolCatalog.canonicalAirToolName(
+                modelTool: t,
+                knownTools: toolList,
+                genericCanonical: canonTool
+            )
+        }
         return (canonSrv, canonTool)
     }
 
@@ -212,6 +219,32 @@ public final class GuiChatPrefsStore: ObservableObject {
         toolSwitch = next
         persistToolPairsOnly()
         objectWillChange.send()
+    }
+
+    /// Used for one-server probes so a successful test does not wipe tools from other servers.
+    public func mergeDiscovery(_ result: MCPToolsDiscoveryResult) {
+        guard let previous = lastDiscovery else {
+            applyDiscovery(result)
+            return
+        }
+        var combinedServers = previous.servers
+        for (server, tools) in result.servers {
+            combinedServers[server] = tools
+        }
+        let combined = MCPToolsDiscoveryResult(
+            servers: combinedServers,
+            errorMessage: result.errorMessage ?? previous.errorMessage
+        )
+        applyDiscovery(combined)
+    }
+
+    /// Full refreshes can fail transiently; keep the last good discovery instead of blanking the UI.
+    public func applyDiscoveryPreservingPreviousOnFailure(_ result: MCPToolsDiscoveryResult) {
+        if result.servers.isEmpty, result.errorMessage != nil, lastDiscovery != nil {
+            objectWillChange.send()
+            return
+        }
+        applyDiscovery(result)
     }
 
     private func rebuildToolSwitchFromPreferences() {
